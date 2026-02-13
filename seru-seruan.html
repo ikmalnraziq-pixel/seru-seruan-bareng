@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seru-Seruan Bareng! 🎉</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #2d3436;
+            padding: 1rem 0;
+        }
+
+        /* Container Utama */
+        .main-wrapper {
+            width: 92%;
+            max-width: 750px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(31,38,135,0.15);
+            border: 1px solid rgba(255,255,255,0.18);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(90deg, #d63031 0%, #e17055 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* Menu Mode Permainan */
+        .mode-menu {
+            padding: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            border-bottom: 2px solid #eee;
+        }
+
+        .mode-btn {
+            background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+            border: none;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+
+        /* Konten Permainan */
+        .game-content {
+            padding: 2rem;
+            display: none;
+        }
+
+        .game-content.active {
+            display: block;
+        }
+
+        /* Styling Kata-Kata */
+        .kata-kata-section {
+            margin-bottom: 2rem;
+        }
+
+        .kata-kartu {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+        }
+
+        .kata-judul {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: #d63031;
+        }
+
+        .kata-teks {
+            font-style: italic;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .kata-btn {
+            background: #fdcb6e;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Styling Teka-Teki Logika */
+        .logika-section {
+            margin-bottom: 2rem;
+        }
+
+        .logika-kartu {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+        }
+
+        .logika-judul {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: #2d3436;
+        }
+
+        .logika-soal {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .logika-jawaban {
+            display: none;
+            background: #d4edda;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            color: #155724;
+        }
+
+        .logika-btn {
+            background: #0984e3;
+            border: none;
+            color: white;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Header -->
+        <div class="header">
+            <h1>✨ Mode Permainan: Kata-Kata & Teka-Teki Logika</h1>
+            <p>Pilih jenis permainan yang ingin kamu mainkan!</p>
+        </div>
+
+        <!-- Menu Mode Permainan -->
+        <div class="mode-menu">
+            <button class="mode-btn active" onclick="tampilMode('kataKata')">Kata-Kata Unik</button>
+            <button class="mode-btn" onclick="tampilMode('tekaTeki')">Teka-Teki Logika</button>
+        </div>
+
+        <!-- Konten Mode Kata-Kata -->
+        <div id="kataKata" class="game-content active">
+            <div class="kata-kata-section">
+                <h2>📝 Mode Kata-Kata</h2>
+                
+                <!-- Kata-Kata Inspiratif -->
+                <div class="kata-kartu">
+                    <div class="kata-judul">Kata-Kata Inspiratif</div>
+                    <div class="kata-teks">"Kesuksesan tidak datang dengan sendirinya, tapi dari usaha yang konsisten dan ketekunan yang tidak pernah padam."</div>
+                    <button class="kata-btn" onclick="ubahKata(this)">Tampilkan Kata Lain</button>
+                </div>
+
+                <!-- Kata-Kata Bermakna -->
+                <div class="kata-kartu">
+                    <div class="kata-judul">Kata-Kata Bermakna</div>
+                    <div class="kata-teks">"Setiap langkah kecil yang kamu tempuh adalah bagian dari perjalanan menuju tujuan besar yang kamu impikan."</div>
+                    <button class="kata-btn" onclick="ubahKata(this)">Tampilkan Kata Lain</button>
+                </div>
+
+                <!-- Permainan Teka-Teki Kata -->
+                <div class="kata-kartu">
+                    <div class="kata-judul">Teka-Teki Kata</div>
+                    <div class="kata-teks">Apa kata yang jika dibalik tetap sama artinya atau bentuknya? <em>(Contoh: Radar, Kasur)</em></div>
+                    <button class="kata-btn" onclick="tampilJawaban(this)">Tampilkan Contoh Lain</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Konten Mode Teka-Teki Logika -->
+        <div id="tekaTeki" class="game-content">
+            <div class="logika-section">
+                <h2>🧩 Mode Teka-Teki Logika</h2>
+                
+                <!-- Teka-Teki Logika -->
+                <div class="logika-kartu">
+                    <div class="logika-judul">Teka-Teki Logika Dasar</div>
+                    <div class="logika-soal">
+                        Seorang pedagang buah punya 20 buah apel. Dia menjual 5 apel, kemudian mendapatkan 10 apel baru dari petani. Setelah itu, dia memberikan 3 apel kepada tetangganya. Berapa jumlah apel yang dia punya sekarang?
+                    </div>
+                    <button class="logika-btn" onclick="tampilJawaban(this)">Tampilkan Jawaban</button>
+                    <div class="logika-jawaban" style="display: none;">
+                        Jawaban: 20 - 5 + 10 - 3 = <strong>22 apel</strong>
+                    </div>
+                </div>
+
+                <!-- Teka-Teki Logika Lain -->
+                <div class="logika-kartu">
+                    <div class="logika-judul">Teka-Teki Logika Tingkat Lanjut</div>
+                    <div class="logika-soal">
+                        Ada tiga orang yang berdiri dalam barisan: A di depan, B di tengah, dan C di belakang. Semua orang mengenakan topi, tapi tidak bisa melihat topinya sendiri. Diketahui ada 2 topi putih dan 1 topi hitam. 
+                        A bilang tidak tahu warna topinya. B juga bilang tidak tahu. Lalu C langsung tahu warna topinya. Apa warna topi C dan mengapa?
+                    </div>
+                    <button class="logika-btn" onclick="tampilJawaban(this)">Tampilkan Jawaban</button>
+                    <div class="logika-jawaban" style="display: none;">
+                        Jawaban: <strong>Topi C berwarna putih!</strong><br>
+                        Penjelasan: Jika A melihat B dan C pakai topi hitam, A akan tahu topinya putih. Karena A tidak tahu, berarti B dan C tidak bisa sama-sama hitam. Jika B melihat C pakai topi hitam, B akan tahu topinya putih. Karena B juga tidak tahu, maka C tahu topinya putih!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi Tampilkan Mode
+        function tampilMode(modeNama) {
+            // Sembunyikan semua konten
+            const semuaKonten = document.querySelectorAll('.game-content');
+            semuaKonten.forEach(konten => konten.style.display = 'none');
+            
+            // Tampilkan konten yang dipilih
+            document.getElementById(modeNama).style.display = 'block';
+            
+            // Ubah tombol aktif
+            const semuaBtn = document.querySelectorAll('.mode-btn');
+            semuaBtn.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Fungsi Ubah Kata-Kata
+        const daftarKata = [
+            "\"Hidup itu seperti sepeda, kamu harus terus bergerak agar tidak jatuh.\"",
+            "\"Setiap kesalahan adalah pelajaran berharga yang membuat kita lebih kuat.\"",
+            "\"Keceriaan adalah kunci untuk membuat hari lebih menyenangkan.\"",
+            "\"Kreativitas adalah kemampuan untuk melihat hal yang sama tapi berpikir berbeda.\""
+        ];
+        
+        function ubahKata(btn) {
+            const randomIndex = Math.floor(Math.random() * daftarKata.length);
+            btn.parentElement.querySelector('.kata-teks').textContent = daftarKata[randomIndex];
+        }
+
+        // Fungsi Tampilkan Jawaban Logika
+        function tampilJawaban(btn) {
+            const jawaban = btn.nextElementSibling;
+            jawaban.style.display = jawaban.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
