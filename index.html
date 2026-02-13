@@ -3,326 +3,475 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seru-Seruan Bareng! 🎉</title>
-    <!-- Ganti link font dengan versi yang lebih stabil atau tambahkan fallback -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Quiz Edukasi Indonesia</title>
     <style>
+        /* === STYLE MIRIP QUIZIZZ === */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* Tambahkan fallback font agar tidak terganggu jika Poppins tidak terbaca */
-            font-family: 'Poppins', Arial, Helvetica, sans-serif;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Arial', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #1A5276, #2980B9);
             min-height: 100vh;
-            color: #2d3436;
-            padding: 1rem 0;
-            /* Hapus overflow tidak perlu agar konten tidak terpotong */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        /* Container Utama */
-        .main-wrapper {
-            width: min(92%, 750px); /* Lebih optimal untuk responsif */
-            margin: 0 auto;
-            background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(10px);
+        .quiz-container {
+            background: white;
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(31,38,135,0.15);
-            border: 1px solid rgba(255,255,255,0.18);
-            overflow: hidden;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            max-width: 800px;
+            width: 100%;
         }
 
-        /* Header */
-        .header {
-            background: linear-gradient(90deg, #d63031 0%, #e17055 100%);
+        .quiz-title {
+            color: #1A5276;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #F1C40F;
+            padding-bottom: 15px;
+        }
+
+        /* DAFTAR MATA PELAJARAN */
+        .quiz-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .quiz-link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 25px;
+            border-radius: 15px;
+            text-decoration: none;
             color: white;
-            padding: clamp(1.5rem, 5vw, 2rem); /* Responsif padding */
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 4px solid transparent;
+        }
+
+        .quiz-link-btn.sejarah { background: linear-gradient(135deg, #8E44AD, #C39BD3); }
+        .quiz-link-btn.mtk { background: linear-gradient(135deg, #27AE60, #2ECC71); }
+        .quiz-link-btn.logika { background: linear-gradient(135deg, #E67E22, #F39C12); }
+
+        .quiz-link-btn:hover {
+            transform: translateY(-5px);
+            border-color: #F1C40F;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+
+        .quiz-icon {
+            font-size: 1.6rem;
+            background: white;
+            color: inherit;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .quiz-text { flex-grow: 1; margin: 0 15px; }
+        .quiz-count { font-size: 0.9rem; opacity: 0.9; margin-top: 3px; }
+        .quiz-arrow { font-size: 1.3rem; }
+
+        /* BAGIAN SOAL */
+        .questions-section {
+            display: none;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 3px dashed #F1C40F;
+        }
+
+        .questions-title {
+            color: #8E44AD;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid;
+        }
+
+        .question-card.sejarah-q { border-left-color: #8E44AD; }
+        .question-card.mtk-q { border-left-color: #27AE60; }
+        .question-card.logika-q { border-left-color: #E67E22; }
+
+        .question-number {
+            background: #F1C40F;
+            color: #1A5276;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            font-size: 1rem;
+            color: #1A5276;
+            margin-bottom: 12px;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-left: 8px;
+        }
+
+        .option-item {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-item:hover {
+            border-color: #F1C40F;
+            background: #fff8e1;
+        }
+
+        .option-item.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option-item.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        /* TOMBOL */
+        .action-btn {
+            background: #F1C40F;
+            color: #1A5276;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover { background: #F39C12; }
+
+        /* BAGIAN SKOR */
+        .score-section {
+            display: none;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 3px solid #F1C40F;
             text-align: center;
         }
 
-        .header h1 {
-            font-size: clamp(1.5rem, 4vw, 1.8rem);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+        .score-title {
+            color: #1A5276;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
         }
 
-        .header p {
-            font-size: clamp(0.9rem, 2vw, 0.95rem);
-            opacity: 0.9;
+        .score-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #27AE60;
+            margin-bottom: 10px;
         }
 
-        /* Menu Mode Permainan */
-        .mode-menu {
-            padding: 1.5rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-            border-bottom: 2px solid #eee;
-        }
-
-        .mode-btn {
-            background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
-            border: none;
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 500;
-            /* Tambahkan efek hover yang jelas */
-            transform: translateY(0);
-        }
-
-        .mode-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(9, 132, 227, 0.3);
-        }
-
-        .mode-btn.active {
-            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-        }
-
-        /* Konten Permainan */
-        .game-content {
-            padding: clamp(1.5rem, 4vw, 2rem);
-            display: none;
-            /* Tambahkan animasi tampilan */
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .game-content.active {
-            display: block;
-        }
-
-        /* Styling Kata-Kata */
-        .kata-kata-section, .logika-section {
-            margin-bottom: 2rem;
-        }
-
-        .kata-kartu, .logika-kartu {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            margin-bottom: 1.5rem;
-            /* Tambahkan efek hover ringan */
-            transition: box-shadow 0.3s ease;
-        }
-
-        .kata-kartu:hover, .logika-kartu:hover {
-            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-        }
-
-        .kata-judul {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-            color: #d63031;
-        }
-
-        .kata-teks {
-            font-style: italic;
-            color: #333;
-            margin-bottom: 1rem;
-            line-height: 1.6; /* Lebih nyaman dibaca */
-        }
-
-        .kata-btn, .logika-btn {
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            cursor: pointer;
-            color: white;
-            font-weight: 500;
-            transform: translateY(0);
-        }
-
-        .kata-btn {
-            background: #fdcb6e;
-        }
-
-        .logika-btn {
-            background: #0984e3;
-        }
-
-        .kata-btn:hover, .logika-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-        }
-
-        /* Styling Teka-Teki Logika */
-        .logika-judul {
-            font-size: 1.1rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-            color: #2d3436;
-        }
-
-        .logika-soal {
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
-        .logika-jawaban {
-            display: none;
-            background: #d4edda;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-top: 1rem;
-            color: #155724;
-            line-height: 1.6;
-            /* Tambahkan animasi untuk jawaban */
-            animation: slideDown 0.2s ease;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; max-height: 0; }
-            to { opacity: 1; max-height: 500px; }
+        .score-text {
+            color: #1A5276;
+            font-size: 1rem;
         }
     </style>
 </head>
 <body>
-    <div class="main-wrapper">
-        <!-- Header -->
-        <div class="header">
-            <h1>✨ Mode Permainan: Kata-Kata & Teka-Teki Logika</h1>
-            <p>Pilih jenis permainan yang ingin kamu mainkan!</p>
+    <div class="quiz-container">
+        <h1 class="quiz-title">📚 QUIZ EDUKASI INDONESIA</h1>
+
+        <!-- DAFTAR MATA PELAJARAN -->
+        <div class="quiz-links">
+            <a href="javascript:void(0)" class="quiz-link-btn sejarah" onclick="openQuiz('sejarah')">
+                <div class="quiz-icon">📜</div>
+                <div class="quiz-text">
+                    <div>Quiz Sejarah Indonesia</div>
+                    <div class="quiz-count">3 Soal • Waktu Bebas</div>
+                </div>
+                <div class="quiz-arrow">➡️</div>
+            </a>
+
+            <a href="javascript:void(0)" class="quiz-link-btn mtk" onclick="openQuiz('mtk')">
+                <div class="quiz-icon">➕</div>
+                <div class="quiz-text">
+                    <div>Quiz Matematika SMP</div>
+                    <div class="quiz-count">3 Soal • Waktu Bebas</div>
+                </div>
+                <div class="quiz-arrow">➡️</div>
+            </a>
+
+            <a href="javascript:void(0)" class="quiz-link-btn logika" onclick="openQuiz('logika')">
+                <div class="quiz-icon">🧩</div>
+                <div class="quiz-text">
+                    <div>Quiz Logika & Penalaran</div>
+                    <div class="quiz-count">3 Soal • Waktu Bebas</div>
+                </div>
+                <div class="quiz-arrow">➡️</div>
+            </a>
         </div>
 
-        <!-- Menu Mode Permainan -->
-        <div class="mode-menu">
-            <button class="mode-btn active" onclick="tampilMode('kataKata', event)">Kata-Kata Unik</button>
-            <button class="mode-btn" onclick="tampilMode('tekaTeki', event)">Teka-Teki Logika</button>
-        </div>
+        <!-- TOMBOL UTAMA -->
+        <button class="action-btn" onclick="showAllQuizzes()">Tampilkan Semua Soal</button>
+        <button class="action-btn" onclick="resetEverything()">Reset Semua Jawaban & Skor</button>
 
-        <!-- Konten Mode Kata-Kata -->
-        <div id="kataKata" class="game-content active">
-            <div class="kata-kata-section">
-                <h2>📝 Mode Kata-Kata</h2>
+        <!-- BAGIAN SOAL -->
+        <div class="questions-section" id="allQuestionsArea">
+            <!-- SOAL SEJARAH -->
+            <div id="sejarahQuestions" style="display: none;">
+                <h2 class="questions-title">📜 Soal Sejarah Indonesia</h2>
                 
-                <!-- Kata-Kata Inspiratif -->
-                <div class="kata-kartu">
-                    <div class="kata-judul">Kata-Kata Inspiratif</div>
-                    <div class="kata-teks">"Kesuksesan tidak datang dengan sendirinya, tapi dari usaha yang konsisten dan ketekunan yang tidak pernah padam."</div>
-                    <button class="kata-btn" onclick="ubahKata(this)">Tampilkan Kata Lain</button>
+                <div class="question-card sejarah-q" data-correct="A">
+                    <div class="question-number">Soal 1</div>
+                    <div class="question-text">Siapakah pemimpin perang kemerdekaan yang dikenal dengan julukan "Bung Tomo"?</div>
+                    <div class="options-list">
+                        <div class="option-item" onclick="checkAnswer(this, 'A', this.parentElement.parentElement)">A. Sutomo</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'B', this.parentElement.parentElement)">B. Sudirman</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'C', this.parentElement.parentElement)">C. Sukarno</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'D', this.parentElement.parentElement)">D. Hatta</div>
+                    </div>
                 </div>
 
-                <!-- Kata-Kata Bermakna -->
-                <div class="kata-kartu">
-                    <div class="kata-judul">Kata-Kata Bermakna</div>
-                    <div class="kata-teks">"Setiap langkah kecil yang kamu tempuh adalah bagian dari perjalanan menuju tujuan besar yang kamu impikan."</div>
-                    <button class="kata-btn" onclick="ubahKata(this)">Tampilkan Kata Lain</button>
+                <div class="question-card sejarah-q" data-correct="B">
+                    <div class="question-number">Soal 2</div>
+                    <div class="question-text">Pada tahun berapa Proklamasi Kemerdekaan Indonesia dibacakan?</div>
+                    <div class="options-list">
+                        <div class="option-item" onclick="checkAnswer(this, 'A', this.parentElement.parentElement)">A. 1943</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'B', this.parentElement.parentElement)">B. 1945</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'C', this.parentElement.parentElement)">C. 1950</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'D', this.parentElement.parentElement)">D. 1942</div>
+                    </div>
                 </div>
 
-                <!-- Permainan Teka-Teki Kata -->
-                <div class="kata-kartu">
-                    <div class="kata-judul">Teka-Teki Kata</div>
-                    <div class="kata-teks">Apa kata yang jika dibalik tetap sama artinya atau bentuknya? <em>(Contoh: Radar, Kasur)</em></div>
-                    <button class="kata-btn" onclick="tampilJawabanKata(this)">Tampilkan Contoh Lain</button>
-                    <div class="logika-jawaban" style="display: none;">
-                        Contoh tambahan: <strong>Kosakata, Seratus, Level</strong>
+                <div class="question-card sejarah-q" data-correct="A">
+                    <div class="question-number">Soal 3</div>
+                    <div class="question-text">Gerakan perlawanan rakyat terhadap Belanda di Jawa Barat abad ke-19 adalah...</div>
+                    <div class="options-list">
+                        <div class="option-item" onclick="checkAnswer(this, 'A', this.parentElement.parentElement)">A. Pemberontakan Banten</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'B', this.parentElement.parentElement)">B. Perang Diponegoro</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'C', this.parentElement.parentElement)">C. Gerakan Priyayi</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'D', this.parentElement.parentElement)">D. Perang Aceh</div>
                     </div>
                 </div>
             </div>
+
+            <!-- SOAL MATEMATIKA -->
+            <div id="mtkQuestions" style="display: none;">
+                <h2 class="questions-title">➕ Soal Matematika SMP</h2>
+                
+                <div class="question-card mtk-q" data-correct="B">
+                    <div class="question-number">Soal 1</div>
+                    <div class="question-text">Berapakah hasil dari 3/4 × 2/5?</div>
+                    <div class="options-list">
+                        <div class="option-item" onclick="checkAnswer(this, 'A', this.parentElement.parentElement)">A. 5/9</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'B', this.parentElement.parentElement)">B. 3/10</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'C', this.parentElement.parentElement)">C. 6/20</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'D', this.parentElement.parentElement)">D. 1/2</div>
+                    </div>
+                </div>
+
+                <div class="question-card mtk-q" data-correct="A">
+                    <div class="question-number">Soal 2</div>
+                    <div class="question-text">Jika keliling lingkaran adalah 31,4 cm, berapakah jari-jarinya? (π = 3,14)</div>
+                    <div class="options-list">
+                        <div class="option-item" onclick="checkAnswer(this, 'A', this.parentElement.parentElement)">A. 5 cm</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'B', this.parentElement.parentElement)">B. 10 cm</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'C', this.parentElement.parentElement)">C. 15 cm</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'D', this.parentElement.parentElement)">D. 20 cm</div>
+                    </div>
+                </div>
+
+                <div class="question-card mtk-q" data-correct="C">
+                    <div class="question-number">Soal 3</div>
+                    <div class="question-text">Umur Ayah 36 tahun, umur Budi 12 tahun. Berapa tahun lagi umur Ayah menjadi dua kali umur Budi?</div>
+                    <div class="options-list">
+                        <div class="option-item" onclick="checkAnswer(this, 'A', this.parentElement.parentElement)">A. 8 tahun</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'B', this.parentElement.parentElement)">B. 10 tahun</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'C', this.parentElement.parentElement)">C. 12 tahun</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'D', this.parentElement.parentElement)">D. 15 tahun</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SOAL LOGIKA -->
+            <div id="logikaQuestions" style="display: none;">
+                <h2 class="questions-title">🧩 Soal Logika & Penalaran</h2>
+                
+                <div class="question-card logika-q" data-correct="B">
+                    <div class="question-number">Soal 1</div>
+                    <div class="question-text">Jika semua burung bisa terbang, dan semua merpati adalah burung. Maka dapat disimpulkan bahwa...</div>
+                    <div class="options-list">
+                        <div class="option-item" onclick="checkAnswer(this, 'A', this.parentElement.parentElement)">A. Semua hewan bisa terbang</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'B', this.parentElement.parentElement)">B. Semua merpati bisa terbang</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'C', this.parentElement.parentElement)">C. Hewan yang bisa terbang adalah burung</div>
+                        <div class="option-item" onclick="checkAnswer(this, 'D', this.parentElement.parentElement)">D. Merpati tidak bisa terbang</div>
+                    </div>
+                </div>
+
+                <div class="question-card logika-q" data-correct="B">
+                    <div class="question-number">Soal 2</div>
+                    <div class="question-text">Urutan angka berikutnya dalam barisan 2, 6, 12, 20, ... adalah?</div
+                                    <div class="option-item" onclick="checkAnswer(this, 'A', this.parentElement.parentElement)">A. 28</div>
+                <div class="option-item" onclick="checkAnswer(this, 'B', this.parentElement.parentElement)">B. 30</div>
+                <div class="option-item" onclick="checkAnswer(this, 'C', this.parentElement.parentElement)">C. 32</div>
+                <div class="option-item" onclick="checkAnswer(this, 'D', this.parentElement.parentElement)">D. 36</div>
+            </div>
         </div>
 
-        <!-- Konten Mode Teka-Teki Logika -->
-        <div id="tekaTeki" class="game-content">
-            <div class="logika-section">
-                <h2>🧩 Mode Teka-Teki Logika</h2>
-                
-                <!-- Teka-Teki Logika -->
-                <div class="logika-kartu">
-                    <div class="logika-judul">Teka-Teki Logika Dasar</div>
-                    <div class="logika-soal">
-                        Seorang pedagang buah punya 20 buah apel. Dia menjual 5 apel, kemudian mendapatkan 10 apel baru dari petani. Setelah itu, dia memberikan 3 apel kepada tetangganya. Berapa jumlah apel yang dia punya sekarang?
-                    </div>
-                    <button class="logika-btn" onclick="tampilJawaban(this)">Tampilkan Jawaban</button>
-                    <div class="logika-jawaban">
-                        Jawaban: 20 - 5 + 10 - 3 = <strong>22 apel</strong>
-                    </div>
-                </div>
-
-                <!-- Teka-Teki Logika Lain -->
-                <div class="logika-kartu">
-                    <div class="logika-judul">Teka-Teki Logika Tingkat Lanjut</div>
-                    <div class="logika-soal">
-                        Ada tiga orang yang berdiri dalam barisan: A di depan, B di tengah, dan C di belakang. Semua orang mengenakan topi, tapi tidak bisa melihat topinya sendiri. Diketahui ada 2 topi putih dan 1 topi hitam. 
-                        A bilang tidak tahu warna topinya. B juga bilang tidak tahu. Lalu C langsung tahu warna topinya. Apa warna topi C dan mengapa?
-                    </div>
-                    <button class="logika-btn" onclick="tampilJawaban(this)">Tampilkan Jawaban</button>
-                    <div class="logika-jawaban">
-                        Jawaban: <strong>Topi C berwarna putih!</strong><br>
-                        Penjelasan: Jika A melihat B dan C pakai topi hitam, A akan tahu topinya putih. Karena A tidak tahu, berarti B dan C tidak bisa sama-sama hitam. Jika B melihat C pakai topi hitam, B akan tahu topinya putih. Karena B juga tidak tahu, maka C tahu topinya putih!
-                    </div>
-                </div>
+        <div class="question-card logika-q" data-correct="B">
+            <div class="question-number">Soal 3</div>
+            <div class="question-text">Dalam kelas ada 30 siswa. 18 suka matematika, 15 suka bahasa Indonesia, dan 5 tidak suka keduanya. Berapa siswa yang suka kedua pelajaran?</div>
+            <div class="options-list">
+                <div class="option-item" onclick="checkAnswer(this, 'A', this.parentElement.parentElement)">A. 5 siswa</div>
+                <div class="option-item" onclick="checkAnswer(this, 'B', this.parentElement.parentElement)">B. 8 siswa</div>
+                <div class="option-item" onclick="checkAnswer(this, 'C', this.parentElement.parentElement)">C. 10 siswa</div>
+                <div class="option-item" onclick="checkAnswer(this, 'D', this.parentElement.parentElement)">D. 12 siswa</div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Fungsi Tampilkan Mode - tambahkan parameter event untuk menghindari error
-        function tampilMode(modeNama, event) {
-            const semuaKonten = document.querySelectorAll('.game-content');
-            semuaKonten.forEach(konten => konten.classList.remove('active'));
-            
-            document.getElementById(modeNama).classList.add('active');
-            
-            const semuaBtn = document.querySelectorAll('.mode-btn');
-            semuaBtn.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        }
+    <!-- BAGIAN SKOR -->
+    <div class="score-section" id="scoreDisplay">
+        <h3 class="score-title">✅ HASIL QUIZ ANDA</h3>
+        <div class="score-value" id="finalScore">0 / 9 Soal Benar</div>
+        <p class="score-text">Selamat! Semua jawaban benar akan ditambahkan ke skor, tidak ada pengurangan nilai!</p>
+    </div>
+</div>
+</div>
 
-        // Fungsi Ubah Kata-Kata - tambahkan variasi agar tidak berulang cepat
-        const daftarKata = [
-            "\"Hidup itu seperti sepeda, kamu harus terus bergerak agar tidak jatuh.\"",
-            "\"Setiap kesalahan adalah pelajaran berharga yang membuat kita lebih kuat.\"",
-            "\"Keceriaan adalah kunci untuk membuat hari lebih menyenangkan.\"",
-            "\"Kreativitas adalah kemampuan untuk melihat hal yang sama tapi berpikir berbeda.\"",
-            "\"Impian tidak akan pernah terlalu besar jika kamu bersedia bekerja keras untuk mencapainya.\"" // Tambah kata baru
-        ];
+<script>
+    // VARIABEL UNTUK MENYIMPAN SKOR
+    let totalCorrect = 0;
+    let totalQuestions = 9;
+
+    // FUNGSI BUKA QUIZ PER MATA PELAJARAN
+    function openQuiz(subject) {
+        // SEMBUNYIKAN SEMUA SOAL DULU
+        document.getElementById('sejarahQuestions').style.display = 'none';
+        document.getElementById('mtkQuestions').style.display = 'none';
+        document.getElementById('logikaQuestions').style.display = 'none';
+        document.getElementById('scoreDisplay').style.display = 'none';
         
-        function ubahKata(btn) {
-            const kataTeks = btn.parentElement.querySelector('.kata-teks');
-            let randomIndex;
-            // Hindari menampilkan kata yang sama berurutan
-            do {
-                randomIndex = Math.floor(Math.random() * daftarKata.length);
-            } while (kataTeks.textContent === daftarKata[randomIndex]);
-            kataTeks.textContent = daftarKata[randomIndex];
+        // TAMPILKAN SOAL YANG DIPILIH
+        if(subject === 'sejarah') {
+            document.getElementById('sejarahQuestions').style.display = 'block';
+        } else if(subject === 'mtk') {
+            document.getElementById('mtkQuestions').style.display = 'block';
+        } else if(subject === 'logika') {
+            document.getElementById('logikaQuestions').style.display = 'block';
         }
+        
+        // TAMPILKAN BAGIAN SOAL
+        document.getElementById('allQuestionsArea').style.display = 'block';
+    }
 
-        // Fungsi Tampilkan Jawaban yang terpisah untuk lebih jelas
-        function tampilJawaban(btn) {
-            const jawaban = btn.nextElementSibling;
-            jawaban.style.display = jawaban.style.display === 'none' ? 'block' : 'none';
-        }
+    // FUNGSI TAMPILKAN SEMUA SOAL
+    function showAllQuizzes() {
+        document.getElementById('sejarahQuestions').style.display = 'block';
+        document.getElementById('mtkQuestions').style.display = 'block';
+        document.getElementById('logikaQuestions').style.display = 'block';
+        document.getElementById('allQuestionsArea').style.display = 'block';
+        document.getElementById('scoreDisplay').style.display = 'none';
+    }
 
-        function tampilJawabanKata(btn) {
-            const jawaban = btn.nextElementSibling;
-            jawaban.style.display = jawaban.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // Tambahkan fallback jika font Poppins tidak terbaca
-        document.addEventListener('DOMContentLoaded', function() {
-            const testElement = document.createElement('div');
-            testElement.style.fontFamily = 'Poppins';
-            testElement.style.visibility = 'hidden';
-            document.body.appendChild(testElement);
-            if (window.getComputedStyle(testElement).fontFamily !== 'Poppins') {
-                console.log('Font Poppins tidak terbaca, menggunakan fallback font.');
-            }
-            document.body.removeChild(testElement);
+    // FUNGSI CEK JAWABAN
+    function checkAnswer(selectedOption, userAnswer, questionCard) {
+        // AMBIL JAWABAN BENAR
+        const correctAnswer = questionCard.getAttribute('data-correct');
+        
+        // HAPUS WARNA JAWABAN SEBELUMNYA
+        const allOptions = questionCard.querySelectorAll('.option-item');
+        allOptions.forEach(option => {
+            option.classList.remove('correct', 'wrong');
         });
-    </script>
+
+        // BERI WARNA SESUAI JAWABAN
+        if(userAnswer === correctAnswer) {
+            selectedOption.classList.add('correct');
+            // TAMBAH SKOR JIKA BELUM PERNAH JAWAB BENAR
+            if(!questionCard.classList.contains('answered')) {
+                totalCorrect++;
+                questionCard.classList.add('answered');
+            }
+        } else {
+            selectedOption.classList.add('wrong');
+            // TAMPILKAN JAWABAN BENAR
+            allOptions.forEach(option => {
+                if(option.textContent.includes(correctAnswer)) {
+                    option.classList.add('correct');
+                }
+            });
+        }
+
+        // TAMPILKAN SKOR
+        updateScore();
+    }
+
+    // FUNGSI UPDATE SKOR
+    function updateScore() {
+        document.getElementById('finalScore').textContent = `${totalCorrect} / ${totalQuestions} Soal Benar`;
+        document.getElementById('scoreDisplay').style.display = 'block';
+    }
+
+    // FUNGSI RESET SEMUA
+    function resetEverything() {
+        // RESET SKOR
+        totalCorrect = 0;
+        document.getElementById('finalScore').textContent = `0 / ${totalQuestions} Soal Benar`;
+        document.getElementById('scoreDisplay').style.display = 'none';
+
+        // RESET SEMUA JAWABAN
+        const allOptionItems = document.querySelectorAll('.option-item');
+        allOptionItems.forEach(item => {
+            item.classList.remove('correct', 'wrong');
+        });
+
+        // RESET STATUS SOAL
+        const allQuestionCards = document.querySelectorAll('.question-card');
+        allQuestionCards.forEach(card => {
+            card.classList.remove('answered');
+        });
+
+        // SEMBUNYIKAN SOAL
+        document.getElementById('allQuestionsArea').style.display = 'none';
+    }
+</script>
 </body>
 </html>
+
