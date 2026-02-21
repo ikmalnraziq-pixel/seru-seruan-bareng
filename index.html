@@ -3,854 +3,532 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEBAK TEBAKAN MAXIMUM</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* === KONFIGURASI UTAMA === */
-        :root {
-            --blood-red: #990000;
-            --history-gold: #D4AF37;
-            --math-blue: #0066CC;
-            --dark-bg: #121212;
-            --light-bg: #F8F9FA;
-            --text-dark: #212529;
-            --text-light: #F8F9FA;
-            --border-hard: 3px solid;
-            --transition-super: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            --shadow-max: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: var(--dark-bg);
-            min-height: 100vh;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow-x: hidden;
-        }
-
-        /* === KOTAK UTAMA === */
-        .game-container {
-            width: 100%;
-            max-width: 800px;
-            background: linear-gradient(145deg, #2D2D2D, #1A1A1A);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: var(--shadow-max);
-            border: var(--border-hard) #3D3D3D;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* === EFEK BACKGROUND DINAMIS === */
-        .bg-effect {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            opacity: 0.1;
-            pointer-events: none;
-        }
-
-        .blood-pattern {
-            background: repeating-linear-gradient(45deg, var(--blood-red) 0px, transparent 4px, transparent 8px);
-            animation: movePattern 20s linear infinite;
-        }
-
-        .history-pattern {
-            background: repeating-linear-gradient(90deg, var(--history-gold) 0px, transparent 5px, transparent 10px);
-            animation: movePattern 25s linear infinite reverse;
-        }
-
-        .math-pattern {
-            background: radial-gradient(circle, var(--math-blue) 1px, transparent 2px);
-            background-size: 20px 20px;
-            animation: pulsePattern 8s ease-in-out infinite;
-        }
-
-        /* === ANIMASI GLOBAL === */
-        @keyframes movePattern {
-            0% { transform: translate(0,0); }
-            100% { transform: translate(50px,50px); }
-        }
-
-        @keyframes pulsePattern {
-            0% { opacity: 0.05; }
-            50% { opacity: 0.15; }
-            100% { opacity: 0.05; }
-        }
-
-        @keyframes fadeInSuper {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes shakeOnWrong {
-            0%,100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        @keyframes glowOnRight {
-            0% { box-shadow: 0 0 0 var(--border-hard) transparent; }
-            100% { box-shadow: 0 0 20px var(--border-hard) var(--math-blue); }
-        }
-
-        @keyframes revealAnswer {
-            0% { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); }
-            100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
-        }
-
-        /* === JUDUL & KATEGORI === */
-        .game-header {
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #444;
-            position: relative;
-            z-index: 1;
-        }
-
-        .title-main {
-            font-size: 2.5rem;
-            background: linear-gradient(90deg, var(--blood-red), var(--history-gold), var(--math-blue));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-align: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .category-tag {
-            display: inline-block;
-            padding: 0.5rem 1.5rem;
-            border-radius: 30px;
-            color: var(--text-light);
-            font-weight: bold;
-            margin: 0 auto;
-            display: block;
-            text-align: center;
-            width: fit-content;
-        }
-
-        .tag-murder { background: var(--blood-red); }
-        .tag-history { background: var(--history-gold); color: var(--text-dark); }
-        .tag-math { background: var(--math-blue); }
-
-        /* === AREA SOAL === */
-        .question-area {
-            margin: 1.5rem 0;
-            padding: 1.5rem;
-            background: rgba(40,40,40,0.8);
-            border-radius: 15px;
-            border-left: var(--border-hard);
-            position: relative;
-            z-index: 1;
-            animation: fadeInSuper 0.8s ease forwards;
-        }
-
-        .q-number {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #333;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-light);
-            font-weight: bold;
-            border: 2px solid #555;
-        }
-
-        .q-text {
-            color: var(--text-light);
-            font-size: 1.2rem;
-            line-height: 1.6;
-            margin-right: 30px;
-        }
-
-        .q-category {
-            font-size: 0.9rem;
-            color: #AAA;
-            margin-top: 0.5rem;
-        }
-
-        /* === AREA PILIHAN JAWABAN === */
-        .answers-area {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-            z-index: 1;
-            position: relative;
-        }
-
-        .answer-card {
-            background: #333;
-            border-radius: 10px;
-            padding: 1.2rem;
-            color: var(--text-light);
-            cursor: pointer;
-            border: 2px solid #555;
-            transition: var(--transition-super);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .answer-card:hover {
-            transform: translateY(-5px);
-            border-color: #777;
-        }
-
-        .answer-card.selected {
-            border-color: var(--math-blue);
-            background: #2A2A40;
-        }
-
-        .answer-card.correct {
-            border-color: #00CC66;
-            background: #2A402A;
-            animation: glowOnRight 1s ease infinite alternate;
-        }
-
-        .answer-card.wrong {
-            border-color: var(--blood-red);
-            background: #402A2A;
-            animation: shakeOnWrong 0.5s ease forwards;
-        }
-
-        .answer-text {
-            font-size: 1rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* === TOMBOL KONTROL === */
-        .controls-area {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 2px solid #444;
-            z-index: 1;
-            position: relative;
-        }
-
-        .btn {
-            padding: 0.8rem 2rem;
-            border-radius: 10px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition-super);
-            color: var(--text-light);
-        }
-
-        .btn-next {
-            background: var(--math-blue);
-        }
-
-        .btn-next:disabled {
-            background: #2D5588;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-check {
-            background: var(--history-gold);
-            color: var(--text-dark);
-        }
-
-        .btn-reset {
-            background: var(--blood-red);
-        }
-
-        .btn:hover:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        /* === AREA HASIL === */
-        .result-area {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-light);
-            z-index: 10;
-            animation: fadeInSuper 0.5s ease forwards;
-        }
-
-        .result-title {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .result-score {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            padding: 1rem 3rem;
-            background: #222;
-            border-radius: 15px;
-        }
-
-        .result-detail {
-            font-size: 1.1rem;
-            margin: 0.5rem 0;
-        }
-
-        /* === RESPONSIF 100% === */
-        @media (max-width: 600px) {
-            .answers-area {
-                grid-template-columns: 1fr;
-            }
-
-            .title-main {
-                font-size: 1.8rem;
-            }
-
-            .q-text {
-                font-size: 1rem;
-                margin-right: 0;
-            }
-
-            .controls-area {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .btn {
-                width: 100%;
-                text-align: center;
+    <title>QuizPro - Soal Negara untuk Anak SD</title>
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E40AF',
+                        secondary: '#3B82F6',
+                        accent: '#F59E0B',
+                        neutral: '#F3F4F6',
+                        dark: '#1F2937'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                }
             }
         }
-
-        /* === ANTI GAGAL - FITUR KEAMANAN === */
-        .no-select {
-            user-select: none;
-            -webkit-user-select: none;
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .fade-in {
+                animation: fadeIn 0.5s ease-in-out;
+            }
+            .slide-up {
+                animation: slideUp 0.6s ease-out;
+            }
+            .scale-hover {
+                transition: transform 0.2s;
+            }
+            .scale-hover:hover {
+                transform: scale(1.02);
+            }
         }
-
-        .emergency-reload {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--blood-red);
-            border: none;
-            color: white;
-            cursor: pointer;
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
     </style>
 </head>
-<body>
-    <div class="game-container">
-        <!-- EFEK BACKGROUND SESUAI KATEGORI -->
-        <div class="bg-effect blood-pattern" id="bg-pattern"></div>
+<body class="font-inter bg-neutral min-h-screen flex flex-col">
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 bg-primary flex flex-col items-center justify-center z-50">
+        <div class="text-white text-2xl font-bold mb-4">QuizPro</div>
+        <div class="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+    </div>
 
-        <!-- HEADER GAME -->
-        <div class="game-header">
-            <h1 class="title-main">TEBAK TEBAKAN MAXIMUM</h1>
-            <div class="category-tag tag-murder" id="current-category">KATEGORI: PEMBUNUHAN</div>
-        </div>
-
-        <!-- AREA SOAL -->
-        <div class="question-area" id="question-area">
-            <div class="q-number">1/15</div>
-            <div class="q-text" id="question-text">
-                Soal akan muncul di sini...
-                <div class="q-category" id="question-category">(Kategori)</div>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="hidden flex-1 flex flex-col items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-6 slide-up">
+            <div class="text-center mb-6">
+                <div class="text-primary text-4xl mb-2"><i class="fa fa-globe"></i></div>
+                <h1 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark">Quiz Negara</h1>
+                <p class="text-gray-600 mt-2">Untuk Sahabat Cilik SD!</p>
             </div>
-        </div>
-
-        <!-- AREA PILIHAN JAWABAN -->
-        <div class="answers-area" id="answers-area"></div>
-
-        <!-- AREA KONTROL -->
-        <div class="controls-area">
-            <button class="btn btn-reset" onclick="resetGame()">
-                <i class="fas fa-redo"></i> RESET
-            </button>
-            <button class="btn btn-check" onclick="checkAnswer()" id="check-btn">
-                <i class="fas fa-check"></i> CEK JAWABAN
-            </button>
-            <button class="btn btn-next" onclick="nextQuestion()" id="next-btn" disabled>
-                <i class="fas fa-arrow-right"></i> SOAL SELANJUTNYA
+            <div class="space-y-4 mb-6">
+                <p class="text-gray-700"><i class="fa fa-info-circle text-secondary mr-2"></i> Ada 15 soal tentang negara-negara di dunia</p>
+                <p class="text-gray-700"><i class="fa fa-clock-o text-secondary mr-2"></i> Waktu: 20 menit</p>
+                <p class="text-gray-700"><i class="fa fa-trophy text-secondary mr-2"></i> Dapatkan skor terbaikmu!</p>
+            </div>
+            <button id="start-quiz-btn" class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all scale-hover">
+                Mulai Quiz <i class="fa fa-play-circle ml-2"></i>
             </button>
         </div>
     </div>
 
-    <!-- TOMBOL DARURAT -->
-    <button class="emergency-reload" onclick="location.reload()">
-        <i class="fas fa-sync-alt"></i>
-    </button>
+    <!-- Quiz Screen -->
+    <div id="quiz-screen" class="hidden flex-1 flex flex-col p-4">
+        <!-- Header -->
+        <div class="bg-white rounded-lg shadow-md p-4 mb-4 fade-in">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-lg font-bold text-dark">Quiz Negara SD</h2>
+                    <p id="question-counter" class="text-gray-600">Soal 1 dari 15</p>
+                </div>
+                <div id="timer" class="bg-accent/10 text-accent font-bold px-4 py-2 rounded-full">
+                    20:00
+                </div>
+            </div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="bg-white rounded-lg shadow-md p-4 mb-4 flex-1 slide-up">
+            <div id="question-container" class="mb-6">
+                <h3 id="question-text" class="text-xl font-semibold text-dark"></h3>
+            </div>
+            <div id="options-container" class="space-y-3">
+                <!-- Options will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-between gap-2 mt-2">
+            <button id="prev-btn" class="hidden flex-1 bg-gray-200 hover:bg-gray-300 text-dark font-semibold py-3 px-4 rounded-lg transition-all scale-hover">
+                <i class="fa fa-arrow-left mr-2"></i> Sebelumnya
+            </button>
+            <button id="next-btn" class="flex-1 bg-secondary hover:bg-secondary/90 text-white font-semibold py-3 px-4 rounded-lg transition-all scale-hover">
+                Berikutnya <i class="fa fa-arrow-right ml-2"></i>
+            </button>
+            <button id="submit-btn" class="hidden flex-1 bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-4 rounded-lg transition-all scale-hover">
+                Selesai <i class="fa fa-check-circle ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="result-screen" class="hidden flex-1 flex flex-col items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-6 slide-up">
+            <div class="text-center mb-6">
+                <div class="text-primary text-4xl mb-2"><i class="fa fa-certificate"></i></div>
+                <h2 class="text-2xl font-bold text-dark">Hasil Quiz Kamu!</h2>
+                <p class="text-gray-600 mt-2">Bagus sekali, kamu sudah coba yang terbaik!</p>
+            </div>
+
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-gray-700">Skor Kamu</span>
+                    <span id="score-display" class="font-bold text-primary text-xl"></span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="score-bar" class="bg-primary h-2.5 rounded-full"></div>
+                </div>
+            </div>
+
+            <div class="mb-6 h-64">
+                <canvas id="result-chart"></canvas>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 mb-6 text-center">
+                <div class="bg-green-100 p-3 rounded-lg">
+                    <div id="correct-count" class="font-bold text-green-600 text-xl"></div>
+                    <div class="text-sm text-gray-600">Benar</div>
+                </div>
+                <div class="bg-red-100 p-3 rounded-lg">
+                    <div id="wrong-count" class="font-bold text-red-600 text-xl"></div>
+                    <div class="text-sm text-gray-600">Salah</div>
+                </div>
+                <div class="bg-yellow-100 p-3 rounded-lg">
+                    <div id="unanswered-count" class="font-bold text-yellow-600 text-xl"></div>
+                    <div class="text-sm text-gray-600">Tidak Jawab</div>
+                </div>
+            </div>
+
+            <button id="restart-quiz-btn" class="w-full bg-accent hover:bg-accent/90 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all scale-hover">
+                Ulangi Quiz <i class="fa fa-refresh ml-2"></i>
+            </button>
+        </div>
+    </div>
 
     <script>
-        // === DATA SOAL SUPER LENGKAP ===
-        const ALL_QUESTIONS = [
-            // === KATEGORI PEMBUNUHAN ===
+        // Quiz Data - Soal tentang Negara untuk Anak SD
+        const quizQuestions = [
             {
-                id: 1,
-                category: "pembunuhan",
-                question: "Pada kasus pembunuhan yang diselidiki tahun 1922 di Inggris, korban ditemukan dengan luka tusuk di dada. Bukti kunci yang mengarah pada pelaku adalah cap tangan di atas botol racun. Apa nama kasus tersebut?",
+                question: "Negara mana yang memiliki nama lain 'Tanah Air Matahari Terbit'?",
                 options: [
-                    "Kasus Pembunuhan Lord Lucan",
-                    "Kasus Pembunuhan Crippen",
-                    "Kasus Pembunuhan Edith Thompson & Frederick Bywaters",
-                    "Kasus Pembunuhan Dr. Palmer"
+                    "Jepang",
+                    "Korea Selatan",
+                    "Thailand",
+                    "Singapura"
                 ],
-                correct: 2,
-                fact: "Kasus ini menjadi salah satu pertama di Inggris yang menggunakan cap tangan sebagai bukti hukum."
+                correctAnswer: 0
             },
             {
-                id: 2,
-                category: "pembunuhan",
-                question: "Dalam investigasi pembunuhan, 'rigor mortis' adalah kekakuan otot setelah kematian. Berapa lama biasanya rigor mortis mulai muncul setelah kematian?",
+                question: "Ibu kota Indonesia adalah...",
                 options: [
-                    "1-2 jam setelah kematian",
-                    "6-12 jam setelah kematian",
-                    "15-20 jam setelah kematian",
-                    "Setelah 24 jam"
+                    "Surabaya",
+                    "Jakarta",
+                    "Bandung",
+                    "Medan"
                 ],
-                correct: 0,
-                fact: "Rigor mortis mulai muncul 1-2 jam pasca kematian dan mencapai puncaknya pada 12 jam."
+                correctAnswer: 1
             },
             {
-                id: 3,
-                category: "pembunuhan",
-                question: "Kriminal terkenal Jack the Ripper menyerang korban di wilayah mana di London?",
+                question: "Negara mana yang memiliki bendera dengan warna merah dan putih?",
                 options: [
-                    "Westminster",
-                    "Whitechapel",
-                    "Camden Town",
-                    "Chelsea"
+                    "Malaysia",
+                    "Filipina",
+                    "Indonesia",
+                    "Vietnam"
                 ],
-                correct: 1,
-                fact: "Jack the Ripper menyerang setidaknya 5 korban di kawasan Whitechapel pada tahun 1888."
-            },
-
-            // === KATEGORI SEJARAH ===
-            {
-                id: 4,
-                category: "sejarah",
-                question: "Pada tahun berapa Pertempuran Surabaya terjadi?",
-                options: [
-                    "1945",
-                    "1947",
-                    "1949",
-                    "1950"
-                ],
-                correct: 0,
-                fact: "Pertempuran Surabaya berlangsung pada 10 November 1945 dan menjadi simbol perlawanan rakyat Indonesia terhadap penjajah."
+                correctAnswer: 2
             },
             {
-                id: 5,
-                category: "sejarah",
-                question: "Siapakah tokoh sejarah yang dikenal sebagai 'Bapak Revolusi Prancis'?",
+                question: "Ibu kota Jepang adalah...",
                 options: [
-                    "Napoleon Bonaparte",
-                    "Maximilien Robespierre",
-                    "Louis XVI",
-                    "Voltaire"
+                    "Osaka",
+                    "Tokyo",
+                    "Kyoto",
+                    "Nagoya"
                 ],
-                correct: 1,
-                fact: "Robespierre memimpin fase paling radikal dari Revolusi Prancis yang dikenal sebagai 'Musim Gugur'."
+                correctAnswer: 1
             },
             {
-                id: 6,
-                category: "sejarah",
-                question: "Pada tahun berapa Perang Dunia II berakhir di kawasan Pasifik?",
+                question: "Negara mana yang terletak di benua Afrika dan terkenal dengan piramidnya?",
                 options: [
-                    "1944",
-                    "1945",
-                    "1946",
-                    "1947"
+                    "Mesir",
+                    "Kenia",
+                    "Afrika Selatan",
+                    "Maroko"
                 ],
-                correct: 1,
-                fact: "Perang Dunia II berakhir di Pasifik setelah Jepang menyerah tanpa syarat pada 15 Agustus 1945."
-            },
-
-            // === KATEGORI MATEMATIKA ===
-            {
-                id: 7,
-                category: "matematika",
-                question: "Jika sebuah lingkaran memiliki diameter 14 cm, berapakah luasnya? (gunakan π = 22/7)",
-                options: [
-                    "154 cm²",
-                    "210 cm²",
-                    "308 cm²",
-                    "462 cm²"
-                ],
-                correct: 0,
-                fact: "Luas lingkaran = πr², jari-jari = 7 cm, jadi luas = (22/7) × 7 × 7 = 154 cm²."
+                correctAnswer: 0
             },
             {
-                id: 8,
-                category: "matematika",
-                question: "Berapakah hasil dari 5! (faktorial lima)?",
+                question: "Bendera Amerika Serikat memiliki warna merah, putih, dan...",
                 options: [
-                    "20",
-                    "60",
-                    "120",
-                    "240"
+                    "Hijau",
+                    "Biru",
+                    "Kuning",
+                    "Ungu"
                 ],
-                correct: 2,
-                fact: "5! = 5 × 4 × 3 × 2 × 1 = 120."
+                correctAnswer: 1
             },
             {
-                id: 9,
-                category: "matematika",
-                question: "Jika x + 3 = 7 dan y = 2x, berapakah nilai dari x + y?",
+                question: "Ibu kota Inggris adalah...",
                 options: [
-                    "11",
-                    "13",
-                    "15",
-                    "17"
+                    "Manchester",
+                    "Liverpool",
+                    "London",
+                    "Edinburgh"
                 ],
-                correct: 1,
-                fact: "x = 7 - 3 = 4, y = 2×4 = 8, jadi x + y = 4 + 8 = 12? TIDAK, perhitungan benar adalah 4+8=12 tapi opsi yang paling dekat adalah 13? BUKAN, kesalahan input: opsi seharusnya ada 12. Namun sesuai data, jawaban yang ditetapkan adalah 1 (nilai 13)."
+                correctAnswer: 2
             },
             {
-                id: 10,
-                category: "matematika",
-                question: "Berapakah jumlah deret aritmatika 1 + 2 + 3 + ... + 100?",
+                question: "Negara mana yang dikenal sebagai 'Tanah Kanguru'?",
                 options: [
-                    "4950",
-                    "5050",
-                    "5150",
-                    "5250"
+                    "Selandia Baru",
+                    "Australia",
+                    "Kanada",
+                    "India"
                 ],
-                correct: 1,
-                fact: "Rumus jumlah deret aritmatika: n(n+1)/2 = 100×101/2 = 5050."
-            },
-
-            // === SOAL TAMBAHAN ANTI GAGAL ===
-            {
-                id: 11,
-                category: "pembunuhan",
-                question: "Dalam forensik, 'algor mortis' mengacu pada apa?",
-                options: [
-                    "Perubahan warna tubuh setelah kematian",
-                    "Penurunan suhu tubuh setelah kematian",
-                    "Pembusukan jaringan tubuh",
-                    "Kekakuan otot setelah kematian"
-                ],
-                correct: 1,
-                fact: "Algor mortis membantu menentukan waktu kematian korban."
+                correctAnswer: 1
             },
             {
-                id: 12,
-                category: "sejarah",
-                question: "Siapakah presiden Amerika Serikat pertama yang dibunuh?",
+                question: "Ibu kota Prancis adalah...",
                 options: [
-                    "Abraham Lincoln",
-                    "John F. Kennedy",
-                    "James A. Garfield",
-                    "William McKinley"
+                    "Paris",
+                    "Lyon",
+                    "Marseille",
+                    "Nice"
                 ],
-                correct: 0,
-                fact: "Abraham Lincoln dibunuh pada 14 April 1865 di teater Ford."
+                correctAnswer: 0
             },
             {
-                id: 13,
-                category: "matematika",
-                question: "Berapakah nilai dari √(144) + ∛(27)?",
+                question: "Negara mana yang memiliki dinding besar yang disebut 'Tembok Besar'?",
                 options: [
-                    "12",
-                    "15",
-                    "18",
-                    "21"
+                    "Korea Utara",
+                    "India",
+                    "Cina",
+                    "Turki"
                 ],
-                correct: 1,
-                fact: "√144 = 12 dan ∛27 = 3, jadi jumlahnya adalah 15."
+                correctAnswer: 2
             },
             {
-                id: 14,
-                category: "pembunuhan",
-                question: "Apa nama metode investigasi yang digunakan untuk mengumpulkan semua informasi tentang kasus pembunuhan dan menyusunnya secara sistematis?",
+                question: "Ibu kota Brasil adalah...",
                 options: [
-                    "Profiling Kriminal",
-                    "Metode Holmes",
-                    "Siklus Investigasi Forensik",
-                    "Analisis Kasus Terpadu"
+                    "Rio de Janeiro",
+                    "Sao Paulo",
+                    "Brasilia",
+                    "Salvador"
                 ],
-                correct: 2,
-                fact: "Metode ini membantu penyidik tidak melewatkan detail penting dalam kasus pembunuhan."
+                correctAnswer: 2
             },
             {
-                id: 15,
-                category: "sejarah",
-                question: "Pada tahun berapa Proklamasi Kemerdekaan Indonesia dibacakan?",
+                question: "Negara mana yang terletak di antara dua benua, Asia dan Eropa?",
                 options: [
-                    "17 Agustus 1945",
-                    "10 November 1945",
-                    "27 Desember 1949",
-                    "1 Agustus 1945"
+                    "Jerman",
+                    "Turki",
+                    "Italia",
+                    "Spanyol"
                 ],
-                correct: 0,
-                fact: "Proklamasi Kemerdekaan Indonesia dibacakan oleh Ir. Soekarno dan Drs. Mohammad Hatta pada tanggal 17 Agustus 1945."
+                correctAnswer: 1
+            },
+            {
+                question: "Ibu kota India adalah...",
+                options: [
+                    "Mumbai",
+                    "Delhi",
+                    "Kolkata",
+                    "Chennai"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Negara mana yang dikenal dengan makanan pasta dan pizza-nya?",
+                options: [
+                    "Prancis",
+                    "Jerman",
+                    "Italia",
+                    "Belanda"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "Ibu kota Korea Selatan adalah...",
+                options: [
+                    "Seoul",
+                    "Busan",
+                    "Incheon",
+                    "Daegu"
+                ],
+                correctAnswer: 0
             }
         ];
 
-        // === VARIABEL GLOBAL ANTI GAGAL ===
+        // Global Variables
         let currentQuestionIndex = 0;
+        let userAnswers = new Array(quizQuestions.length).fill(null);
+        let timeLeft = 20 * 60; // 20 menit dalam detik
+        let timerInterval;
         let score = 0;
-        let selectedAnswer = null;
-        let gameState = {
-            isAnswered: false,
-            isGameOver: false,
-            loaded: false
-        };
 
-        // === ELEMEN DOM ===
-        const bgPattern = document.getElementById('bg-pattern');
-        const currentCategoryTag = document.getElementById('current-category');
-        const questionArea = document.getElementById('question-area');
-        const questionText = document.getElementById('question-text');
-        const questionCategory = document.getElementById('question-category');
-        const answersArea = document.getElementById('answers-area');
-        const checkBtn = document.getElementById('check-btn');
+        // DOM Elements
+        const loadingScreen = document.getElementById('loading-screen');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const startQuizBtn = document.getElementById('start-quiz-btn');
+        const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const questionCounter = document.getElementById('question-counter');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const timer = document.getElementById('timer');
+        const scoreDisplay = document.getElementById('score-display');
+        const scoreBar = document.getElementById('score-bar');
+        const correctCount = document.getElementById('correct-count');
+        const wrongCount = document.getElementById('wrong-count');
+        const unansweredCount = document.getElementById('unanswered-count');
+        const resultChart = document.getElementById('result-chart');
+        const restartQuizBtn = document.getElementById('restart-quiz-btn');
 
-        // === FUNGSI INISIALISASI ANTI GAGAL ===
-        function initGame() {
-            try {
-                // Reset semua state
-                currentQuestionIndex = 0;
-                score = 0;
-                gameState = {
-                    isAnswered: false,
-                    isGameOver: false,
-                    loaded: true
-                };
-                
-                // Tampilkan soal pertama
-                loadQuestion();
-            } catch (error) {
-                // JIKA ADA ERROR, OTOMATIS RESET
-                console.error("Error saat inisialisasi:", error);
-                location.reload();
-            }
-        }
-
-        // === FUNGSI MUAT SOAL ANTI GAGAL ===
-        function loadQuestion() {
-            try {
-                const question = ALL_QUESTIONS[currentQuestionIndex];
-                
-                // Update kategori dan background
-                updateCategoryUI(question.category);
-                
-                // Update nomor soal
-                questionArea.querySelector('.q-number').textContent = `${currentQuestionIndex + 1}/15`;
-                
-                // Update teks soal
-                questionText.innerHTML = `${question.question}<div class="q-category" id="question-category">(${question.category.toUpperCase()})</div>`;
-                
-                // Kosongkan area jawaban
-                answersArea.innerHTML = '';
-                
-                // Tampilkan pilihan jawaban
-                question.options.forEach((option, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'answer-card no-select';
-                    card.innerHTML = `<div class="answer-text">${option}</div>`;
-                    card.dataset.index = index;
-                    
-                    // Event klik jawaban
-                    card.addEventListener('click', () => selectAnswer(card, index));
-                    
-                    answersArea.appendChild(card);
-                });
-                
-                // Reset tombol
-                checkBtn.disabled = false;
-                nextBtn.disabled = true;
-                gameState.isAnswered = false;
-                selectedAnswer = null;
-            } catch (error) {
-                console.error("Error saat memuat soal:", error);
-                // Tampilkan soal cadangan jika ada masalah
-                showEmergencyQuestion();
-            }
-        }
-
-        // === FUNGSI PILIH JAWABAN ===
-        function selectAnswer(card, index) {
-            if (gameState.isAnswered) return;
-            
-            // Hapus pilihan sebelumnya
-            document.querySelectorAll('.answer-card').forEach(c => c.classList.remove('selected'));
-            
-            // Tambahkan kelas terpilih
-            card.classList.add('selected');
-            selectedAnswer = index;
-        }
-
-        // === FUNGSI CEK JAWABAN ===
-        function checkAnswer() {
-            if (selectedAnswer === null) {
-                alert("Pilih jawaban terlebih dahulu!");
-                return;
-            }
-            
-            if (gameState.isAnswered) return;
-            
-            const question = ALL_QUESTIONS[currentQuestionIndex];
-            const answerCards = document.querySelectorAll('.answer-card');
-            
-            // Tandai jawaban benar dan salah
-            answerCards.forEach((card, index) => {
-                if (index === question.correct) {
-                    card.classList.add('correct');
-                } else if (index === selectedAnswer && index !== question.correct) {
-                    card.classList.add('wrong');
-                }
-                card.style.pointerEvents = 'none';
-            });
-            
-            // Tambah skor jika jawaban benar
-            if (selectedAnswer === question.correct) {
-                score += 10;
-                alert(`BENAR! ✨\n${question.fact}`);
-            } else {
-                alert(`SALAH! ❌\nJawaban benar: ${question.options[question.correct]}\n${question.fact}`);
-            }
-            
-            // Update state
-            gameState.isAnswered = true;
-            checkBtn.disabled = true;
-            nextBtn.disabled = false;
-            
-            // Cek apakah game selesai
-            if (currentQuestionIndex === 14) {
-                nextBtn.textContent = "LIHAT HASIL AKHIR";
-            }
-        }
-
-        // === FUNGSI SOAL SELANJUTNYA ===
-        function nextQuestion() {
-            if (currentQuestionIndex < 14) {
-                currentQuestionIndex++;
-                loadQuestion();
-            } else {
-                showFinalResult();
-            }
-        }
-
-        // === FUNGSI UPDATE UI KATEGORI ===
-        function updateCategoryUI(category) {
-            // Update tag kategori
-            currentCategoryTag.textContent = `KATEGORI: ${category.toUpperCase()}`;
-            currentCategoryTag.className = `category-tag tag-${category}`;
-            
-            // Update background pattern
-            bgPattern.className = `bg-effect ${category}-pattern`;
-        }
-
-        // === FUNGSI RESET GAME ===
-        function resetGame() {
-            if (confirm("Yakin ingin mereset permainan dari awal?")) {
-                initGame();
-            }
-        }
-
-        // === FUNGSI TAMPILKAN HASIL AKHIR ===
-        function showFinalResult() {
-            const resultHTML = `
-                <div class="result-area">
-                    <h2 class="result-title">GAME SELESAI!</h2>
-                    <div class="result-score">Skor Kamu: ${score}/150</div>
-                    <div class="result-detail">Jumlah Soal Benar: ${score / 10}</div>
-                    <div class="result-detail">Jumlah Soal Salah: ${15 - (score / 10)}</div>
-                    <div class="result-detail">Nilai: ${Math.round((score / 150) * 100)}%</div>
-                    <button class="btn btn-reset" style="margin-top: 2rem;" onclick="initGame()">
-                        MAIN LAGI
-                    </button>
-                </div>
-            `;
-            
-            // Tambahkan hasil ke container
-            document.querySelector('.game-container').insertAdjacentHTML('beforeend', resultHTML);
-            gameState.isGameOver = true;
-        }
-
-        // === FUNGSI DARURAT - SOAL CADANGAN ===
-        function showEmergencyQuestion() {
-            questionText.innerHTML = "SOAL CADANGAN: Siapakah penemu angka nol?<div class='q-category'>(MATEMATIKA)</div>";
-            answersArea.innerHTML = `
-                <div class="answer-card no-select" data-index="0"><div class="answer-text">Aryabhata</div></div>
-                <div class="answer-card no-select" data-index="1"><div class="answer-text">Isaac Newton</div></div>
-                <div class="answer-card no-select" data-index="2"><div class="answer-text">Albert Einstein</div></div>
-                <div class="answer-card no-select" data-index="3"><div class="answer-text">Galileo Galilei</div></div>
-            `;
-            
-            // Tambahkan event klik
-            document.querySelectorAll('.answer-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    document.querySelectorAll('.answer-card').forEach(c => c.classList.remove('selected'));
-                    card.classList.add('selected');
-                    selectedAnswer = parseInt(card.dataset.index);
-                });
-            });
-            
-            updateCategoryUI('matematika');
-        }
-
-        // === SISTEM ANTI GAGAL - PERIKSA KONEKSI ===
-        function checkConnection() {
-            if (!navigator.onLine) {
-                alert("PERINGATAN: Koneksi internet terputus! Namun permainan tetap bisa berjalan.");
-            }
-        }
-
-        // === SISTEM ANTI GAGAL - HENTIKAN ERROR MEMBUNUH ===
-        window.addEventListener('error', (e) => {
-            console.error("Terjadi kesalahan:", e.error);
-            e.preventDefault();
-            alert("Ada masalah kecil, tapi permainan akan tetap berjalan!");
-            if (!gameState.loaded) initGame();
+        // Initialize App
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                loadingScreen.classList.add('fade-out');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    welcomeScreen.classList.remove('hidden');
+                }, 500);
+            }, 1500);
         });
 
-        // === JALANKAN PERMAINAN ===
-        window.addEventListener('load', () => {
-            checkConnection();
-            initGame();
+        // Start Quiz
+        startQuizBtn.addEventListener('click', startQuiz);
+        function startQuiz() {
+            welcomeScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            loadQuestion();
+            startTimer();
+        }
+
+        // Load Question
+        function loadQuestion() {
+            const currentQuestion = quizQuestions[currentQuestionIndex];
+            questionCounter.textContent = `Soal ${currentQuestionIndex + 1} dari ${quizQuestions.length}`;
+            questionText.textContent = currentQuestion.question;
+            optionsContainer.innerHTML = '';
+
+            currentQuestion.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = `p-3 border rounded-lg cursor-pointer transition-all ${userAnswers[currentQuestionIndex] === index ? 'bg-primary/10 border-primary' : 'hover:bg-gray-50'}`;
+                optionElement.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-6 h-6 flex items-center justify-center border rounded-full mr-3 ${userAnswers[currentQuestionIndex] === index ? 'bg-primary text-white' : ''}">
+                            ${index + 1}
+                        </div>
+                        <span>${option}</span>
+                    </div>
+                `;
+                optionElement.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(optionElement);
+            });
+
+            updateNavigationButtons();
+        }
+
+        // Select Option
+        function selectOption(index) {
+            userAnswers[currentQuestionIndex] = index;
+            loadQuestion();
+        }
+
+        // Update Navigation Buttons
+        function updateNavigationButtons() {
+            prevBtn.classList.toggle('hidden', currentQuestionIndex === 0);
             
-            // Cek setiap 5 detik untuk memastikan game berjalan normal
-            setInterval(() => {
-                if (!gameState.isGameOver && !gameState.loaded) {
-                    initGame();
+            if (currentQuestionIndex === quizQuestions.length - 1) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+        }
+
+        // Navigation Buttons Event Listeners
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestionIndex < quizQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            }
+        });
+
+        submitBtn.addEventListener('click', submitQuiz);
+
+        // Timer Function
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
                 }
-            }, 5000);
+
+                // Change timer color when running low
+                if (timeLeft <= 300) timer.classList.add('text-red-600', 'bg-red-100');
+                else if (timeLeft <= 600) timer.classList.add('text-yellow-600', 'bg-yellow-100');
+            }, 1000);
+        }
+
+        // Submit Quiz
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            calculateScore();
+            showResults();
+        }
+
+        // Calculate Score
+        function calculateScore() {
+            score = 0;
+            quizQuestions.forEach((question, index) => {
+                if (userAnswers[index] === question.correctAnswer) {
+                    score++;
+                }
+            });
+        }
+
+        // Show Results
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            // Calculate stats
+            const correct = score;
+            const wrong = userAnswers.filter(ans => ans !== null && quizQuestions[userAnswers.indexOf(ans)].correctAnswer !== ans).length;
+            const unanswered = userAnswers.filter(ans => ans === null).length;
+            const percentage = (correct / quizQuestions.length) * 100;
+
+            // Update display elements
+            scoreDisplay.textContent = `${correct} / ${quizQuestions.length}`;
+            scoreBar.style.width = `${percentage}%`;
+            correctCount.textContent = correct;
+            wrongCount.textContent = wrong;
+            unansweredCount.textContent = unanswered;
+
+            // Create chart
+            new Chart(resultChart, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Benar', 'Salah', 'Tidak Jawab'],
+                    datasets: [{
+                        data: [correct, wrong, unanswered],
+                        backgroundColor: ['#10B981', '#EF4444', '#F59E0B'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Save to localStorage
+            localStorage.setItem('lastQuizResult', JSON.stringify({
+                score: correct,
+                total: quizQuestions.length,
+                date: new Date().toLocaleString('id-ID')
+            }));
+        }
+
+        // Restart Quiz
+        restartQuizBtn.addEventListener('click', () => {
+            currentQuestionIndex = 0;
+            userAnswers = new Array(quizQuestions.length).fill(null);
+            timeLeft = 20 * 60;
+            score = 0;
+            
+            resultScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            loadQuestion();
+            startTimer();
         });
     </script>
 </body>
 </html>
-
