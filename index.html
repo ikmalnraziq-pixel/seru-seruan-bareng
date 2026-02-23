@@ -3,532 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuizPro - Soal Negara untuk Anak SD</title>
-    <!-- External Libraries -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind Config -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1E40AF',
-                        secondary: '#3B82F6',
-                        accent: '#F59E0B',
-                        neutral: '#F3F4F6',
-                        dark: '#1F2937'
-                    },
-                    fontFamily: {
-                        inter: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-    
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .content-auto {
-                content-visibility: auto;
-            }
-            .fade-in {
-                animation: fadeIn 0.5s ease-in-out;
-            }
-            .slide-up {
-                animation: slideUp 0.6s ease-out;
-            }
-            .scale-hover {
-                transition: transform 0.2s;
-            }
-            .scale-hover:hover {
-                transform: scale(1.02);
-            }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+    <title>Ruto AI - Percakapan Lebih Lancar</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Roboto,sans-serif}
+        body{background:#f5f7fa;min-height:100vh;padding:10px;display:flex;justify-content:center;align-items:center}
+        .ruto-wrap{width:100%;max-width:680px;height:95vh;background:#fff;border-radius:20px;box-shadow:0 8px 30px rgba(0,0,0,0.12);display:flex;flex-direction:column;overflow:hidden}
+        /* Header */
+        .ruto-header{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:18px 24px;display:flex;align-items:center;justify-content:space-between}
+        .header-left{display:flex;align-items:center;gap:12px}
+        .avatar{width:40px;height:40px;background:#fff;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:20px;font-weight:bold;color:#4f46e5}
+        .header-right{display:flex;gap:10px}
+        .ctrl-btn{width:32px;height:32px;background:rgba(255,255,255,0.2);border:none;border-radius:50%;display:flex;justify-content:center;align-items:center;cursor:pointer;transition:all 0.2s}
+        .ctrl-btn:hover{background:rgba(255,255,255,0.3)}
+        /* Chat Area */
+        .ruto-chat{flex:1;padding:24px;overflow-y:auto;display:flex;flex-direction:column;gap:18px;scroll-behavior:smooth}
+        /* Pesan Style */
+        .msg{max-width:78%;padding:14px 18px;border-radius:16px;line-height:1.5;font-size:14px;animation:fadeIn 0.3s ease forwards}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+        .msg-user{background:#4f46e5;color:#fff;align-self:flex-end}
+        .msg-bot{background:#f1f5f9;color:#1e293b;align-self:flex-start}
+        .msg-time{font-size:10px;opacity:0.7;margin-top:4px;text-align:right}
+        .msg-bot .msg-time{text-align:left}
+        /* Indikator Ketik */
+        .typing{display:none;align-items:center;gap:4px;background:#f1f5f9;padding:12px 18px;border-radius:16px;align-self:flex-start}
+        .dot{width:8px;height:8px;background:#94a3b8;border-radius:50%;animation:bounce 1.4s infinite ease-in-out both}
+        .dot:nth-child(2){animation-delay:-0.3s}
+        .dot:nth-child(3){animation-delay:-0.6s}
+        @keyframes bounce{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
+        /* Pembagi Waktu */
+        .time-divider{align-self:center;font-size:11px;color:#64748b;padding:8px 12px;background:rgba(100,116,139,0.1);border-radius:8px;margin:10px 0}
+        /* Info Card */
+        .info-card{max-width:78%;padding:14px 18px;border-radius:16px;background:#e6e9ff;color:#4f46e5;align-self:flex-start}
+        /* Input Area */
+        .ruto-input{padding:20px 24px;border-top:1px solid #e2e8f0;display:flex;gap:12px}
+        #msg-input{flex:1;padding:14px 18px;border:1px solid #e2e8f0;border-radius:24px;outline:none;font-size:14px}
+        #msg-input:focus{border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,0.1)}
+        #send-btn{width:44px;height:44px;background:#4f46e5;color:#fff;border:none;border-radius:50%;display:flex;justify-content:center;align-items:center;cursor:pointer}
+        /* Mode Gelap */
+        .dark{background:#1a1a2e}
+        .dark .ruto-wrap{background:#16213e}
+        .dark .ruto-header{background:linear-gradient(135deg,#252941,#1b263b)}
+        .dark .msg-bot{background:#0f3460;color:#fff}
+        .dark .msg-user{background:#e94560;color:#fff}
+        .dark .typing{background:#0f3460}
+        .dark .dot{background:#e94560}
+        .dark .time-divider{background:rgba(165,180,252,0.1);color:#a5b4fc}
+        .dark .info-card{background:rgba(233,69,96,0.2);color:#fff}
+        .dark #msg-input{background:#0f3460;border-color:#1a1a2e;color:#fff}
+        .dark #msg-input::placeholder{color:rgba(255,255,255,0.6)}
     </style>
 </head>
-<body class="font-inter bg-neutral min-h-screen flex flex-col">
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="fixed inset-0 bg-primary flex flex-col items-center justify-center z-50">
-        <div class="text-white text-2xl font-bold mb-4">QuizPro</div>
-        <div class="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-    </div>
-
-    <!-- Welcome Screen -->
-    <div id="welcome-screen" class="hidden flex-1 flex flex-col items-center justify-center p-4">
-        <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-6 slide-up">
-            <div class="text-center mb-6">
-                <div class="text-primary text-4xl mb-2"><i class="fa fa-globe"></i></div>
-                <h1 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark">Quiz Negara</h1>
-                <p class="text-gray-600 mt-2">Untuk Sahabat Cilik SD!</p>
+<body>
+    <div class="ruto-wrap">
+        <div class="ruto-header">
+            <div class="header-left">
+                <div class="avatar">R</div>
+                <div style="font-size:18px;font-weight:bold">Ruto AI</div>
             </div>
-            <div class="space-y-4 mb-6">
-                <p class="text-gray-700"><i class="fa fa-info-circle text-secondary mr-2"></i> Ada 15 soal tentang negara-negara di dunia</p>
-                <p class="text-gray-700"><i class="fa fa-clock-o text-secondary mr-2"></i> Waktu: 20 menit</p>
-                <p class="text-gray-700"><i class="fa fa-trophy text-secondary mr-2"></i> Dapatkan skor terbaikmu!</p>
-            </div>
-            <button id="start-quiz-btn" class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all scale-hover">
-                Mulai Quiz <i class="fa fa-play-circle ml-2"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Quiz Screen -->
-    <div id="quiz-screen" class="hidden flex-1 flex flex-col p-4">
-        <!-- Header -->
-        <div class="bg-white rounded-lg shadow-md p-4 mb-4 fade-in">
-            <div class="flex justify-between items-center">
-                <div>
-                    <h2 class="text-lg font-bold text-dark">Quiz Negara SD</h2>
-                    <p id="question-counter" class="text-gray-600">Soal 1 dari 15</p>
-                </div>
-                <div id="timer" class="bg-accent/10 text-accent font-bold px-4 py-2 rounded-full">
-                    20:00
-                </div>
+            <div class="header-right">
+                <button class="ctrl-btn" id="theme-btn">🌙</button>
+                <button class="ctrl-btn" id="clear-btn">🗑️</button>
+                <button class="ctrl-btn" id="help-btn">❓</button>
             </div>
         </div>
 
-        <!-- Question Card -->
-        <div class="bg-white rounded-lg shadow-md p-4 mb-4 flex-1 slide-up">
-            <div id="question-container" class="mb-6">
-                <h3 id="question-text" class="text-xl font-semibold text-dark"></h3>
-            </div>
-            <div id="options-container" class="space-y-3">
-                <!-- Options will be loaded here -->
-            </div>
+        <div class="ruto-chat" id="chat-area">
+            <div class="msg msg-bot">Halo! Aku Ruto AI nih, siap buat ngobrol atau bantu jawab pertanyaan kamu – mulai dari matematika, sejarah, atau cuma ngobrol santai aja bisa lho! 😊</div>
+            <div class="typing" id="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
         </div>
 
-        <!-- Navigation Buttons -->
-        <div class="flex justify-between gap-2 mt-2">
-            <button id="prev-btn" class="hidden flex-1 bg-gray-200 hover:bg-gray-300 text-dark font-semibold py-3 px-4 rounded-lg transition-all scale-hover">
-                <i class="fa fa-arrow-left mr-2"></i> Sebelumnya
-            </button>
-            <button id="next-btn" class="flex-1 bg-secondary hover:bg-secondary/90 text-white font-semibold py-3 px-4 rounded-lg transition-all scale-hover">
-                Berikutnya <i class="fa fa-arrow-right ml-2"></i>
-            </button>
-            <button id="submit-btn" class="hidden flex-1 bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-4 rounded-lg transition-all scale-hover">
-                Selesai <i class="fa fa-check-circle ml-2"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Result Screen -->
-    <div id="result-screen" class="hidden flex-1 flex flex-col items-center justify-center p-4">
-        <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-6 slide-up">
-            <div class="text-center mb-6">
-                <div class="text-primary text-4xl mb-2"><i class="fa fa-certificate"></i></div>
-                <h2 class="text-2xl font-bold text-dark">Hasil Quiz Kamu!</h2>
-                <p class="text-gray-600 mt-2">Bagus sekali, kamu sudah coba yang terbaik!</p>
-            </div>
-
-            <div class="mb-6">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-gray-700">Skor Kamu</span>
-                    <span id="score-display" class="font-bold text-primary text-xl"></span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                    <div id="score-bar" class="bg-primary h-2.5 rounded-full"></div>
-                </div>
-            </div>
-
-            <div class="mb-6 h-64">
-                <canvas id="result-chart"></canvas>
-            </div>
-
-            <div class="grid grid-cols-3 gap-2 mb-6 text-center">
-                <div class="bg-green-100 p-3 rounded-lg">
-                    <div id="correct-count" class="font-bold text-green-600 text-xl"></div>
-                    <div class="text-sm text-gray-600">Benar</div>
-                </div>
-                <div class="bg-red-100 p-3 rounded-lg">
-                    <div id="wrong-count" class="font-bold text-red-600 text-xl"></div>
-                    <div class="text-sm text-gray-600">Salah</div>
-                </div>
-                <div class="bg-yellow-100 p-3 rounded-lg">
-                    <div id="unanswered-count" class="font-bold text-yellow-600 text-xl"></div>
-                    <div class="text-sm text-gray-600">Tidak Jawab</div>
-                </div>
-            </div>
-
-            <button id="restart-quiz-btn" class="w-full bg-accent hover:bg-accent/90 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all scale-hover">
-                Ulangi Quiz <i class="fa fa-refresh ml-2"></i>
-            </button>
+        <div class="ruto-input">
+            <input type="text" id="msg-input" placeholder="Ketik pesanmu... Mau ngobrol apa hari ini?">
+            <button id="send-btn">→</button>
         </div>
     </div>
 
     <script>
-        // Quiz Data - Soal tentang Negara untuk Anak SD
-        const quizQuestions = [
-            {
-                question: "Negara mana yang memiliki nama lain 'Tanah Air Matahari Terbit'?",
-                options: [
-                    "Jepang",
-                    "Korea Selatan",
-                    "Thailand",
-                    "Singapura"
-                ],
-                correctAnswer: 0
-            },
-            {
-                question: "Ibu kota Indonesia adalah...",
-                options: [
-                    "Surabaya",
-                    "Jakarta",
-                    "Bandung",
-                    "Medan"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Negara mana yang memiliki bendera dengan warna merah dan putih?",
-                options: [
-                    "Malaysia",
-                    "Filipina",
-                    "Indonesia",
-                    "Vietnam"
-                ],
-                correctAnswer: 2
-            },
-            {
-                question: "Ibu kota Jepang adalah...",
-                options: [
-                    "Osaka",
-                    "Tokyo",
-                    "Kyoto",
-                    "Nagoya"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Negara mana yang terletak di benua Afrika dan terkenal dengan piramidnya?",
-                options: [
-                    "Mesir",
-                    "Kenia",
-                    "Afrika Selatan",
-                    "Maroko"
-                ],
-                correctAnswer: 0
-            },
-            {
-                question: "Bendera Amerika Serikat memiliki warna merah, putih, dan...",
-                options: [
-                    "Hijau",
-                    "Biru",
-                    "Kuning",
-                    "Ungu"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Ibu kota Inggris adalah...",
-                options: [
-                    "Manchester",
-                    "Liverpool",
-                    "London",
-                    "Edinburgh"
-                ],
-                correctAnswer: 2
-            },
-            {
-                question: "Negara mana yang dikenal sebagai 'Tanah Kanguru'?",
-                options: [
-                    "Selandia Baru",
-                    "Australia",
-                    "Kanada",
-                    "India"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Ibu kota Prancis adalah...",
-                options: [
-                    "Paris",
-                    "Lyon",
-                    "Marseille",
-                    "Nice"
-                ],
-                correctAnswer: 0
-            },
-            {
-                question: "Negara mana yang memiliki dinding besar yang disebut 'Tembok Besar'?",
-                options: [
-                    "Korea Utara",
-                    "India",
-                    "Cina",
-                    "Turki"
-                ],
-                correctAnswer: 2
-            },
-            {
-                question: "Ibu kota Brasil adalah...",
-                options: [
-                    "Rio de Janeiro",
-                    "Sao Paulo",
-                    "Brasilia",
-                    "Salvador"
-                ],
-                correctAnswer: 2
-            },
-            {
-                question: "Negara mana yang terletak di antara dua benua, Asia dan Eropa?",
-                options: [
-                    "Jerman",
-                    "Turki",
-                    "Italia",
-                    "Spanyol"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Ibu kota India adalah...",
-                options: [
-                    "Mumbai",
-                    "Delhi",
-                    "Kolkata",
-                    "Chennai"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Negara mana yang dikenal dengan makanan pasta dan pizza-nya?",
-                options: [
-                    "Prancis",
-                    "Jerman",
-                    "Italia",
-                    "Belanda"
-                ],
-                correctAnswer: 2
-            },
-            {
-                question: "Ibu kota Korea Selatan adalah...",
-                options: [
-                    "Seoul",
-                    "Busan",
-                    "Incheon",
-                    "Daegu"
-                ],
-                correctAnswer: 0
-            }
-        ];
+        const c=document.getElementById('chat-area'),i=document.getElementById('msg-input'),s=document.getElementById('send-btn'),
+        t=document.getElementById('theme-btn'),cl=document.getElementById('clear-btn'),hp=document.getElementById('help-btn'),
+        ty=document.getElementById('typing-indicator');
+        let d=false;
 
-        // Global Variables
-        let currentQuestionIndex = 0;
-        let userAnswers = new Array(quizQuestions.length).fill(null);
-        let timeLeft = 20 * 60; // 20 menit dalam detik
-        let timerInterval;
-        let score = 0;
-
-        // DOM Elements
-        const loadingScreen = document.getElementById('loading-screen');
-        const welcomeScreen = document.getElementById('welcome-screen');
-        const quizScreen = document.getElementById('quiz-screen');
-        const resultScreen = document.getElementById('result-screen');
-        const startQuizBtn = document.getElementById('start-quiz-btn');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const submitBtn = document.getElementById('submit-btn');
-        const questionCounter = document.getElementById('question-counter');
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const timer = document.getElementById('timer');
-        const scoreDisplay = document.getElementById('score-display');
-        const scoreBar = document.getElementById('score-bar');
-        const correctCount = document.getElementById('correct-count');
-        const wrongCount = document.getElementById('wrong-count');
-        const unansweredCount = document.getElementById('unanswered-count');
-        const resultChart = document.getElementById('result-chart');
-        const restartQuizBtn = document.getElementById('restart-quiz-btn');
-
-        // Initialize App
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                loadingScreen.classList.add('fade-out');
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                    welcomeScreen.classList.remove('hidden');
-                }, 500);
-            }, 1500);
+        // Mode Gelap/Terang
+        t.addEventListener('click',()=>{
+            document.body.classList.toggle('dark');
+            d=!d;
+            t.textContent=d?'☀️':'🌙';
         });
 
-        // Start Quiz
-        startQuizBtn.addEventListener('click', startQuiz);
-        function startQuiz() {
-            welcomeScreen.classList.add('hidden');
-            quizScreen.classList.remove('hidden');
-            loadQuestion();
-            startTimer();
+        // Bantuan
+        hp.addEventListener('click',()=>{
+            const h=document.createElement('div');
+            h.className='info-card';
+            h.innerHTML='<b>✨ Bisa aku bantu apa?</b><br>- Ngobrol santai (halo, kabar gimana?)<br>- Matematika (hitung angka, luas, keliling)<br>- Sejarah (Indonesia, perang dunia)<br>- Cuma bilang aja apa yang kamu butuhkan!';
+            c.appendChild(h);
+        });
+
+        // Hapus Chat
+        cl.addEventListener('click',()=>{
+            if(confirm('Hapus semua chat?')){
+                c.innerHTML='<div class="msg msg-bot">Halo! Aku Ruto AI nih, siap buat ngobrol atau bantu jawab pertanyaan kamu – mulai dari matematika, sejarah, atau cuma ngobrol santai aja bisa lho! 😊</div><div class="typing" id="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+            }
+        });
+
+        // Fungsi Tambah Waktu
+        function addTime(){
+            const tm=document.createElement('div');
+            tm.className='time-divider';
+            tm.textContent=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+            c.appendChild(tm);
         }
 
-        // Load Question
-        function loadQuestion() {
-            const currentQuestion = quizQuestions[currentQuestionIndex];
-            questionCounter.textContent = `Soal ${currentQuestionIndex + 1} dari ${quizQuestions.length}`;
-            questionText.textContent = currentQuestion.question;
-            optionsContainer.innerHTML = '';
-
-            currentQuestion.options.forEach((option, index) => {
-                const optionElement = document.createElement('div');
-                optionElement.className = `p-3 border rounded-lg cursor-pointer transition-all ${userAnswers[currentQuestionIndex] === index ? 'bg-primary/10 border-primary' : 'hover:bg-gray-50'}`;
-                optionElement.innerHTML = `
-                    <div class="flex items-center">
-                        <div class="w-6 h-6 flex items-center justify-center border rounded-full mr-3 ${userAnswers[currentQuestionIndex] === index ? 'bg-primary text-white' : ''}">
-                            ${index + 1}
-                        </div>
-                        <span>${option}</span>
-                    </div>
-                `;
-                optionElement.addEventListener('click', () => selectOption(index));
-                optionsContainer.appendChild(optionElement);
-            });
-
-            updateNavigationButtons();
-        }
-
-        // Select Option
-        function selectOption(index) {
-            userAnswers[currentQuestionIndex] = index;
-            loadQuestion();
-        }
-
-        // Update Navigation Buttons
-        function updateNavigationButtons() {
-            prevBtn.classList.toggle('hidden', currentQuestionIndex === 0);
+        // Database Percakapan Tanpa QuizPro
+        const chatDB={
+            // Salam & Perkenalan
+            salam:["Hai hai! Senang bertemu kamu lagi 😊","Halo bosku! Mau ngobrol apa hari ini?","Hei! Gimana kabarmu nih? Semoga baik ya!"],
+            perkenalan:["Aku itu Ruto AI – teman ngobrol dan pembantu kamu!","Kamu bisa panggil aku Ruto aja, lebih akrab 😄","Nama aku Ruto AI, siap membantu kamu kapan aja!"],
+            kabar:["Aku sehat dan siap bantu! Kamu gimana? Udah makan belum?","Alhamdulillah baik kok, makasih udah nanya. Kamu bagaimana?","Aku selalu siap aja deh, kamu baru aja dari mana? 😊"],
             
-            if (currentQuestionIndex === quizQuestions.length - 1) {
-                nextBtn.classList.add('hidden');
-                submitBtn.classList.remove('hidden');
-            } else {
-                nextBtn.classList.remove('hidden');
-                submitBtn.classList.add('hidden');
-            }
-        }
-
-        // Navigation Buttons Event Listeners
-        prevBtn.addEventListener('click', () => {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                loadQuestion();
-            }
-        });
-
-        nextBtn.addEventListener('click', () => {
-            if (currentQuestionIndex < quizQuestions.length - 1) {
-                currentQuestionIndex++;
-                loadQuestion();
-            }
-        });
-
-        submitBtn.addEventListener('click', submitQuiz);
-
-        // Timer Function
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    submitQuiz();
-                }
-
-                // Change timer color when running low
-                if (timeLeft <= 300) timer.classList.add('text-red-600', 'bg-red-100');
-                else if (timeLeft <= 600) timer.classList.add('text-yellow-600', 'bg-yellow-100');
-            }, 1000);
-        }
-
-        // Submit Quiz
-        function submitQuiz() {
-            clearInterval(timerInterval);
-            calculateScore();
-            showResults();
-        }
-
-        // Calculate Score
-        function calculateScore() {
-            score = 0;
-            quizQuestions.forEach((question, index) => {
-                if (userAnswers[index] === question.correctAnswer) {
-                    score++;
-                }
-            });
-        }
-
-        // Show Results
-        function showResults() {
-            quizScreen.classList.add('hidden');
-            resultScreen.classList.remove('hidden');
-
-            // Calculate stats
-            const correct = score;
-            const wrong = userAnswers.filter(ans => ans !== null && quizQuestions[userAnswers.indexOf(ans)].correctAnswer !== ans).length;
-            const unanswered = userAnswers.filter(ans => ans === null).length;
-            const percentage = (correct / quizQuestions.length) * 100;
-
-            // Update display elements
-            scoreDisplay.textContent = `${correct} / ${quizQuestions.length}`;
-            scoreBar.style.width = `${percentage}%`;
-            correctCount.textContent = correct;
-            wrongCount.textContent = wrong;
-            unansweredCount.textContent = unanswered;
-
-            // Create chart
-            new Chart(resultChart, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Benar', 'Salah', 'Tidak Jawab'],
-                    datasets: [{
-                        data: [correct, wrong, unanswered],
-                        backgroundColor: ['#10B981', '#EF4444', '#F59E0B'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-
-            // Save to localStorage
-            localStorage.setItem('lastQuizResult', JSON.stringify({
-                score: correct,
-                total: quizQuestions.length,
-                date: new Date().toLocaleString('id-ID')
-            }));
-        }
-
-        // Restart Quiz
-        restartQuizBtn.addEventListener('click', () => {
-            currentQuestionIndex = 0;
-            userAnswers = new Array(quizQuestions.length).fill(null);
-            timeLeft = 20 * 60;
-            score = 0;
+            // Matematika
+            mtk_jumlah:["Hasilnya adalah: ","Jumlahnya jadi: "],
+            mtk_kurang:["Selisihnya adalah: ","Hasil pengurangan: "],
+            mtk_kali:["Hasil perkaliannya: ","Kaliin aja ya, hasilnya: "],
+            mtk_bagi:["Hasil pembagian: ","Jika dibagi, hasilnya: "],
             
-            resultScreen.classList.add('hidden');
-            quizScreen.classList.remove('hidden');
-            loadQuestion();
-            startTimer();
-        });
+            // Sejarah
+            sejarah_indo:["Indonesia punya sejarah panjang lho! Mulai dari kerajaan Sriwijaya, Majapahit, sampe kolonialisme.","Kemerdekaan kita tanggal 17 Agustus 1945, proklamasi di Jakarta!","Perjuangan kita buat merdeka cukup panjang, dari perang gerilya sampe pembentukan negara."],
+            sejarah_pd:["Perang Dunia I tahun 1914-1918, PD II tahun 1939-1945 ya!","PD II jadi salah satu alasan kita bisa merdeka lho."],
+            
+            // Percakapan Santai
+            senang:["Wah senang juga aku bisa bantu!","Makasih ya, kamu juga baik banget lho!","Semoga hari kamu menyenangkan ya!"],
+            sedih:["Waduh, semoga cepat merasa lebih baik ya 😢","Jangan sedih terus ya, ada aku nih buat temenin!","Semoga masalahmu cepat selesai deh!"],
+            makan:["Udah makan belum kamu? Jangan sampai kelaparan ya!","Makanannya enak ngga? Aku pengen tau aja 😄","Kalau belum makan, cepetan makan ya biar sehat!"],
+            
+            // Umum
+            umum:["Oke deh, aku paham maksud kamu!","Hmm menarik nih, bisa cerita lebih banyak ngga?","Makasih ya udah bilang, aku catat nih!"]
+        };
+
+        // Fungsi Kirim Pesan
+        function kirim(){
+            const ip=i.value.trim();
+            if(!ip){alert("Isi pesan dulu dong! 😄");return}
+            
+            // Pesan User
+            const p=document.createElement('div');
+            p.className='msg msg-user';
+            p.textContent=ip;
+            c.appendChild(p);
+            
+            // Tambah Waktu di Pesan User
+            const tmUser=document.createElement('div');
+            tmUser.className='msg-time';
+            tmUser.textContent=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+            p.appendChild(tmUser);
+            
+            i.value="";
+            c.scrollTop=c.scrollHeight;
+            ty.style.display='flex';
+            
+            // Tambah Pembagi Waktu Setiap 5 Pesan
+            if(c.querySelectorAll('.msg').length%5===0)addTime();
+            
+            setTimeout(()=>{
+                ty.style.display='none';
+                jawab(ip);
+            },1200);
+        }
+
+        // Fungsi Jawab
+        function jawab(ip){
+            const txt=ip.toLowerCase();
+            let respon=chatDB.umum;
+
+            if(txt.includes('halo')||txt.includes('hai'))respon=chatDB.salam;
+            else if(txt.includes('nama')||txt.includes('siapa'))respon=chatDB.perkenalan;
+            else if(txt.includes('kabar')||txt.includes('gimana'))respon=chatDB.kabar;
+            else if(txt.includes('+')||txt.includes('jumlah')){
+                const bil=txt.split('+');
+                const hsl=parseFloat(bil[0])+parseFloat(bil[1]);
+                respon=[chatDB.mtk_jumlah[0]+hsl];
+            }
+            else if(txt.includes('-')||txt.includes('kurang')){
+                const bil=txt.split('-');
+                const hsl=parseFloat(bil[0])-parseFloat(bil[1]);
+                respon=[chatDB.mtk_kurang[0]+hsl];
+            }
+            else if(txt.includes('x')||txt.includes('kali')){
+                const bil=txt.split(/x|\*/);
+                const hsl=parseFloat(bil[0])*parseFloat(bil[1]);
+                respon=[chatDB.mtk_kali[0]+hsl];
+            }
+            else if(txt.includes(':')||txt.includes('bagi')){
+                const bil=txt.split(/:|bagi/);
+                const hsl=parseFloat(bil[0])/parseFloat(bil[1]);
+                respon=[chatDB.mtk_bagi[0]+hsl];
+            }
+            else if(txt.includes('sejarah')||txt.includes('merdeka'))respon=chatDB.sejarah_indo;
+            else if(txt.includes('perang dunia'))respon=chatDB.sejarah_pd;
+            else if(txt.includes('senang')||txt.includes('bahagia'))respon=chatDB.senang;
+            else if(txt.includes('sedih')||txt.includes('sedikit'))respon=chatDB.sedih;
+            else if(txt.includes('makan'))respon=chatDB.makan;
+
+            // Pesan Bot
+            const b=document.createElement('div');
+            b.className='msg msg-bot';
+            b.textContent=respon[Math.floor(Math.random()*respon.length)];
+            c.appendChild(b);
+            
+            // Tambah Waktu di Pesan Bot
+            const tmBot=document.createElement('div');
+            tmBot.className='msg-time';
+            tmBot.textContent=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+            b.appendChild(tmBot);
+            
+            c.scrollTop=c.scrollHeight;
+        }
+
+        // Event Listener
+        s.addEventListener('click',kirim);
+        i.addEventListener('keydown',e=>{if(e.key==='Enter')kirim()});
     </script>
 </body>
 </html>
