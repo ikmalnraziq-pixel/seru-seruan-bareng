@@ -3,225 +3,554 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruto AI - Percakapan Lebih Lancar</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Roboto,sans-serif}
-        body{background:#f5f7fa;min-height:100vh;padding:10px;display:flex;justify-content:center;align-items:center}
-        .ruto-wrap{width:100%;max-width:680px;height:95vh;background:#fff;border-radius:20px;box-shadow:0 8px 30px rgba(0,0,0,0.12);display:flex;flex-direction:column;overflow:hidden}
-        /* Header */
-        .ruto-header{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:18px 24px;display:flex;align-items:center;justify-content:space-between}
-        .header-left{display:flex;align-items:center;gap:12px}
-        .avatar{width:40px;height:40px;background:#fff;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:20px;font-weight:bold;color:#4f46e5}
-        .header-right{display:flex;gap:10px}
-        .ctrl-btn{width:32px;height:32px;background:rgba(255,255,255,0.2);border:none;border-radius:50%;display:flex;justify-content:center;align-items:center;cursor:pointer;transition:all 0.2s}
-        .ctrl-btn:hover{background:rgba(255,255,255,0.3)}
-        /* Chat Area */
-        .ruto-chat{flex:1;padding:24px;overflow-y:auto;display:flex;flex-direction:column;gap:18px;scroll-behavior:smooth}
-        /* Pesan Style */
-        .msg{max-width:78%;padding:14px 18px;border-radius:16px;line-height:1.5;font-size:14px;animation:fadeIn 0.3s ease forwards}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-        .msg-user{background:#4f46e5;color:#fff;align-self:flex-end}
-        .msg-bot{background:#f1f5f9;color:#1e293b;align-self:flex-start}
-        .msg-time{font-size:10px;opacity:0.7;margin-top:4px;text-align:right}
-        .msg-bot .msg-time{text-align:left}
-        /* Indikator Ketik */
-        .typing{display:none;align-items:center;gap:4px;background:#f1f5f9;padding:12px 18px;border-radius:16px;align-self:flex-start}
-        .dot{width:8px;height:8px;background:#94a3b8;border-radius:50%;animation:bounce 1.4s infinite ease-in-out both}
-        .dot:nth-child(2){animation-delay:-0.3s}
-        .dot:nth-child(3){animation-delay:-0.6s}
-        @keyframes bounce{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
-        /* Pembagi Waktu */
-        .time-divider{align-self:center;font-size:11px;color:#64748b;padding:8px 12px;background:rgba(100,116,139,0.1);border-radius:8px;margin:10px 0}
-        /* Info Card */
-        .info-card{max-width:78%;padding:14px 18px;border-radius:16px;background:#e6e9ff;color:#4f46e5;align-self:flex-start}
-        /* Input Area */
-        .ruto-input{padding:20px 24px;border-top:1px solid #e2e8f0;display:flex;gap:12px}
-        #msg-input{flex:1;padding:14px 18px;border:1px solid #e2e8f0;border-radius:24px;outline:none;font-size:14px}
-        #msg-input:focus{border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,0.1)}
-        #send-btn{width:44px;height:44px;background:#4f46e5;color:#fff;border:none;border-radius:50%;display:flex;justify-content:center;align-items:center;cursor:pointer}
-        /* Mode Gelap */
-        .dark{background:#1a1a2e}
-        .dark .ruto-wrap{background:#16213e}
-        .dark .ruto-header{background:linear-gradient(135deg,#252941,#1b263b)}
-        .dark .msg-bot{background:#0f3460;color:#fff}
-        .dark .msg-user{background:#e94560;color:#fff}
-        .dark .typing{background:#0f3460}
-        .dark .dot{background:#e94560}
-        .dark .time-divider{background:rgba(165,180,252,0.1);color:#a5b4fc}
-        .dark .info-card{background:rgba(233,69,96,0.2);color:#fff}
-        .dark #msg-input{background:#0f3460;border-color:#1a1a2e;color:#fff}
-        .dark #msg-input::placeholder{color:rgba(255,255,255,0.6)}
+    <title>Astronomi - Quiz Ilmiah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1A365D',
+                        secondary: '#2D7D9A',
+                        accent: '#FF6B35',
+                        dark: '#0F172A',
+                        light: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            }
+            .answer-selected {
+                border-color: theme('colors.accent');
+                background-color: rgba(255, 107, 53, 0.1);
+            }
+            .answer-correct {
+                border-color: theme('colors.green.500');
+                background-color: rgba(16, 185, 129, 0.1);
+            }
+        }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="ruto-wrap">
-        <div class="ruto-header">
-            <div class="header-left">
-                <div class="avatar">R</div>
-                <div style="font-size:18px;font-weight:bold">Ruto AI</div>
+<body class="font-inter bg-gradient-to-br from-dark to-primary min-h-screen text-light">
+    <!-- Halaman Intro -->
+    <div id="intro-page" class="container mx-auto px-4 py-16 flex flex-col items-center justify-center min-h-screen">
+        <div class="w-full max-w-3xl bg-dark/80 backdrop-blur-md rounded-2xl p-8 shadow-2xl">
+            <div class="text-center mb-8">
+                <i class="fa fa-globe text-6xl text-accent mb-4 animate-pulse"></i>
+                <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-shadow mb-2">ASTRONOMI</h1>
+                <p class="text-secondary text-lg mb-6">Quiz dengan 20 Soal Seputar Alam Semesta</p>
+                <div class="h-1 w-32 bg-accent mx-auto rounded-full"></div>
             </div>
-            <div class="header-right">
-                <button class="ctrl-btn" id="theme-btn">🌙</button>
-                <button class="ctrl-btn" id="clear-btn">🗑️</button>
-                <button class="ctrl-btn" id="help-btn">❓</button>
+            <div class="space-y-4 mb-8">
+                <div class="flex items-center gap-3">
+                    <i class="fa fa-check-circle text-accent"></i>
+                    <p>20 Soal Beragam Tingkat Kesulitan</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fa fa-check-circle text-accent"></i>
+                    <p>Hitung Skor Otomatis</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fa fa-check-circle text-accent"></i>
+                    <p>Penjelasan Jawaban Setelah Selesai</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fa fa-check-circle text-accent"></i>
+                    <p>Tampilan Responsif untuk Semua Perangkat</p>
+                </div>
+            </div>
+            <button id="start-quiz" class="w-full py-4 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl transition-all duration-300 text-lg shadow-lg hover:shadow-xl">
+                Mulai Quiz <i class="fa fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Halaman Quiz -->
+    <div id="quiz-page" class="container mx-auto px-4 py-8 hidden">
+        <!-- Header Quiz -->
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-bold">ASTRONOMI <span class="text-accent">#Quiz</span></h2>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center">
+                    <i class="fa fa-question-circle text-accent mr-2"></i>
+                    <span id="current-question" class="font-semibold">Soal 1/20</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fa fa-star text-accent mr-2"></i>
+                    <span id="current-score" class="font-semibold">Skor: 0</span>
+                </div>
             </div>
         </div>
 
-        <div class="ruto-chat" id="chat-area">
-            <div class="msg msg-bot">Halo! Aku Ruto AI nih, siap buat ngobrol atau bantu jawab pertanyaan kamu – mulai dari matematika, sejarah, atau cuma ngobrol santai aja bisa lho! 😊</div>
-            <div class="typing" id="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-700 rounded-full h-2.5 mb-8">
+            <div id="progress-bar" class="bg-accent h-2.5 rounded-full transition-all duration-500" style="width: 5%"></div>
         </div>
 
-        <div class="ruto-input">
-            <input type="text" id="msg-input" placeholder="Ketik pesanmu... Mau ngobrol apa hari ini?">
-            <button id="send-btn">→</button>
+        <!-- Konten Soal -->
+        <div class="max-w-3xl mx-auto bg-dark/80 backdrop-blur-md rounded-2xl p-8 shadow-xl">
+            <h3 id="question-text" class="text-xl font-semibold mb-6"></h3>
+            <div id="answer-options" class="space-y-3 mb-8"></div>
+            <button id="next-question" class="w-full py-3 bg-secondary hover:bg-secondary/90 text-white font-bold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hidden">
+                Lanjut <i class="fa fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Halaman Hasil -->
+    <div id="result-page" class="container mx-auto px-4 py-16 flex flex-col items-center justify-center min-h-screen hidden">
+        <div class="w-full max-w-3xl bg-dark/80 backdrop-blur-md rounded-2xl p-8 shadow-2xl">
+            <div class="text-center mb-8">
+                <i id="result-icon" class="text-8xl mb-4"></i>
+                <h2 class="text-[clamp(1.8rem,4vw,3rem)] font-bold text-shadow mb-2">Hasil Akhir</h2>
+                <p id="result-text" class="text-lg mb-4"></p>
+                <div class="text-4xl font-bold text-accent mb-6" id="final-score"></div>
+                <div class="h-1 w-32 bg-accent mx-auto rounded-full mb-8"></div>
+            </div>
+
+            <!-- Ringkasan Jawaban -->
+            <div class="mb-8 max-h-64 overflow-y-auto pr-2">
+                <h3 class="text-lg font-semibold mb-3">Ringkasan Jawaban:</h3>
+                <div id="answer-summary" class="space-y-2"></div>
+            </div>
+
+            <button id="restart-quiz" class="w-full py-4 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl transition-all duration-300 text-lg shadow-lg hover:shadow-xl">
+                Ulangi Quiz <i class="fa fa-refresh ml-2"></i>
+            </button>
         </div>
     </div>
 
     <script>
-        const c=document.getElementById('chat-area'),i=document.getElementById('msg-input'),s=document.getElementById('send-btn'),
-        t=document.getElementById('theme-btn'),cl=document.getElementById('clear-btn'),hp=document.getElementById('help-btn'),
-        ty=document.getElementById('typing-indicator');
-        let d=false;
+        // Daftar Soal Astronomi (20 Soal Lengkap)
+        const questions = [
+            {
+                question: "Planet terbesar di Tata Surya adalah?",
+                options: [
+                    "Mars",
+                    "Jupiter",
+                    "Venus",
+                    "Bumi"
+                ],
+                correct: 1,
+                explanation: "Jupiter adalah planet terbesar di Tata Surya dengan diameter sekitar 139.820 km, lebih dari 11 kali diameter Bumi."
+            },
+            {
+                question: "Bintang terdekat dengan Bumi adalah?",
+                options: [
+                    "Sirius",
+                    "Betelgeuse",
+                    "Proxima Centauri",
+                    "Alpha Centauri A"
+                ],
+                correct: 2,
+                explanation: "Proxima Centauri berjarak sekitar 4,2 tahun cahaya dari Bumi dan merupakan bagian dari sistem bintang Alpha Centauri."
+            },
+            {
+                question: "Galaksi tempat kita tinggal bernama?",
+                options: [
+                    "Galaksi Andromeda",
+                    "Galaksi Putih Krem",
+                    "Galaksi Bima Sakti",
+                    "Galaksi Sombrero"
+                ],
+                correct: 2,
+                explanation: "Galaksi Bima Sakti (Milky Way) adalah galaksi spiral tempat Tata Surya dan kita berada."
+            },
+            {
+                question: "Apa yang menyebabkan musim berganti di Bumi?",
+                options: [
+                    "Jarak Bumi ke Matahari",
+                    "Perputaran Bumi pada sumbunya",
+                    "Miringnya sumbu rotasi Bumi",
+                    "Gravitasi Bulan"
+                ],
+                correct: 2,
+                explanation: "Miringnya sumbu rotasi Bumi sebesar sekitar 23,5 derajat menyebabkan bagian berbeda dari Bumi menerima jumlah sinar matahari yang berbeda-beda sepanjang tahun."
+            },
+            {
+                question: "Planet yang memiliki cincin terlihat jelas adalah?",
+                options: [
+                    "Jupiter",
+                    "Saturnus",
+                    "Uranus",
+                    "Neptunus"
+                ],
+                correct: 1,
+                explanation: "Saturnus memiliki sistem cincin yang paling mencolok dan terlihat jelas dibandingkan planet lain di Tata Surya."
+            },
+            {
+                question: "Apa itu lubang hitam?",
+                options: [
+                    "Wilayah di ruang angkasa yang tidak ada apa-apa",
+                    "Wilayah dengan gravitasi sangat kuat sehingga tidak ada yang bisa keluar",
+                    "Gugusan bintang yang sangat gelap",
+                    "Awan gas yang sangat dingin"
+                ],
+                correct: 1,
+                explanation: "Lubang hitam terbentuk ketika bintang sangat besar runtuh secara gravitasi, menciptakan medan gravitasi yang sangat kuat hingga bahkan cahaya tidak bisa lolos."
+            },
+            {
+                question: "Fenomena gerhana matahari terjadi ketika?",
+                options: [
+                    "Bumi berada di antara Matahari dan Bulan",
+                    "Bulan berada di antara Matahari dan Bumi",
+                    "Matahari berada di antara Bumi dan Bulan",
+                    "Bumi bergerak menjauh dari Matahari"
+                ],
+                correct: 1,
+                explanation: "Gerhana matahari terjadi ketika Bulan menghalangi sinar Matahari sehingga bayangannya jatuh ke permukaan Bumi."
+            },
+            {
+                question: "Berapa jumlah planet di Tata Surya setelah Pluto tidak dianggap planet?",
+                options: [
+                    "7",
+                    "8",
+                    "9",
+                    "10"
+                ],
+                correct: 1,
+                explanation: "Pada tahun 2006, IAU menetapkan bahwa Pluto termasuk sebagai planet katai, sehingga jumlah planet di Tata Surya menjadi 8 buah."
+            },
+            {
+                question: "Apa nama satelit alami Bumi?",
+                options: [
+                    "Fobos",
+                    "Deimos",
+                    "Bulan",
+                    "Io"
+                ],
+                correct: 2,
+                explanation: "Bulan adalah satu-satunya satelit alami Bumi yang berjarak sekitar 384.400 km dari permukaan Bumi."
+            },
+            {
+                question: "Planet yang dikenal sebagai planet merah adalah?",
+                options: [
+                    "Mars",
+                    "Venus",
+                    "Mercurius",
+                    "Jupiter"
+                ],
+                correct: 0,
+                explanation: "Mars disebut planet merah karena permukaannya yang kaya akan oksida besi (baja karatan) yang memberikan warna kemerahan."
+            },
+            {
+                question: "Apa itu supernova?",
+                options: [
+                    "Bintang baru yang mulai terbentuk",
+                    "Ledakan hebat dari bintang yang mencapai akhir hidupnya",
+                    "Awan gas dan debu di ruang angkasa",
+                    "Gugusan bintang muda"
+                ],
+                correct: 1,
+                explanation: "Supernova adalah ledakan ekstrim yang terjadi ketika bintang besar tidak dapat lagi menahan diri terhadap gaya gravitasi sendiri, melepaskan energi yang sangat besar."
+            },
+            {
+                question: "Planet terpanas di Tata Surya adalah?",
+                options: [
+                    "Matahari",
+                    "Mercurius",
+                    "Venus",
+                    "Mars"
+                ],
+                correct: 2,
+                explanation: "Meskipun lebih jauh dari Matahari dibandingkan Mercurius, Venus memiliki suhu permukaan rata-rata sekitar 462°C akibat efek rumah kaca yang ekstrem."
+            },
+            {
+                question: "Berapa lama waktu yang dibutuhkan cahaya Matahari untuk sampai ke Bumi?",
+                options: [
+                    "Sekitar 8 menit",
+                    "Sekitar 1 jam",
+                    "Sekitar 1 hari",
+                    "Sekitar 1 bulan"
+                ],
+                correct: 0,
+                explanation: "Cahaya Matahari bergerak dengan kecepatan sekitar 300.000 km/detik dan membutuhkan waktu sekitar 8 menit 20 detik untuk sampai ke Bumi."
+            },
+            {
+                question: "Apa yang membentuk cincin Saturnus?",
+                options: [
+                    "Batu besar dan es",
+                    "Debu, batu kecil, dan partikel es",
+                    "Gas hidrogen dan helium",
+                    "Sisa-sisa bintang yang hancur"
+                ],
+                correct: 1,
+                explanation: "Cincin Saturnus terbentuk dari milyaran partikel kecil mulai dari ukuran debu hingga batu seukuran mobil, sebagian besar terdiri dari es air."
+            },
+            {
+                question: "Galaksi Andromeda akan bertabrakan dengan Galaksi Bima Sakti dalam waktu sekitar?",
+                options: [
+                    "1 juta tahun mendatang",
+                    "4 miliar tahun mendatang",
+                    "10 miliar tahun mendatang",
+                    "Tidak akan pernah bertabrakan"
+                ],
+                correct: 1,
+                explanation: "Galaksi Andromeda sedang bergerak mendekati Galaksi Bima Sakti dengan kecepatan sekitar 110 km/detik dan diperkirakan akan bertabrakan dalam waktu sekitar 4 miliar tahun mendatang."
+            },
+            {
+                question: "Apa nama misi luar angkasa pertama yang mendaratkan manusia di Bulan?",
+                options: [
+                    "Apollo 8",
+                    "Apollo 11",
+                    "Gemini 4",
+                    "Mercury 6"
+                ],
+                correct: 1,
+                explanation: "Misi Apollo 11 pada Juli 1969 berhasil mendaratkan Neil Armstrong dan Buzz Aldrin di permukaan Bulan, menjadi manusia pertama yang menginjakkan kaki di sana."
+            },
+            {
+                question: "Planet yang paling jauh dari Matahari di Tata Surya adalah?",
+                options: [
+                    "Neptunus",
+                    "Uranus",
+                    "Pluto",
+                    "Saturnus"
+                ],
+                correct: 0,
+                explanation: "Setelah Pluto diklasifikasikan sebagai planet katai, Neptunus menjadi planet terjauh dari Matahari dengan jarak rata-rata sekitar 4.504 juta km."
+            },
+            {
+                question: "Apa itu asteroid?",
+                options: [
+                    "Benda langit yang mengorbit sekitar Matahari dan lebih kecil dari planet",
+                    "Bintang yang sudah mati",
+                    "Awan gas di ruang angkasa",
+                    "Satelit alami dari planet"
+                ],
+                correct: 0,
+                explanation: "Asteroid adalah benda batuan atau logam yang mengorbit Matahari, sebagian besar berada di sabuk asteroid antara Mars dan Jupiter."
+            },
+            {
+                question: "Fenomena apa yang menyebabkan terjadinya pasang surut di laut?",
+                options: [
+                "Gravitasi Matahari saja",
+                "Gravitasi Bulan saja",
+                "Gabungan gravitasi Bulan dan Matahari",
+                "Pergerakan lempeng tektonik"
+            ],
+            correct: 2,
+            explanation: "Pasang surut disebabkan oleh gaya tarik gravitasi dari Bulan dan Matahari terhadap permukaan air Bumi."
+        },
+        {
+            question: "Apa itu kuasar?",
+            options: [
+                "Bintang muda yang sangat terang",
+                "Inti galaksi aktif yang sangat terang",
+                "Lubang hitam kecil di ruang angkasa",
+                "Gugusan bintang yang jauh sekali"
+            ],
+            correct: 1,
+            explanation: "Kuasar adalah inti galaksi yang sangat aktif dan terang, dipicu oleh materi yang jatuh ke lubang hitam supermasif di pusatnya."
+        }
+    ];
 
-        // Mode Gelap/Terang
-        t.addEventListener('click',()=>{
-            document.body.classList.toggle('dark');
-            d=!d;
-            t.textContent=d?'☀️':'🌙';
+    // Variabel Global
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let userAnswers = [];
+
+    // Elemen DOM yang Digunakan
+    const introPage = document.getElementById('intro-page');
+    const quizPage = document.getElementById('quiz-page');
+    const resultPage = document.getElementById('result-page');
+    const startQuizBtn = document.getElementById('start-quiz');
+    const nextQuestionBtn = document.getElementById('next-question');
+    const questionText = document.getElementById('question-text');
+    const answerOptions = document.getElementById('answer-options');
+    const currentQuestionEl = document.getElementById('current-question');
+    const currentScoreEl = document.getElementById('current-score');
+    const progressBar = document.getElementById('progress-bar');
+    const resultIcon = document.getElementById('result-icon');
+    const resultText = document.getElementById('result-text');
+    const finalScoreEl = document.getElementById('final-score');
+    const answerSummary = document.getElementById('answer-summary');
+    const restartQuizBtn = document.getElementById('restart-quiz');
+
+    // Fungsi Inisialisasi Event Listener
+    function initEvents() {
+        startQuizBtn.addEventListener('click', startQuiz);
+        nextQuestionBtn.addEventListener('click', goToNextQuestion);
+        restartQuizBtn.addEventListener('click', restartQuiz);
+    }
+
+    // Fungsi Mulai Quiz
+    function startQuiz() {
+        introPage.classList.add('hidden');
+        quizPage.classList.remove('hidden');
+        loadQuestion();
+    }
+
+    // Fungsi Memuat Soal ke Halaman
+    function loadQuestion() {
+        const currentQuestion = questions[currentQuestionIndex];
+        
+        // Update Konten Soal
+        questionText.textContent = `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
+        currentQuestionEl.textContent = `Soal ${currentQuestionIndex + 1}/20`;
+        currentScoreEl.textContent = `Skor: ${score}`;
+        
+        // Update Progress Bar
+        const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
+        progressBar.style.width = `${progressPercentage}%`;
+
+        // Kosongkan Opsi Jawaban Sebelum Memuat Yang Baru
+        answerOptions.innerHTML = '';
+
+        // Buat Opsi Jawaban - PERBAIKAN DI SINI!
+        currentQuestion.options.forEach((option, index) => {
+            // Buat elemen utama untuk setiap opsi
+            const optionWrapper = document.createElement('div');
+            optionWrapper.className = 'border border-gray-600 rounded-xl p-4 card-hover cursor-pointer';
+            optionWrapper.dataset.optionIndex = index; // Simpan index di atribut data
+
+            // Buat konten dalam opsi
+            const optionContent = document.createElement('div');
+            optionContent.className = 'flex items-center gap-3';
+            optionContent.innerHTML = `
+                <span class="w-6 h-6 flex items-center justify-center rounded-full border border-gray-500">${index + 1}</span>
+                <span>${option}</span>
+            `;
+
+            // Tambahkan konten ke wrapper
+            optionWrapper.appendChild(optionContent);
+
+            // Tambahkan event listener ke wrapper
+            optionWrapper.addEventListener('click', function() {
+                // Ambil index dari atribut data
+                const selectedIdx = parseInt(this.dataset.optionIndex);
+                selectAnswer(selectedIdx);
+            });
+
+            // Tambahkan ke halaman
+            answerOptions.appendChild(optionWrapper);
         });
 
-        // Bantuan
-        hp.addEventListener('click',()=>{
-            const h=document.createElement('div');
-            h.className='info-card';
-            h.innerHTML='<b>✨ Bisa aku bantu apa?</b><br>- Ngobrol santai (halo, kabar gimana?)<br>- Matematika (hitung angka, luas, keliling)<br>- Sejarah (Indonesia, perang dunia)<br>- Cuma bilang aja apa yang kamu butuhkan!';
-            c.appendChild(h);
+        // Sembunyikan Tombol Lanjut Sampai Jawaban Dipilih
+        nextQuestionBtn.classList.add('hidden');
+    }
+
+    // Fungsi Ketika Jawaban Dipilih
+    function selectAnswer(selectedIndex) {
+        const currentQuestion = questions[currentQuestionIndex];
+        const allOptionCards = answerOptions.querySelectorAll('div[data-option-index]');
+        
+        // Nonaktifkan Semua Opsi Setelah Dipilih
+        allOptionCards.forEach(card => card.style.pointerEvents = 'none');
+
+        // Tandai Jawaban yang Dipilih
+        allOptionCards[selectedIndex].classList.add('answer-selected');
+        userAnswers.push(selectedIndex);
+
+        // Cek Apakah Jawaban Benar
+        if (selectedIndex === currentQuestion.correct) {
+            score += 5; // Setiap Soal Nilai 5 Poin
+            currentScoreEl.textContent = `Skor: ${score}`;
+            allOptionCards[selectedIndex].innerHTML += `<div class="mt-2 text-green-500 flex items-center gap-2"><i class="fa fa-check"></i> Benar!</div>`;
+        } else {
+            // Tandai Jawaban Salah dan Tampilkan Jawaban Benar
+            allOptionCards[selectedIndex].innerHTML += `<div class="mt-2 text-red-500 flex items-center gap-2"><i class="fa fa-times"></i> Salah.</div>`;
+            allOptionCards[currentQuestion.correct].classList.add('answer-correct');
+            allOptionCards[currentQuestion.correct].innerHTML += `<div class="mt-2 text-green-500 flex items-center gap-2"><i class="fa fa-check"></i> Jawaban benar!</div>`;
+        }
+
+        // Tampilkan Tombol Lanjut
+        nextQuestionBtn.classList.remove('hidden');
+    }
+
+    // Fungsi Pergi ke Soal Selanjutnya
+    function goToNextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            displayResults();
+        }
+    }
+
+    // Fungsi Tampilkan Hasil Akhir
+    function displayResults() {
+        quizPage.classList.add('hidden');
+        resultPage.classList.remove('hidden');
+
+        // Hitung Persentase Skor
+        const scorePercentage = (score / 100) * 100;
+
+        // Atur Ikon dan Pesan Hasil
+        if (scorePercentage >= 80) {
+            resultIcon.className = 'fa fa-trophy text-yellow-500';
+            resultText.textContent = 'Luar biasa! Kamu ahli dalam Astronomi!';
+        } else if (scorePercentage >= 60) {
+            resultIcon.className = 'fa fa-star text-blue-500';
+            resultText.textContent = 'Bagus sekali! Kamu sudah paham banyak tentang Alam Semesta.';
+        } else if (scorePercentage >= 40) {
+            resultIcon.className = 'fa fa-thumbs-up text-green-500';
+            resultText.textContent = 'Cukup baik! Kamu bisa belajar lebih banyak lagi tentang Astronomi.';
+        } else {
+            resultIcon.className = 'fa fa-lightbulb-o text-accent';
+            resultText.textContent = 'Jangan menyerah! Yuk pelajari Astronomi lebih dalam lagi.';
+        }
+
+        // Tampilkan Skor Akhir
+        finalScoreEl.textContent = `${score}/100`;
+
+        // Tampilkan Ringkasan Semua Jawaban
+        answerSummary.innerHTML = '';
+        questions.forEach((q, idx) => {
+            const isCorrect = userAnswers[idx] === q.correct;
+            const summaryCard = document.createElement('div');
+            summaryCard.className = 'p-3 rounded-lg bg-dark/50 border border-gray-700';
+            summaryCard.innerHTML = `
+                <div class="flex justify-between items-start mb-2">
+                    <span class="font-medium">${idx + 1}. ${q.question}</span>
+                    <span class="${isCorrect ? 'text-green-500' : 'text-red-500'} font-bold">
+                        ${isCorrect ? '✓ BENAR' : '✗ SALAH'}
+                    </span>
+                </div>
+                <div class="text-sm mb-1">
+                    <span class="text-gray-400">Kamu jawab:</span> ${q.options[userAnswers[idx]]}
+                </div>
+                <div class="text-sm mb-2">
+                    <span class="text-gray-400">Jawaban benar:</span> ${q.options[q.correct]}
+                </div>
+                <div class="text-xs text-secondary italic">${q.explanation}</div>
+            `;
+            answerSummary.appendChild(summaryCard);
         });
+    }
 
-        // Hapus Chat
-        cl.addEventListener('click',()=>{
-            if(confirm('Hapus semua chat?')){
-                c.innerHTML='<div class="msg msg-bot">Halo! Aku Ruto AI nih, siap buat ngobrol atau bantu jawab pertanyaan kamu – mulai dari matematika, sejarah, atau cuma ngobrol santai aja bisa lho! 😊</div><div class="typing" id="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
-            }
-        });
+    // Fungsi Ulangi Quiz
+    function restartQuiz() {
+        // Reset Semua Nilai
+        currentQuestionIndex = 0;
+        score = 0;
+        userAnswers = [];
+        
+        // Kembali ke Halaman Intro
+        resultPage.classList.add('hidden');
+        introPage.classList.remove('hidden');
+    }
 
-        // Fungsi Tambah Waktu
-        function addTime(){
-            const tm=document.createElement('div');
-            tm.className='time-divider';
-            tm.textContent=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-            c.appendChild(tm);
-        }
-
-        // Database Percakapan Tanpa QuizPro
-        const chatDB={
-            // Salam & Perkenalan
-            salam:["Hai hai! Senang bertemu kamu lagi 😊","Halo bosku! Mau ngobrol apa hari ini?","Hei! Gimana kabarmu nih? Semoga baik ya!"],
-            perkenalan:["Aku itu Ruto AI – teman ngobrol dan pembantu kamu!","Kamu bisa panggil aku Ruto aja, lebih akrab 😄","Nama aku Ruto AI, siap membantu kamu kapan aja!"],
-            kabar:["Aku sehat dan siap bantu! Kamu gimana? Udah makan belum?","Alhamdulillah baik kok, makasih udah nanya. Kamu bagaimana?","Aku selalu siap aja deh, kamu baru aja dari mana? 😊"],
-            
-            // Matematika
-            mtk_jumlah:["Hasilnya adalah: ","Jumlahnya jadi: "],
-            mtk_kurang:["Selisihnya adalah: ","Hasil pengurangan: "],
-            mtk_kali:["Hasil perkaliannya: ","Kaliin aja ya, hasilnya: "],
-            mtk_bagi:["Hasil pembagian: ","Jika dibagi, hasilnya: "],
-            
-            // Sejarah
-            sejarah_indo:["Indonesia punya sejarah panjang lho! Mulai dari kerajaan Sriwijaya, Majapahit, sampe kolonialisme.","Kemerdekaan kita tanggal 17 Agustus 1945, proklamasi di Jakarta!","Perjuangan kita buat merdeka cukup panjang, dari perang gerilya sampe pembentukan negara."],
-            sejarah_pd:["Perang Dunia I tahun 1914-1918, PD II tahun 1939-1945 ya!","PD II jadi salah satu alasan kita bisa merdeka lho."],
-            
-            // Percakapan Santai
-            senang:["Wah senang juga aku bisa bantu!","Makasih ya, kamu juga baik banget lho!","Semoga hari kamu menyenangkan ya!"],
-            sedih:["Waduh, semoga cepat merasa lebih baik ya 😢","Jangan sedih terus ya, ada aku nih buat temenin!","Semoga masalahmu cepat selesai deh!"],
-            makan:["Udah makan belum kamu? Jangan sampai kelaparan ya!","Makanannya enak ngga? Aku pengen tau aja 😄","Kalau belum makan, cepetan makan ya biar sehat!"],
-            
-            // Umum
-            umum:["Oke deh, aku paham maksud kamu!","Hmm menarik nih, bisa cerita lebih banyak ngga?","Makasih ya udah bilang, aku catat nih!"]
-        };
-
-        // Fungsi Kirim Pesan
-        function kirim(){
-            const ip=i.value.trim();
-            if(!ip){alert("Isi pesan dulu dong! 😄");return}
-            
-            // Pesan User
-            const p=document.createElement('div');
-            p.className='msg msg-user';
-            p.textContent=ip;
-            c.appendChild(p);
-            
-            // Tambah Waktu di Pesan User
-            const tmUser=document.createElement('div');
-            tmUser.className='msg-time';
-            tmUser.textContent=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-            p.appendChild(tmUser);
-            
-            i.value="";
-            c.scrollTop=c.scrollHeight;
-            ty.style.display='flex';
-            
-            // Tambah Pembagi Waktu Setiap 5 Pesan
-            if(c.querySelectorAll('.msg').length%5===0)addTime();
-            
-            setTimeout(()=>{
-                ty.style.display='none';
-                jawab(ip);
-            },1200);
-        }
-
-        // Fungsi Jawab
-        function jawab(ip){
-            const txt=ip.toLowerCase();
-            let respon=chatDB.umum;
-
-            if(txt.includes('halo')||txt.includes('hai'))respon=chatDB.salam;
-            else if(txt.includes('nama')||txt.includes('siapa'))respon=chatDB.perkenalan;
-            else if(txt.includes('kabar')||txt.includes('gimana'))respon=chatDB.kabar;
-            else if(txt.includes('+')||txt.includes('jumlah')){
-                const bil=txt.split('+');
-                const hsl=parseFloat(bil[0])+parseFloat(bil[1]);
-                respon=[chatDB.mtk_jumlah[0]+hsl];
-            }
-            else if(txt.includes('-')||txt.includes('kurang')){
-                const bil=txt.split('-');
-                const hsl=parseFloat(bil[0])-parseFloat(bil[1]);
-                respon=[chatDB.mtk_kurang[0]+hsl];
-            }
-            else if(txt.includes('x')||txt.includes('kali')){
-                const bil=txt.split(/x|\*/);
-                const hsl=parseFloat(bil[0])*parseFloat(bil[1]);
-                respon=[chatDB.mtk_kali[0]+hsl];
-            }
-            else if(txt.includes(':')||txt.includes('bagi')){
-                const bil=txt.split(/:|bagi/);
-                const hsl=parseFloat(bil[0])/parseFloat(bil[1]);
-                respon=[chatDB.mtk_bagi[0]+hsl];
-            }
-            else if(txt.includes('sejarah')||txt.includes('merdeka'))respon=chatDB.sejarah_indo;
-            else if(txt.includes('perang dunia'))respon=chatDB.sejarah_pd;
-            else if(txt.includes('senang')||txt.includes('bahagia'))respon=chatDB.senang;
-            else if(txt.includes('sedih')||txt.includes('sedikit'))respon=chatDB.sedih;
-            else if(txt.includes('makan'))respon=chatDB.makan;
-
-            // Pesan Bot
-            const b=document.createElement('div');
-            b.className='msg msg-bot';
-            b.textContent=respon[Math.floor(Math.random()*respon.length)];
-            c.appendChild(b);
-            
-            // Tambah Waktu di Pesan Bot
-            const tmBot=document.createElement('div');
-            tmBot.className='msg-time';
-            tmBot.textContent=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-            b.appendChild(tmBot);
-            
-            c.scrollTop=c.scrollHeight;
-        }
-
-        // Event Listener
-        s.addEventListener('click',kirim);
-        i.addEventListener('keydown',e=>{if(e.key==='Enter')kirim()});
-    </script>
+    // Jalankan Fungsi Inisialisasi Ketika Halaman Dimuat
+    window.addEventListener('load', initEvents);
+</script>
 </body>
 </html>
+                   
