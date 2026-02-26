@@ -1,1 +1,1 @@
-# Ruto AI
+# Astronomi
