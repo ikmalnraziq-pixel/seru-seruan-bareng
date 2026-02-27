@@ -3,554 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Astronomi - Quiz Ilmiah</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1A365D',
-                        secondary: '#2D7D9A',
-                        accent: '#FF6B35',
-                        dark: '#0F172A',
-                        light: '#F8FAFC'
-                    },
-                    fontFamily: {
-                        inter: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
+    <title>Teka-Teki Bertele-Tele #1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
         }
-    </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .text-shadow {
-                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
-            .card-hover {
-                transition: all 0.3s ease;
-            }
-            .card-hover:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
-            }
-            .answer-selected {
-                border-color: theme('colors.accent');
-                background-color: rgba(255, 107, 53, 0.1);
-            }
-            .answer-correct {
-                border-color: theme('colors.green.500');
-                background-color: rgba(16, 185, 129, 0.1);
-            }
+        body {
+            background-color: #f0f8ff;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #3498db;
+            color: white;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .teka-teki-card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+        .teka-teki-card h2 {
+            color: #3498db;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 0.5rem;
+        }
+        .soal {
+            font-size: 1.1rem;
+            white-space: pre-line;
+        }
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="font-inter bg-gradient-to-br from-dark to-primary min-h-screen text-light">
-    <!-- Halaman Intro -->
-    <div id="intro-page" class="container mx-auto px-4 py-16 flex flex-col items-center justify-center min-h-screen">
-        <div class="w-full max-w-3xl bg-dark/80 backdrop-blur-md rounded-2xl p-8 shadow-2xl">
-            <div class="text-center mb-8">
-                <i class="fa fa-globe text-6xl text-accent mb-4 animate-pulse"></i>
-                <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-shadow mb-2">ASTRONOMI</h1>
-                <p class="text-secondary text-lg mb-6">Quiz dengan 20 Soal Seputar Alam Semesta</p>
-                <div class="h-1 w-32 bg-accent mx-auto rounded-full"></div>
+<body>
+    <header>
+        <h1>Teka-Teki Bertele-Tele</h1>
+    </header>
+
+    <div class="container">
+        <div class="teka-teki-card">
+            <h2>Teka-Teki #1: Perjalanan Misterius Pak Budi</h2>
+            <div class="soal">
+Pada hari Senin pagi yang cerah, tepat pukul 06.30 WIB, Pak Budi yang tinggal di Jalan Mangga No. 123, Kelurahan Sukamaju, Kecamatan Bandung Wetan, memutuskan untuk pergi ke pasar tradisional yang terletak sekitar 5 kilometer dari rumahnya. Dia menggunakan sepeda ontel warna hitam yang sudah dipakai selama 10 tahun dan masih dalam kondisi baik.
+
+Saat berangkat, Pak Budi membawa keranjang anyaman yang dibuat oleh ibunya sendiri, serta uang tunai sebesar Rp50.000 dalam dompet kulit coklat. Di jalan, dia bertemu dengan tetangganya Bu Siti yang sedang membeli sayuran dari pedagang keliling yang menggunakan gerobak dorong kayu. Mereka berbincang sebentar tentang cuaca yang mulai panas dan rencana untuk membuat acar dari bahan-bahan segar.
+
+Setelah sampai di pasar, Pak Budi mengunjungi beberapa kios: pertama ke kios Pak Slamet yang menjual beras dan gula, kemudian ke kios Bu Lina yang menjual sayuran seperti bayam, kubis, dan wortel, lalu ke kios Pak Joko yang menjual buah-buahan seperti mangga, pisang, dan jeruk. Dia menghabiskan sebagian uangnya untuk membeli barang-barang tersebut, dan masih menyisakan uang sekitar Rp15.000.
+
+Saat hendak pulang, dia melewati jalan kecil yang sering digunakan oleh penduduk sekitar karena lebih dekat. Di tengah jalan, dia menemukan sebuah benda kecil yang terbuat dari logam, berwarna perak, dan memiliki bentuk yang sedikit melengkung. Dia mengambilnya dan menyimpannya di kantong saku celananya.
+
+Setelah sampai di rumah, istri Pak Budi Bu Yanti bertanya apa yang dia temukan di jalan. Pak Budi menunjukkan benda tersebut, dan Bu Yanti langsung tahu apa itu.
+
+Pertanyaannya adalah: Apa nama benda yang ditemukan Pak Budi?
             </div>
-            <div class="space-y-4 mb-8">
-                <div class="flex items-center gap-3">
-                    <i class="fa fa-check-circle text-accent"></i>
-                    <p>20 Soal Beragam Tingkat Kesulitan</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <i class="fa fa-check-circle text-accent"></i>
-                    <p>Hitung Skor Otomatis</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <i class="fa fa-check-circle text-accent"></i>
-                    <p>Penjelasan Jawaban Setelah Selesai</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <i class="fa fa-check-circle text-accent"></i>
-                    <p>Tampilan Responsif untuk Semua Perangkat</p>
-                </div>
-            </div>
-            <button id="start-quiz" class="w-full py-4 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl transition-all duration-300 text-lg shadow-lg hover:shadow-xl">
-                Mulai Quiz <i class="fa fa-arrow-right ml-2"></i>
-            </button>
         </div>
     </div>
 
-    <!-- Halaman Quiz -->
-    <div id="quiz-page" class="container mx-auto px-4 py-8 hidden">
-        <!-- Header Quiz -->
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-2xl font-bold">ASTRONOMI <span class="text-accent">#Quiz</span></h2>
-            <div class="flex items-center gap-4">
-                <div class="flex items-center">
-                    <i class="fa fa-question-circle text-accent mr-2"></i>
-                    <span id="current-question" class="font-semibold">Soal 1/20</span>
-                </div>
-                <div class="flex items-center">
-                    <i class="fa fa-star text-accent mr-2"></i>
-                    <span id="current-score" class="font-semibold">Skor: 0</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Progress Bar -->
-        <div class="w-full bg-gray-700 rounded-full h-2.5 mb-8">
-            <div id="progress-bar" class="bg-accent h-2.5 rounded-full transition-all duration-500" style="width: 5%"></div>
-        </div>
-
-        <!-- Konten Soal -->
-        <div class="max-w-3xl mx-auto bg-dark/80 backdrop-blur-md rounded-2xl p-8 shadow-xl">
-            <h3 id="question-text" class="text-xl font-semibold mb-6"></h3>
-            <div id="answer-options" class="space-y-3 mb-8"></div>
-            <button id="next-question" class="w-full py-3 bg-secondary hover:bg-secondary/90 text-white font-bold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hidden">
-                Lanjut <i class="fa fa-arrow-right ml-2"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Halaman Hasil -->
-    <div id="result-page" class="container mx-auto px-4 py-16 flex flex-col items-center justify-center min-h-screen hidden">
-        <div class="w-full max-w-3xl bg-dark/80 backdrop-blur-md rounded-2xl p-8 shadow-2xl">
-            <div class="text-center mb-8">
-                <i id="result-icon" class="text-8xl mb-4"></i>
-                <h2 class="text-[clamp(1.8rem,4vw,3rem)] font-bold text-shadow mb-2">Hasil Akhir</h2>
-                <p id="result-text" class="text-lg mb-4"></p>
-                <div class="text-4xl font-bold text-accent mb-6" id="final-score"></div>
-                <div class="h-1 w-32 bg-accent mx-auto rounded-full mb-8"></div>
-            </div>
-
-            <!-- Ringkasan Jawaban -->
-            <div class="mb-8 max-h-64 overflow-y-auto pr-2">
-                <h3 class="text-lg font-semibold mb-3">Ringkasan Jawaban:</h3>
-                <div id="answer-summary" class="space-y-2"></div>
-            </div>
-
-            <button id="restart-quiz" class="w-full py-4 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl transition-all duration-300 text-lg shadow-lg hover:shadow-xl">
-                Ulangi Quiz <i class="fa fa-refresh ml-2"></i>
-            </button>
-        </div>
-    </div>
-
-    <script>
-        // Daftar Soal Astronomi (20 Soal Lengkap)
-        const questions = [
-            {
-                question: "Planet terbesar di Tata Surya adalah?",
-                options: [
-                    "Mars",
-                    "Jupiter",
-                    "Venus",
-                    "Bumi"
-                ],
-                correct: 1,
-                explanation: "Jupiter adalah planet terbesar di Tata Surya dengan diameter sekitar 139.820 km, lebih dari 11 kali diameter Bumi."
-            },
-            {
-                question: "Bintang terdekat dengan Bumi adalah?",
-                options: [
-                    "Sirius",
-                    "Betelgeuse",
-                    "Proxima Centauri",
-                    "Alpha Centauri A"
-                ],
-                correct: 2,
-                explanation: "Proxima Centauri berjarak sekitar 4,2 tahun cahaya dari Bumi dan merupakan bagian dari sistem bintang Alpha Centauri."
-            },
-            {
-                question: "Galaksi tempat kita tinggal bernama?",
-                options: [
-                    "Galaksi Andromeda",
-                    "Galaksi Putih Krem",
-                    "Galaksi Bima Sakti",
-                    "Galaksi Sombrero"
-                ],
-                correct: 2,
-                explanation: "Galaksi Bima Sakti (Milky Way) adalah galaksi spiral tempat Tata Surya dan kita berada."
-            },
-            {
-                question: "Apa yang menyebabkan musim berganti di Bumi?",
-                options: [
-                    "Jarak Bumi ke Matahari",
-                    "Perputaran Bumi pada sumbunya",
-                    "Miringnya sumbu rotasi Bumi",
-                    "Gravitasi Bulan"
-                ],
-                correct: 2,
-                explanation: "Miringnya sumbu rotasi Bumi sebesar sekitar 23,5 derajat menyebabkan bagian berbeda dari Bumi menerima jumlah sinar matahari yang berbeda-beda sepanjang tahun."
-            },
-            {
-                question: "Planet yang memiliki cincin terlihat jelas adalah?",
-                options: [
-                    "Jupiter",
-                    "Saturnus",
-                    "Uranus",
-                    "Neptunus"
-                ],
-                correct: 1,
-                explanation: "Saturnus memiliki sistem cincin yang paling mencolok dan terlihat jelas dibandingkan planet lain di Tata Surya."
-            },
-            {
-                question: "Apa itu lubang hitam?",
-                options: [
-                    "Wilayah di ruang angkasa yang tidak ada apa-apa",
-                    "Wilayah dengan gravitasi sangat kuat sehingga tidak ada yang bisa keluar",
-                    "Gugusan bintang yang sangat gelap",
-                    "Awan gas yang sangat dingin"
-                ],
-                correct: 1,
-                explanation: "Lubang hitam terbentuk ketika bintang sangat besar runtuh secara gravitasi, menciptakan medan gravitasi yang sangat kuat hingga bahkan cahaya tidak bisa lolos."
-            },
-            {
-                question: "Fenomena gerhana matahari terjadi ketika?",
-                options: [
-                    "Bumi berada di antara Matahari dan Bulan",
-                    "Bulan berada di antara Matahari dan Bumi",
-                    "Matahari berada di antara Bumi dan Bulan",
-                    "Bumi bergerak menjauh dari Matahari"
-                ],
-                correct: 1,
-                explanation: "Gerhana matahari terjadi ketika Bulan menghalangi sinar Matahari sehingga bayangannya jatuh ke permukaan Bumi."
-            },
-            {
-                question: "Berapa jumlah planet di Tata Surya setelah Pluto tidak dianggap planet?",
-                options: [
-                    "7",
-                    "8",
-                    "9",
-                    "10"
-                ],
-                correct: 1,
-                explanation: "Pada tahun 2006, IAU menetapkan bahwa Pluto termasuk sebagai planet katai, sehingga jumlah planet di Tata Surya menjadi 8 buah."
-            },
-            {
-                question: "Apa nama satelit alami Bumi?",
-                options: [
-                    "Fobos",
-                    "Deimos",
-                    "Bulan",
-                    "Io"
-                ],
-                correct: 2,
-                explanation: "Bulan adalah satu-satunya satelit alami Bumi yang berjarak sekitar 384.400 km dari permukaan Bumi."
-            },
-            {
-                question: "Planet yang dikenal sebagai planet merah adalah?",
-                options: [
-                    "Mars",
-                    "Venus",
-                    "Mercurius",
-                    "Jupiter"
-                ],
-                correct: 0,
-                explanation: "Mars disebut planet merah karena permukaannya yang kaya akan oksida besi (baja karatan) yang memberikan warna kemerahan."
-            },
-            {
-                question: "Apa itu supernova?",
-                options: [
-                    "Bintang baru yang mulai terbentuk",
-                    "Ledakan hebat dari bintang yang mencapai akhir hidupnya",
-                    "Awan gas dan debu di ruang angkasa",
-                    "Gugusan bintang muda"
-                ],
-                correct: 1,
-                explanation: "Supernova adalah ledakan ekstrim yang terjadi ketika bintang besar tidak dapat lagi menahan diri terhadap gaya gravitasi sendiri, melepaskan energi yang sangat besar."
-            },
-            {
-                question: "Planet terpanas di Tata Surya adalah?",
-                options: [
-                    "Matahari",
-                    "Mercurius",
-                    "Venus",
-                    "Mars"
-                ],
-                correct: 2,
-                explanation: "Meskipun lebih jauh dari Matahari dibandingkan Mercurius, Venus memiliki suhu permukaan rata-rata sekitar 462°C akibat efek rumah kaca yang ekstrem."
-            },
-            {
-                question: "Berapa lama waktu yang dibutuhkan cahaya Matahari untuk sampai ke Bumi?",
-                options: [
-                    "Sekitar 8 menit",
-                    "Sekitar 1 jam",
-                    "Sekitar 1 hari",
-                    "Sekitar 1 bulan"
-                ],
-                correct: 0,
-                explanation: "Cahaya Matahari bergerak dengan kecepatan sekitar 300.000 km/detik dan membutuhkan waktu sekitar 8 menit 20 detik untuk sampai ke Bumi."
-            },
-            {
-                question: "Apa yang membentuk cincin Saturnus?",
-                options: [
-                    "Batu besar dan es",
-                    "Debu, batu kecil, dan partikel es",
-                    "Gas hidrogen dan helium",
-                    "Sisa-sisa bintang yang hancur"
-                ],
-                correct: 1,
-                explanation: "Cincin Saturnus terbentuk dari milyaran partikel kecil mulai dari ukuran debu hingga batu seukuran mobil, sebagian besar terdiri dari es air."
-            },
-            {
-                question: "Galaksi Andromeda akan bertabrakan dengan Galaksi Bima Sakti dalam waktu sekitar?",
-                options: [
-                    "1 juta tahun mendatang",
-                    "4 miliar tahun mendatang",
-                    "10 miliar tahun mendatang",
-                    "Tidak akan pernah bertabrakan"
-                ],
-                correct: 1,
-                explanation: "Galaksi Andromeda sedang bergerak mendekati Galaksi Bima Sakti dengan kecepatan sekitar 110 km/detik dan diperkirakan akan bertabrakan dalam waktu sekitar 4 miliar tahun mendatang."
-            },
-            {
-                question: "Apa nama misi luar angkasa pertama yang mendaratkan manusia di Bulan?",
-                options: [
-                    "Apollo 8",
-                    "Apollo 11",
-                    "Gemini 4",
-                    "Mercury 6"
-                ],
-                correct: 1,
-                explanation: "Misi Apollo 11 pada Juli 1969 berhasil mendaratkan Neil Armstrong dan Buzz Aldrin di permukaan Bulan, menjadi manusia pertama yang menginjakkan kaki di sana."
-            },
-            {
-                question: "Planet yang paling jauh dari Matahari di Tata Surya adalah?",
-                options: [
-                    "Neptunus",
-                    "Uranus",
-                    "Pluto",
-                    "Saturnus"
-                ],
-                correct: 0,
-                explanation: "Setelah Pluto diklasifikasikan sebagai planet katai, Neptunus menjadi planet terjauh dari Matahari dengan jarak rata-rata sekitar 4.504 juta km."
-            },
-            {
-                question: "Apa itu asteroid?",
-                options: [
-                    "Benda langit yang mengorbit sekitar Matahari dan lebih kecil dari planet",
-                    "Bintang yang sudah mati",
-                    "Awan gas di ruang angkasa",
-                    "Satelit alami dari planet"
-                ],
-                correct: 0,
-                explanation: "Asteroid adalah benda batuan atau logam yang mengorbit Matahari, sebagian besar berada di sabuk asteroid antara Mars dan Jupiter."
-            },
-            {
-                question: "Fenomena apa yang menyebabkan terjadinya pasang surut di laut?",
-                options: [
-                "Gravitasi Matahari saja",
-                "Gravitasi Bulan saja",
-                "Gabungan gravitasi Bulan dan Matahari",
-                "Pergerakan lempeng tektonik"
-            ],
-            correct: 2,
-            explanation: "Pasang surut disebabkan oleh gaya tarik gravitasi dari Bulan dan Matahari terhadap permukaan air Bumi."
-        },
-        {
-            question: "Apa itu kuasar?",
-            options: [
-                "Bintang muda yang sangat terang",
-                "Inti galaksi aktif yang sangat terang",
-                "Lubang hitam kecil di ruang angkasa",
-                "Gugusan bintang yang jauh sekali"
-            ],
-            correct: 1,
-            explanation: "Kuasar adalah inti galaksi yang sangat aktif dan terang, dipicu oleh materi yang jatuh ke lubang hitam supermasif di pusatnya."
-        }
-    ];
-
-    // Variabel Global
-    let currentQuestionIndex = 0;
-    let score = 0;
-    let userAnswers = [];
-
-    // Elemen DOM yang Digunakan
-    const introPage = document.getElementById('intro-page');
-    const quizPage = document.getElementById('quiz-page');
-    const resultPage = document.getElementById('result-page');
-    const startQuizBtn = document.getElementById('start-quiz');
-    const nextQuestionBtn = document.getElementById('next-question');
-    const questionText = document.getElementById('question-text');
-    const answerOptions = document.getElementById('answer-options');
-    const currentQuestionEl = document.getElementById('current-question');
-    const currentScoreEl = document.getElementById('current-score');
-    const progressBar = document.getElementById('progress-bar');
-    const resultIcon = document.getElementById('result-icon');
-    const resultText = document.getElementById('result-text');
-    const finalScoreEl = document.getElementById('final-score');
-    const answerSummary = document.getElementById('answer-summary');
-    const restartQuizBtn = document.getElementById('restart-quiz');
-
-    // Fungsi Inisialisasi Event Listener
-    function initEvents() {
-        startQuizBtn.addEventListener('click', startQuiz);
-        nextQuestionBtn.addEventListener('click', goToNextQuestion);
-        restartQuizBtn.addEventListener('click', restartQuiz);
-    }
-
-    // Fungsi Mulai Quiz
-    function startQuiz() {
-        introPage.classList.add('hidden');
-        quizPage.classList.remove('hidden');
-        loadQuestion();
-    }
-
-    // Fungsi Memuat Soal ke Halaman
-    function loadQuestion() {
-        const currentQuestion = questions[currentQuestionIndex];
-        
-        // Update Konten Soal
-        questionText.textContent = `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
-        currentQuestionEl.textContent = `Soal ${currentQuestionIndex + 1}/20`;
-        currentScoreEl.textContent = `Skor: ${score}`;
-        
-        // Update Progress Bar
-        const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
-        progressBar.style.width = `${progressPercentage}%`;
-
-        // Kosongkan Opsi Jawaban Sebelum Memuat Yang Baru
-        answerOptions.innerHTML = '';
-
-        // Buat Opsi Jawaban - PERBAIKAN DI SINI!
-        currentQuestion.options.forEach((option, index) => {
-            // Buat elemen utama untuk setiap opsi
-            const optionWrapper = document.createElement('div');
-            optionWrapper.className = 'border border-gray-600 rounded-xl p-4 card-hover cursor-pointer';
-            optionWrapper.dataset.optionIndex = index; // Simpan index di atribut data
-
-            // Buat konten dalam opsi
-            const optionContent = document.createElement('div');
-            optionContent.className = 'flex items-center gap-3';
-            optionContent.innerHTML = `
-                <span class="w-6 h-6 flex items-center justify-center rounded-full border border-gray-500">${index + 1}</span>
-                <span>${option}</span>
-            `;
-
-            // Tambahkan konten ke wrapper
-            optionWrapper.appendChild(optionContent);
-
-            // Tambahkan event listener ke wrapper
-            optionWrapper.addEventListener('click', function() {
-                // Ambil index dari atribut data
-                const selectedIdx = parseInt(this.dataset.optionIndex);
-                selectAnswer(selectedIdx);
-            });
-
-            // Tambahkan ke halaman
-            answerOptions.appendChild(optionWrapper);
-        });
-
-        // Sembunyikan Tombol Lanjut Sampai Jawaban Dipilih
-        nextQuestionBtn.classList.add('hidden');
-    }
-
-    // Fungsi Ketika Jawaban Dipilih
-    function selectAnswer(selectedIndex) {
-        const currentQuestion = questions[currentQuestionIndex];
-        const allOptionCards = answerOptions.querySelectorAll('div[data-option-index]');
-        
-        // Nonaktifkan Semua Opsi Setelah Dipilih
-        allOptionCards.forEach(card => card.style.pointerEvents = 'none');
-
-        // Tandai Jawaban yang Dipilih
-        allOptionCards[selectedIndex].classList.add('answer-selected');
-        userAnswers.push(selectedIndex);
-
-        // Cek Apakah Jawaban Benar
-        if (selectedIndex === currentQuestion.correct) {
-            score += 5; // Setiap Soal Nilai 5 Poin
-            currentScoreEl.textContent = `Skor: ${score}`;
-            allOptionCards[selectedIndex].innerHTML += `<div class="mt-2 text-green-500 flex items-center gap-2"><i class="fa fa-check"></i> Benar!</div>`;
-        } else {
-            // Tandai Jawaban Salah dan Tampilkan Jawaban Benar
-            allOptionCards[selectedIndex].innerHTML += `<div class="mt-2 text-red-500 flex items-center gap-2"><i class="fa fa-times"></i> Salah.</div>`;
-            allOptionCards[currentQuestion.correct].classList.add('answer-correct');
-            allOptionCards[currentQuestion.correct].innerHTML += `<div class="mt-2 text-green-500 flex items-center gap-2"><i class="fa fa-check"></i> Jawaban benar!</div>`;
-        }
-
-        // Tampilkan Tombol Lanjut
-        nextQuestionBtn.classList.remove('hidden');
-    }
-
-    // Fungsi Pergi ke Soal Selanjutnya
-    function goToNextQuestion() {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < questions.length) {
-            loadQuestion();
-        } else {
-            displayResults();
-        }
-    }
-
-    // Fungsi Tampilkan Hasil Akhir
-    function displayResults() {
-        quizPage.classList.add('hidden');
-        resultPage.classList.remove('hidden');
-
-        // Hitung Persentase Skor
-        const scorePercentage = (score / 100) * 100;
-
-        // Atur Ikon dan Pesan Hasil
-        if (scorePercentage >= 80) {
-            resultIcon.className = 'fa fa-trophy text-yellow-500';
-            resultText.textContent = 'Luar biasa! Kamu ahli dalam Astronomi!';
-        } else if (scorePercentage >= 60) {
-            resultIcon.className = 'fa fa-star text-blue-500';
-            resultText.textContent = 'Bagus sekali! Kamu sudah paham banyak tentang Alam Semesta.';
-        } else if (scorePercentage >= 40) {
-            resultIcon.className = 'fa fa-thumbs-up text-green-500';
-            resultText.textContent = 'Cukup baik! Kamu bisa belajar lebih banyak lagi tentang Astronomi.';
-        } else {
-            resultIcon.className = 'fa fa-lightbulb-o text-accent';
-            resultText.textContent = 'Jangan menyerah! Yuk pelajari Astronomi lebih dalam lagi.';
-        }
-
-        // Tampilkan Skor Akhir
-        finalScoreEl.textContent = `${score}/100`;
-
-        // Tampilkan Ringkasan Semua Jawaban
-        answerSummary.innerHTML = '';
-        questions.forEach((q, idx) => {
-            const isCorrect = userAnswers[idx] === q.correct;
-            const summaryCard = document.createElement('div');
-            summaryCard.className = 'p-3 rounded-lg bg-dark/50 border border-gray-700';
-            summaryCard.innerHTML = `
-                <div class="flex justify-between items-start mb-2">
-                    <span class="font-medium">${idx + 1}. ${q.question}</span>
-                    <span class="${isCorrect ? 'text-green-500' : 'text-red-500'} font-bold">
-                        ${isCorrect ? '✓ BENAR' : '✗ SALAH'}
-                    </span>
-                </div>
-                <div class="text-sm mb-1">
-                    <span class="text-gray-400">Kamu jawab:</span> ${q.options[userAnswers[idx]]}
-                </div>
-                <div class="text-sm mb-2">
-                    <span class="text-gray-400">Jawaban benar:</span> ${q.options[q.correct]}
-                </div>
-                <div class="text-xs text-secondary italic">${q.explanation}</div>
-            `;
-            answerSummary.appendChild(summaryCard);
-        });
-    }
-
-    // Fungsi Ulangi Quiz
-    function restartQuiz() {
-        // Reset Semua Nilai
-        currentQuestionIndex = 0;
-        score = 0;
-        userAnswers = [];
-        
-        // Kembali ke Halaman Intro
-        resultPage.classList.add('hidden');
-        introPage.classList.remove('hidden');
-    }
-
-    // Jalankan Fungsi Inisialisasi Ketika Halaman Dimuat
-    window.addEventListener('load', initEvents);
-</script>
+    <footer>
+        <p>&copy; 2026 Teka-Teki Bertele-Tele</p>
+    </footer>
 </body>
 </html>
-                   
