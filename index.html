@@ -3,172 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Map - Penunjuk Arah Semua Lokasi</title>
+    <title>Map - Mirip Google Maps</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', Arial, sans-serif; }
-        body { background: #f5f5f5; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+        body { background: #fff; }
 
-        /* Peta Penuh Layar */
         #map { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
         }
+        .leaflet-tile { image-rendering: optimizeQuality; }
+        .leaflet-container { overflow: hidden; cursor: grab; }
+        .leaflet-dragging { cursor: grabbing; }
 
-        /* Gaya Garis Rute Biru Kayak Google Maps */
-        .route-line {
-            stroke: #4285F4 !important; /* Warna biru khas Google Maps */
-            stroke-width: 5px !important;
-            stroke-opacity: 0.8 !important;
-            stroke-linecap: round !important;
+        .leaflet-control-zoom {
+            top: 10px !important; left: 10px !important;
+            background: #fff; border-radius: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            width: 40px; border: none;
         }
-        .route-alternative {
-            stroke: #5F6368 !important; /* Warna abu untuk rute alternatif */
-            stroke-width: 4px !important;
+        .leaflet-control-zoom a {
+            background: #fff; color: #202124; border: none; font-size: 18px;
         }
+        .leaflet-control-zoom-in { border-top-left-radius: 24px !important; border-top-right-radius: 24px !important; }
+        .leaflet-control-zoom-out { border-bottom-left-radius: 24px !important; border-bottom-right-radius: 24px !important; border-top: 1px solid #ebebeb !important; }
+        .leaflet-attribution-control { display: none !important; }
 
-        /* Panel Kontrol Rute */
+        #main-panel {
+            position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 10;
+            background: #fff; width: 580px; max-width: 90%;
+            border-radius: 32px; box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+            display: flex; align-items: center; padding: 4px;
+        }
+        #search-input {
+            flex: 1; border: none; outline: none; padding: 10px 20px;
+            font-size: 16px; color: #202124;
+        }
+        #search-input::placeholder { color: #80868b; }
+        .panel-buttons { display: flex; gap: 2px; margin-right: 4px; }
+        .panel-btn {
+            width: 40px; height: 40px; border-radius: 50%; border: none;
+            background: transparent; cursor: pointer; font-size: 18px; color: #5f6368;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .panel-btn:hover { background: #f1f3f4; }
+        #route-tab-btn.active { background: #f8f9fa; color: #1a73e8; }
+
         #route-panel {
-            position: absolute; top: 10px; left: 10px; z-index: 10;
-            background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            width: 300px; max-width: 90%;
+            position: absolute; top: 70px; left: 50%; transform: translateX(-50%); z-index: 10;
+            background: #fff; width: 580px; max-width: 90%;
+            border-radius: 16px; box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+            padding: 15px 20px; display: none;
         }
-        #route-panel h3 { margin-bottom: 10px; color: #333; font-size: 18px; text-align: center; }
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 12px; color: #666; margin-bottom: 4px; }
-        .form-group input, .form-group select {
-            width: 100%; padding: 9px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; color: #333;
+        #route-panel.active { display: block; }
+        .route-form { display: flex; flex-direction: column; gap: 12px; }
+        .route-row {
+            display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid #ebebeb; padding-bottom: 8px;
         }
-        #calculate-route-btn {
-            width: 100%; padding: 10px; background: #4285F4; color: #fff; border: none; border-radius: 4px; font-size: 15px; cursor: pointer;
+        .route-icon { font-size: 20px; color: #5f6368; }
+        .route-input {
+            flex: 1; border: none; outline: none; font-size: 16px; color: #202124;
         }
-        #calculate-route-btn:hover { background: #3367D6; }
+        .remove-btn { border: none; background: transparent; color: #5f6368; cursor: pointer; padding: 5px; }
+        .use-my-location-btn {
+            border: none; background: transparent; color: #1a73e8; cursor: pointer;
+            font-size: 14px; font-weight: 500; margin-left: 5px;
+        }
+        .transport-options { display: flex; gap: 10px; margin-top: 5px; }
+        .transport-btn {
+            border: none; background: transparent; padding: 8px 12px;
+            border-radius: 8px; cursor: pointer; font-size: 14px; color: #5f6368;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .transport-btn.active { background: #e8f0fe; color: #1a73e8; font-weight: 500; }
+        #show-route-btn {
+            width: 100%; background: #1a73e8; color: #fff; border: none;
+            border-radius: 8px; padding: 12px; font-size: 16px; font-weight: 500; cursor: pointer;
+        }
+        #show-route-btn:hover { background: #1557b0; }
 
-        /* Tombol GPS */
         #gps-btn {
             position: absolute; bottom: 20px; right: 20px; z-index: 10;
-            width: 45px; height: 45px; border-radius: 50%; background: #fff; border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;
+            width: 50px; height: 50px; border-radius: 50%; background: #fff;
+            border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            cursor: pointer; font-size: 22px; color: #1a73e8;
+            display: flex; align-items: center; justify-content: center;
         }
-        #gps-btn:hover { background: #f8f8f8; }
 
-        /* Marker Lokasi */
-        .user-location-icon {
-            background: url('https://cdn-icons-png.flaticon.com/512/149/149060.png') no-repeat center;
-            background-size: 90%; width: 35px; height: 35px;
+        #route-info-panel {
+            position: absolute; bottom: 80px; right: 20px; z-index: 10;
+            background: #fff; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            padding: 15px; display: none; min-width: 200px;
         }
-        .start-icon {
-            background: url('https://cdn-icons-png.flaticon.com/512/291/291659.png') no-repeat center;
-            background-size: 90%; width: 30px; height: 30px;
+        #route-info-panel.active { display: block; }
+        .info-item {
+            display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;
         }
-        .end-icon {
-            background: url('https://cdn-icons-png.flaticon.com/512/291/291660.png') no-repeat center;
-            background-size: 90%; width: 30px; height: 30px;
-        }
+        .info-label { color: #5f6368; }
+        .info-value { color: #202124; font-weight: 500; }
+
+        .gm-route-line { stroke: #1a73e8 !important; stroke-width: 6px !important; stroke-opacity: 0.8 !important; }
+        .gm-alternative-line { stroke: #5f6368 !important; stroke-width: 5px !important; stroke-opacity: 0.6 !important; }
+        .gm-start-icon { background: url('https://maps.gstatic.com/mapfiles/ms/icons/green-dot.png') no-repeat center; background-size: 100%; width: 32px; height: 32px; }
+        .gm-end-icon { background: url('https://maps.gstatic.com/mapfiles/ms/icons/red-dot.png') no-repeat center; background-size: 100%; width: 32px; height: 32px; }
+        .gm-user-icon { background: url('https://maps.gstatic.com/mapfiles/ms/icons/blue-dot.png') no-repeat center; background-size: 100%; width: 32px; height: 32px; }
     </style>
 </head>
 <body>
     <div id="map"></div>
-    <button id="gps-btn">📍</button>
+
+    <div id="main-panel">
+        <input type="text" id="search-input" placeholder="Cari lokasi atau alamat">
+        <div class="panel-buttons">
+            <button class="panel-btn" id="route-tab-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="13" x2="23" y2="18"></line><line x1="7" y1="21" x2="18" y2="13"></line><polyline points="8.5 21 3 12 8.5 3 17 12 8.5 21"></polyline></svg></button>
+            <button class="panel-btn" id="clear-btn">✕</button>
+        </div>
+    </div>
 
     <div id="route-panel">
-        <h3>Penunjuk Arah</h3>
-        <div class="form-group">
-            <label for="start-point">Dari:</label>
-            <input type="text" id="start-point" placeholder="Contoh: Jakarta, Bandung">
+        <form class="route-form">
+            <div class="route-row">
+                <span class="route-icon">🟢</span>
+                <input type="text" class="route-input" id="start-location" placeholder="Dari mana?">
+                <button type="button" class="remove-btn">✕</button>
+                <button type="button" class="use-my-location-btn" id="use-my-location-btn">Gunakan lokasi saya</button>
+            </div>
+            <div class="route-row">
+                <span class="route-icon">🔴</span>
+                <input type="text" class="route-input" id="end-location" placeholder="Kemana?">
+                <button type="button" class="remove-btn">✕</button>
+            </div>
+            <div class="transport-options">
+                <button type="button" class="transport-btn active" data-mode="driving-car">🚗 Mobil</button>
+                <button type="button" class="transport-btn" data-mode="cycling">🏍️ Motor</button>
+                <button type="button" class="transport-btn" data-mode="walking">🚶 Jalan Kaki</button>
+            </div>
+            <button type="button" id="show-route-btn">Tampilkan Rute</button>
+        </form>
+    </div>
+
+    <button id="gps-btn">📍</button>
+    <div id="route-info-panel">
+        <div class="info-item">
+            <span class="info-label">Jarak:</span>
+            <span class="info-value" id="distance-info">-</span>
         </div>
-        <div class="form-group">
-            <label for="end-point">Ke:</label>
-            <input type="text" id="end-point" placeholder="Contoh: Surabaya, Yogyakarta">
+        <div class="info-item">
+            <span class="info-label">Waktu:</span>
+            <span class="info-value" id="time-info">-</span>
         </div>
-        <div class="form-group">
-            <label for="transport-mode">Moda:</label>
-            <select id="transport-mode">
-                <option value="driving-car">Mobil</option>
-                <option value="cycling">Motor</option>
-                <option value="walking">Jalan Kaki</option>
-            </select>
+        <div class="info-item">
+            <span class="info-label">Moda:</span>
+            <span class="info-value" id="mode-info">-</span>
         </div>
-        <button id="calculate-route-btn">Tampilkan Rute</button>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
     <script>
-        // Inisialisasi Peta
+        // Inisialisasi Peta - GAMBAR MAP TIDAK DIUBAH
         const map = L.map('map').setView([-2.5489, 118.0149], 5);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
+        // Variabel Global
         let routingControl = null;
         let userMarker = null;
+        let selectedMode = 'driving-car';
 
-        // Fitur GPS
+        // Toggle Panel Rute
+        document.getElementById('route-tab-btn').addEventListener('click', () => {
+            const routePanel = document.getElementById('route-panel');
+            routePanel.classList.toggle('active');
+            document.getElementById('route-tab-btn').classList.toggle('active');
+        });
+
+        // Clear Semua
+        document.getElementById('clear-btn').addEventListener('click', () => {
+            document.getElementById('search-input').value = '';
+            document.getElementById('start-location').value = '';
+            document.getElementById('end-location').value = '';
+            if (routingControl) {
+                map.removeControl(routingControl);
+                routingControl = null;
+            }
+            if (userMarker) {
+                map.removeLayer(userMarker);
+                userMarker = null;
+            }
+            document.getElementById('route-info-panel').classList.remove('active');
+        });
+
+        // Pilih Moda Transportasi
+        document.querySelectorAll('.transport-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.transport-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedMode = btn.dataset.mode;
+            });
+        });
+
+        // Tombol "Gunakan Lokasi Saya" di Kolom Awal
+        document.getElementById('use-my-location-btn').addEventListener('click', () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        const lat = pos.coords.latitude;
+                        const lon = pos.coords.longitude;
+
+                        // Ambil nama lokasi lengkap
+                        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+                            .then(res => res.json())
+                            .then(data => {
+                                document.getElementById('start-location').value = data.display_name;
+                                
+                                // Tampilkan marker lokasi sendiri
+                                if (userMarker) map.removeLayer(userMarker);
+                                userMarker = L.marker([lat, lon], { icon: L.divIcon({ className: 'gm-user-icon' }) }).addTo(map);
+                                userMarker.bindPopup('Lokasi Anda Sekarang!').openPopup();
+                                map.setView([lat, lon], 15);
+                            });
+                    },
+                    (err) => alert(`Gagal dapatkan lokasi: ${err.message}`)
+                );
+            } else {
+                alert('Browser tidak mendukung lokasi!');
+            }
+        });
+
+        // Tombol GPS Luar
         document.getElementById('gps-btn').addEventListener('click', () => {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (pos) => {
                         const lat = pos.coords.latitude;
                         const lon = pos.coords.longitude;
-                        
-                        if (userMarker) map.removeLayer(userMarker);
-                        userMarker = L.marker([lat, lon], { icon: L.divIcon({ className: 'user-location-icon' }) }).addTo(map);
-                        userMarker.bindPopup('Lokasi Anda Sekarang!').openPopup();
-                        map.setView([lat, lon], 15);
 
-                        // Isi kolom "Dari" dengan lokasi saat ini
                         fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
                             .then(res => res.json())
-                            .then(data => document.getElementById('start-point').value = data.display_name);
+                            .then(data => {
+                                document.getElementById('start-location').value = data.display_name;
+                                
+                                if (userMarker) map.removeLayer(userMarker);
+                                userMarker = L.marker([lat, lon], { icon: L.divIcon({ className: 'gm-user-icon' }) }).addTo(map);
+                                userMarker.bindPopup('Lokasi Anda Sekarang!').openPopup();
+                                map.setView([lat, lon], 15);
+                            });
                     },
                     (err) => alert(`Gagal dapatkan lokasi: ${err.message}`)
                 );
             } else {
-                alert('Browser tidak mendukung fitur lokasi!');
+                alert('Browser tidak mendukung lokasi!');
             }
         });
 
-        // Fitur Hitung Rute
-        document.getElementById('calculate-route-btn').addEventListener('click', () => {
-            const start = document.getElementById('start-point').value.trim();
-            const end = document.getElementById('end-point').value.trim();
-            const mode = document.getElementById('transport-mode').value;
+        // Tampilkan Rute
+        document.getElementById('show-route-btn').addEventListener('click', () => {
+            const start = document.getElementById('start-location').value.trim();
+            const end = document.getElementById('end-location').value.trim();
 
             if (!start || !end) {
-                alert('Isi kolom Dari dan Ke terlebih dahulu!');
+                alert('Isi kolom "Dari mana?" dan "Kemana?" terlebih dahulu!');
                 return;
             }
 
             // Hapus rute lama
             if (routingControl) map.removeControl(routingControl);
 
-            // Buat rute baru dengan garis biru kayak Google Maps
+            // Buat rute baru
             routingControl = L.Routing.control({
-                waypoints: [L.latLng(start), L.latLng(end)],
+                waypoints:                [L.latLng(start), L.latLng(end)],
                 routeWhileDragging: true,
                 geocoder: L.Control.Geocoder.nominatim(),
-                profile: mode,
+                profile: selectedMode,
                 formatter: new L.Routing.Formatter({ units: 'metric', language: 'id' }),
                 lineOptions: {
-                    styles: [{ className: 'route-line' }] // Garis utama biru
+                    styles: [{ className: 'gm-route-line' }]
                 },
                 altLineOptions: {
-                    styles: [{ className: 'route-alternative' }] // Rute alternatif abu
+                    styles: [{ className: 'gm-alternative-line' }]
                 },
                 createMarker: (i, wp) => {
-                    const iconClass = i === 0 ? 'start-icon' : 'end-icon';
-                    return L.marker(wp.latLng, { icon: L.divIcon({ className: iconClass }) });
-                }
+                    const iconClass = i === 0 ? 'gm-start-icon' : 'gm-end-icon';
+                    return L.marker(wp.latLng, { icon: L.divIcon({ className: iconClass }) })
+                        .bindPopup(i === 0 ? `Awal: ${start}` : `Tujuan: ${end}`);
+                },
+                showAlternatives: true,
+                addWaypoints: false
             }).addTo(map);
 
-            // Tampilkan info jarak dan waktu
+            // Tampilkan info rute
             routingControl.on('routesfound', (e) => {
                 const route = e.routes[0];
                 const jarak = (route.summary.totalDistance / 1000).toFixed(1);
                 const waktu = Math.round(route.summary.totalTime / 60);
-                alert(`✅ Rute siap!\nJarak: ${jarak} km\nWaktu perkiraan: ${waktu} menit`);
+                const modeText = selectedMode === 'driving-car' ? 'Mobil' : 
+                                 selectedMode === 'cycling' ? 'Motor' : 'Jalan Kaki';
+
+                document.getElementById('distance-info').textContent = `${jarak} km`;
+                document.getElementById('time-info').textContent = `${waktu} menit`;
+                document.getElementById('mode-info').textContent = modeText;
+                document.getElementById('route-info-panel').classList.add('active');
+
+                // Zoom otomatis ke area rute
+                map.fitBounds(route.coordinates, { padding: [60, 60] });
             });
+
+            // Jika rute tidak ditemukan
+            routingControl.on('routingerror', () => {
+                alert('Maaf, rute tidak bisa ditemukan. Cek lagi lokasi atau coba moda transportasi lain!');
+            });
+        });
+
+        // Hapus input rute
+        document.querySelectorAll('.remove-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.target.parentElement.querySelector('.route-input').value = '';
+            });
+        });
+
+        // Pencarian lokasi langsung
+        document.getElementById('search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = e.target.value.trim();
+                if (!query) return;
+
+                L.Control.Geocoder.nominatim().geocode(query, (results) => {
+                    if (results.length > 0) {
+                        const loc = results[0].center;
+                        map.setView(loc, 15, { animate: true });
+                        
+                        if (userMarker) map.removeLayer(userMarker);
+                        userMarker = L.marker(loc, { icon: L.divIcon({ className: 'gm-user-icon' }) }).addTo(map);
+                        userMarker.bindPopup(results[0].name).openPopup();
+                    } else {
+                        alert('Lokasi tidak ditemukan!');
+                    }
+                });
+            }
         });
     </script>
 </body>
 </html>
+
