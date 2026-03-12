@@ -1,95 +1,206 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teka-Teki Bertele-Tele #3</title>
+    <title>NUKEMAP - Google Maps Style (No API Key)</title>
+    <!-- Gunakan Leaflet dengan lapisan peta yang sama gaya Google Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', Arial, sans-serif; }
+        body { background: #f5f5f5; }
+
+        /* Peta Penuh Layar */
+        #map { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 1;
         }
-        body {
-            background-color: #f0f8ff;
-            color: #2c3e50;
-            line-height: 1.6;
+
+        /* Gaya Peta Mirip Google Maps */
+        .leaflet-tile {
+            image-rendering: optimizeQuality;
         }
-        header {
-            background-color: #3498db;
-            color: white;
-            padding: 1.5rem 1rem;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        .leaflet-control-zoom {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+            border: none !important;
         }
-        header h1 {
-            font-size: 2rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .leaflet-control-zoom a {
+            background: #fff;
+            color: #333;
+            border-bottom: 1px solid #eee !important;
+            border-radius: 0 !important;
         }
-        .container {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+        .leaflet-control-zoom a:hover {
+            background: #f8f8f8;
         }
-        .teka-teki-card {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        .leaflet-control-zoom-in {
+            border-top-left-radius: 8px !important;
+            border-top-right-radius: 8px !important;
         }
-        .teka-teki-card h2 {
-            color: #3498db;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #ecf0f1;
-            padding-bottom: 0.5rem;
+        .leaflet-control-zoom-out {
+            border-bottom-left-radius: 8px !important;
+            border-bottom-right-radius: 8px !important;
         }
-        .soal {
-            font-size: 1.1rem;
-            white-space: pre-line;
+        .leaflet-attribution-control {
+            background: rgba(255,255,255,0.8);
+            border-radius: 4px;
+            font-size: 11px;
+            color: #666;
         }
-        footer {
-            background-color: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            margin-top: 2rem;
+
+        /* Tombol GPS Mirip Google Maps */
+        #gps-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            border: none;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #333;
+            transition: background 0.2s ease;
+        }
+        #gps-btn:hover {
+            background: #f8f8f8;
+        }
+        #gps-btn:active {
+            background: #f0f0f0;
+        }
+
+        /* Marker Lokasi Pengguna */
+        .user-location-icon {
+            background: url('https://cdn-icons-png.flaticon.com/512/149/149060.png') no-repeat center center;
+            background-size: 90% 90%;
+            width: 35px;
+            height: 35px;
+            animation: pulse-location 2s infinite alternate;
+        }
+        @keyframes pulse-location {
+            from { opacity: 0.7; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* Panel Judul NUKEMAP */
+        #title-panel {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.9);
+            padding: 8px 15px;
+            border-radius: 20px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+            z-index: 10;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Teka-Teki Bertele-Tele</h1>
-    </header>
+    <div id="title-panel">NUKEMAP - Google Maps Style</div>
+    <div id="map"></div>
+    <button id="gps-btn">📍</button>
 
-    <div class="container">
-        <div class="teka-teki-card">
-            <h2>Teka-Teki #3: Petualangan Jelajah Dunia Bu Lina</h2>
-            <div class="soal">
-Pada hari Rabu tanggal 28 Februari tahun depan, tepat pukul 04.45 WIB dari Bandara Internasional Husein Sastranegara Kota Bandung, Bu Lina yang berusia 42 tahun dan bekerja sebagai dosen sejarah di salah satu universitas negeri di Jawa Barat, memulai perjalanan jelajahnya ke sebuah negara di benua yang dikenal dengan keanekaragaman hayatinya. Dia terbang dengan maskapai penerbangan nasional menggunakan pesawat jenis Airbus A330-300 dengan nomor penerbangan GA-127, dan membawa koper berwarna biru tua yang diberi label nama lengkapnya serta dua tas tangan berisi buku-buku sejarah negara tujuan dan kamera DSLR untuk dokumentasi.
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        // Inisialisasi Peta dengan Lapisan Mirip Google Maps (Tidak Perlu API Key)
+        const map = L.map('map').setView([-6.1754, 106.8272], 13); // Default lokasi Jakarta
 
-Perjalanan penerbangan memakan waktu sekitar 12 jam dengan jeda singkat selama 90 menit di bandara antarbangsa di negara tetangga untuk melakukan pergantian awak pesawat dan pemberian bahan bakar tambahan. Selama jeda tersebut, Bu Lina membeli makanan ringan berupa kue kering khas daerah setempat dan minuman jus buah nangka segar di gerai makanan bandara yang terletak di lorong nomor 17 lantai dasar.
+        // Gunakan Lapisan Peta yang Sama Gaya Google Maps dari OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19,
+            minZoom: 1,
+            tileSize: 256
+        }).addTo(map);
 
-Setelah tiba di bandara utama negara tujuan pukul 08.15 waktu lokal, Bu Lina disambut oleh teman lamanya yang bernama Carlos Martinez, seorang ahli budaya yang telah tinggal di negara tersebut selama 15 tahun dan berkeluarga dengan penduduk lokal. Carlos mengantarnya menggunakan mobil hatchback warna putih tahun produksi 2023 menuju hotel berbintang 4 yang terletak di pusat kota ibukota, dengan melewati jalan raya yang menghubungkan bandara dengan kota dan melalui beberapa persimpangan yang dihiasi dengan taman bunga warna-warni serta patung-patung bersejarah.
+        // Variabel untuk Marker Lokasi Pengguna
+        let userMarker = null;
 
-Selama tinggal di sana selama 2 minggu, Bu Lina mengunjungi berbagai tempat bersejarah dan objek wisata: pertama ke sebuah monumen nasional yang berbentuk menara setinggi lebih dari 100 meter dengan kubah yang dihiasi emas di bagian atasnya, kemudian ke taman nasional yang menjadi rumah bagi hewan khas negara tersebut seperti jaguar, anaconda, dan burung harpy eagle. Dia juga mengunjungi pasar tradisional yang menjual berbagai kerajinan tangan seperti anyaman rotan, ukiran kayu, dan tekstil dengan corak khas daerah pegunungan.
+        // Fitur GPS - Temukan Lokasi Pengguna
+        const gpsBtn = document.getElementById('gps-btn');
+        
+        gpsBtn.addEventListener('click', () => {
+            // Tampilkan loading pada tombol
+            gpsBtn.textContent = '🔄';
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    // Jika Sukses Mendapatkan Lokasi
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
 
-Pada hari ke-10 perjalanan, Bu Lina menghadiri upacara adat yang diadakan oleh suku asli di pedalaman negara tersebut, di mana mereka mengenakan pakaian tradisional berwarna merah, kuning, dan hijau dengan ornamen dari bulu burung dan logam mulia. Acara tersebut diadakan untuk merayakan musim panen dan diisi dengan tarian tradisional serta musik menggunakan alat musik khas seperti drum besar dan seruling bambu.
+                        // Hapus marker lama jika ada
+                        if (userMarker) map.removeLayer(userMarker);
 
-Bu Lina juga mencoba berbagai makanan khas negara tersebut, mulai dari hidangan utama yang terbuat dari daging sapi dengan bumbu pedas yang menggunakan cabai lokal khas, hingga makanan penutup yang terbuat dari buah manggis dan pisang yang diolah menjadi es krim. Selama perjalanan, dia bertemu dengan berbagai orang dari berbagai negara yang juga berkunjung berlibur, termasuk dari Jepang, Jerman, dan Brasil.
+                        // Tambahkan marker lokasi pengguna
+                        userMarker = L.marker([lat, lon], {
+                            icon: L.divIcon({ className: 'user-location-icon' })
+                        }).addTo(map);
+                        userMarker.bindPopup('Anda berada di sini!').openPopup();
 
-Pada hari terakhir perjalanan sebelum kembali ke Indonesia, Bu Lina membeli oleh-oleh berupa kopi spesial yang hanya tumbuh di daerah dataran tinggi negara tersebut dan beberapa buku tentang sejarah perjuangan kemerdekaan negara tersebut yang ditulis dalam bahasa lokal dan bahasa Inggris. Saat sedang mengatur barang bawaan pulangnya di kamar hotel, dia menerima pesan dari anaknya di Indonesia yang menanyakan tentang negara yang sedang dia kunjungi, termasuk tentang warna bendera negara tersebut, jenis mata uang yang digunakan, dan ibukotanya.
+                        // Zoom ke lokasi pengguna
+                        map.setView([lat, lon], 16, {
+                            animate: true,
+                            duration: 1.5
+                        });
 
-Bu Lina menjawab semua pertanyaan anaknya dengan senang hati, dan menyampaikan bahwa negara tersebut memiliki luas wilayah lebih dari 2 juta kilometer persegi, jumlah penduduk sekitar 30 juta jiwa, dan dikenal sebagai salah satu negara dengan jumlah spesies tumbuhan dan hewan paling banyak di dunia.
+                        // Kembalikan ikon tombol
+                        gpsBtn.textContent = '📍';
+                    },
+                    // Jika Gagal Mendapatkan Lokasi
+                    (error) => {
+                        let errorMsg = '';
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMsg = 'Izin akses lokasi ditolak. Silakan aktifkan izin di pengaturan browser.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMsg = 'Data lokasi tidak tersedia.';
+                                break;
+                            case error.TIMEOUT:
+                                errorMsg = 'Waktu pencarian lokasi habis.';
+                                break;
+                            case error.UNKNOWN_ERROR:
+                                errorMsg = 'Terjadi kesalahan tidak diketahui.';
+                                break;
+                        }
+                        alert(errorMsg);
+                        gpsBtn.textContent = '📍';
+                    },
+                    {
+                        enableHighAccuracy: true, // Gunakan GPS jika tersedia
+                        timeout: 10000, // Waktu tunggu maksimal 10 detik
+                        maximumAge: 0 // Jangan gunakan lokasi yang disimpan
+                    }
+                );
+            } else {
+                alert('Browser Anda tidak mendukung fitur lokasi GPS.');
+                gpsBtn.textContent = '📍';
+            }
+        });
 
-Pertanyaannya adalah: Nama negara mana yang dikunjungi oleh Bu Lina?
-            </div>
-        </div>
-    </div>
+        // Fitur Zoom dengan Scroll Tanpa Ctrl
+        map.scrollWheelZoom.enable();
 
-    <footer>
-        <p>&copy; 2026 Teka-Teki Bertele-Tele</p>
-    </footer>
+        // Fitur Geser Peta dengan Klik dan Tahan
+        map.dragging.enable();
+    </script>
 </body>
 </html>
