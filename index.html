@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NUKEMAP - Google Maps Style (No API Key)</title>
-    <!-- Gunakan Leaflet dengan lapisan peta yang sama gaya Google Maps -->
+    <title>NUKEMAP - Google Maps Style (Dengan Rute)</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', Arial, sans-serif; }
@@ -12,195 +11,186 @@
 
         /* Peta Penuh Layar */
         #map { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            z-index: 1;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
         }
-
-        /* Gaya Peta Mirip Google Maps */
+        .leaflet-pane, .leaflet-tile, .leaflet-marker-icon, .leaflet-marker-shadow {
+            position: absolute;
+        }
+        .leaflet-container { overflow: hidden; }
         .leaflet-tile {
             image-rendering: optimizeQuality;
+            user-select: none;
+            -webkit-user-drag: none;
         }
+
+        /* Gaya Mirip Google Maps */
         .leaflet-control-zoom {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.3);
-            border: none !important;
+            background: #fff; border-radius: 8px; box-shadow: 0 1px 5px rgba(0,0,0,0.3); border: none;
         }
         .leaflet-control-zoom a {
-            background: #fff;
-            color: #333;
-            border-bottom: 1px solid #eee !important;
-            border-radius: 0 !important;
+            background: #fff; color: #333; border-bottom: 1px solid #eee; border-radius: 0;
         }
-        .leaflet-control-zoom a:hover {
-            background: #f8f8f8;
-        }
-        .leaflet-control-zoom-in {
-            border-top-left-radius: 8px !important;
-            border-top-right-radius: 8px !important;
-        }
-        .leaflet-control-zoom-out {
-            border-bottom-left-radius: 8px !important;
-            border-bottom-right-radius: 8px !important;
-        }
+        .leaflet-control-zoom a:hover { background: #f8f8f8; }
+        .leaflet-control-zoom-in { border-top-left-radius: 8px !important; border-top-right-radius: 8px !important; }
+        .leaflet-control-zoom-out { border-bottom-left-radius: 8px !important; border-bottom-right-radius: 8px !important; }
         .leaflet-attribution-control {
-            background: rgba(255,255,255,0.8);
-            border-radius: 4px;
-            font-size: 11px;
-            color: #666;
+            background: rgba(255,255,255,0.8); border-radius: 4px; font-size: 11px;
         }
 
-        /* Tombol GPS Mirip Google Maps */
+        /* Panel Kontrol Rute */
+        #route-panel {
+            position: absolute; top: 10px; left: 10px; z-index: 10;
+            background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+            width: 300px; max-width: 90%;
+        }
+        #route-panel h3 { margin-bottom: 10px; color: #333; font-size: 18px; }
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 12px; color: #666; margin-bottom: 5px; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;
+            font-size: 14px; color: #333;
+        }
+        #calculate-route-btn {
+            width: 100%; padding: 10px; background: #4285f4; color: #fff;
+            border: none; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer;
+        }
+        #calculate-route-btn:hover { background: #3367d6; }
+
+        /* Tombol GPS */
         #gps-btn {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #fff;
-            border: none;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.3);
-            cursor: pointer;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #333;
-            transition: background 0.2s ease;
+            position: absolute; bottom: 20px; right: 20px; z-index: 10;
+            width: 45px; height: 45px; border-radius: 50%; background: #fff;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.3); border: none;
+            font-size: 20px; color: #333; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
         }
-        #gps-btn:hover {
-            background: #f8f8f8;
-        }
-        #gps-btn:active {
-            background: #f0f0f0;
-        }
+        #gps-btn:hover { background: #f8f8f8; }
 
-        /* Marker Lokasi Pengguna */
+        /* Marker Lokasi & Rute */
         .user-location-icon {
-            background: url('https://cdn-icons-png.flaticon.com/512/149/149060.png') no-repeat center center;
-            background-size: 90% 90%;
-            width: 35px;
-            height: 35px;
-            animation: pulse-location 2s infinite alternate;
+            background: url('https://cdn-icons-png.flaticon.com/512/149/149060.png') no-repeat center;
+            background-size: 90%; width: 35px; height: 35px;
         }
-        @keyframes pulse-location {
-            from { opacity: 0.7; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1.05); }
+        .start-icon {
+            background: url('https://cdn-icons-png.flaticon.com/512/291/291659.png') no-repeat center;
+            background-size: 90%; width: 30px; height: 30px;
         }
-
-        /* Panel Judul NUKEMAP */
-        #title-panel {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255,255,255,0.9);
-            padding: 8px 15px;
-            border-radius: 20px;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.2);
-            z-index: 10;
-            font-size: 16px;
-            font-weight: 500;
-            color: #333;
+        .end-icon {
+            background: url('https://cdn-icons-png.flaticon.com/512/291/291660.png') no-repeat center;
+            background-size: 90%; width: 30px; height: 30px;
         }
+        .route-line { stroke: #4285f4; stroke-width: 5px; stroke-opacity: 0.8; }
     </style>
 </head>
 <body>
-    <div id="title-panel">NUKEMAP - Google Maps Style</div>
     <div id="map"></div>
     <button id="gps-btn">📍</button>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script>
-        // Inisialisasi Peta dengan Lapisan Mirip Google Maps (Tidak Perlu API Key)
-        const map = L.map('map').setView([-6.1754, 106.8272], 13); // Default lokasi Jakarta
+    <!-- Panel Kontrol Rute -->
+    <div id="route-panel">
+        <h3>Penunjuk Arah</h3>
+        <div class="form-group">
+            <label for="start-point">Dari:</label>
+            <input type="text" id="start-point" placeholder="Contoh: Sukabumi" value="Sukabumi">
+        </div>
+        <div class="form-group">
+            <label for="end-point">Ke:</label>
+            <input type="text" id="end-point" placeholder="Contoh: Cibinong" value="Cibinong">
+        </div>
+        <div class="form-group">
+            <label for="transport-mode">Moda Transportasi:</label>
+            <select id="transport-mode">
+                <option value="driving-car">Mobil</option>
+                <option value="cycling">Motor</option>
+                <option value="walking">Jalan Kaki</option>
+            </select>
+        </div>
+        <button id="calculate-route-btn">Hitung Rute</button>
+    </div>
 
-        // Gunakan Lapisan Peta yang Sama Gaya Google Maps dari OpenStreetMap
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css">
+
+    <script>
+        // Inisialisasi Peta
+        const map = L.map('map').setView([-6.934468, 106.921378], 10); // Lokasi default Sukabumi
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 19,
-            minZoom: 1,
-            tileSize: 256
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Variabel untuk Marker Lokasi Pengguna
+        // Variabel Global
+        let routingControl = null;
         let userMarker = null;
 
-        // Fitur GPS - Temukan Lokasi Pengguna
-        const gpsBtn = document.getElementById('gps-btn');
-        
-        gpsBtn.addEventListener('click', () => {
-            // Tampilkan loading pada tombol
-            gpsBtn.textContent = '🔄';
-            
+        // Fitur GPS
+        document.getElementById('gps-btn').addEventListener('click', () => {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    // Jika Sukses Mendapatkan Lokasi
-                    (position) => {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-
-                        // Hapus marker lama jika ada
+                    (pos) => {
+                        const lat = pos.coords.latitude;
+                        const lon = pos.coords.longitude;
+                        
                         if (userMarker) map.removeLayer(userMarker);
-
-                        // Tambahkan marker lokasi pengguna
-                        userMarker = L.marker([lat, lon], {
-                            icon: L.divIcon({ className: 'user-location-icon' })
-                        }).addTo(map);
+                        userMarker = L.marker([lat, lon], { icon: L.divIcon({ className: 'user-location-icon' }) }).addTo(map);
                         userMarker.bindPopup('Anda berada di sini!').openPopup();
-
-                        // Zoom ke lokasi pengguna
-                        map.setView([lat, lon], 16, {
-                            animate: true,
-                            duration: 1.5
-                        });
-
-                        // Kembalikan ikon tombol
-                        gpsBtn.textContent = '📍';
+                        map.setView([lat, lon], 15);
+                        
+                        // Isi kolom "Dari" dengan lokasi saat ini
+                        document.getElementById('start-point').value = `Lokasi Anda (${lat.toFixed(5)}, ${lon.toFixed(5)})`;
                     },
-                    // Jika Gagal Mendapatkan Lokasi
-                    (error) => {
-                        let errorMsg = '';
-                        switch(error.code) {
-                            case error.PERMISSION_DENIED:
-                                errorMsg = 'Izin akses lokasi ditolak. Silakan aktifkan izin di pengaturan browser.';
-                                break;
-                            case error.POSITION_UNAVAILABLE:
-                                errorMsg = 'Data lokasi tidak tersedia.';
-                                break;
-                            case error.TIMEOUT:
-                                errorMsg = 'Waktu pencarian lokasi habis.';
-                                break;
-                            case error.UNKNOWN_ERROR:
-                                errorMsg = 'Terjadi kesalahan tidak diketahui.';
-                                break;
-                        }
-                        alert(errorMsg);
-                        gpsBtn.textContent = '📍';
-                    },
-                    {
-                        enableHighAccuracy: true, // Gunakan GPS jika tersedia
-                        timeout: 10000, // Waktu tunggu maksimal 10 detik
-                        maximumAge: 0 // Jangan gunakan lokasi yang disimpan
-                    }
+                    (err) => alert(`Gagal dapatkan lokasi: ${err.message}`)
                 );
             } else {
-                alert('Browser Anda tidak mendukung fitur lokasi GPS.');
-                gpsBtn.textContent = '📍';
+                alert('Browser tidak mendukung GPS!');
             }
         });
 
-        // Fitur Zoom dengan Scroll Tanpa Ctrl
-        map.scrollWheelZoom.enable();
+        // Fitur Hitung Rute
+        document.getElementById('calculate-route-btn').addEventListener('click', () => {
+            const start = document.getElementById('start-point').value;
+            const end = document.getElementById('end-point').value;
+            const mode = document.getElementById('transport-mode').value;
 
-        // Fitur Geser Peta dengan Klik dan Tahan
-        map.dragging.enable();
+            if (!start || !end) {
+                alert('Isi kolom Dari dan Ke terlebih dahulu!');
+                return;
+            }
+
+            // Hapus rute lama jika ada
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            // Konfigurasi Rute berdasarkan Moda Transportasi
+            routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(start), // Menggunakan nama lokasi atau koordinat
+                    L.latLng(end)
+                ],
+                routeWhileDragging: true,
+                geocoder: L.Control.Geocoder.nominatim(),
+                lineOptions: { styles: [{ color: '#4285f4', weight: 5 }] },
+                show: true,
+                addWaypoints: false,
+                routeDragInterval: 500,
+                createMarker: function(i, wp, n) {
+                    const icon = i === 0 ? L.divIcon({ className: 'start-icon' }) : L.divIcon({ className: 'end-icon' });
+                    return L.marker(wp.latLng, { icon: icon });
+                },
+                profile: mode,
+                formatter: new L.Routing.Formatter({
+                    units: 'metric',
+                    language: 'id'
+                })
+            }).addTo(map);
+
+            // Tampilkan petunjuk arah
+            routingControl.on('routesfound', (e) => {
+                const route = e.routes[0];
+                alert(`Rute ditemukan! Jarak: ${route.summary.totalDistance / 1000} km, Waktu tempuh: ${Math.round(route.summary.totalTime / 60)} menit`);
+            });
+        });
     </script>
 </body>
 </html>
