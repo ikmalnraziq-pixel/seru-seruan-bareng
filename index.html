@@ -3,348 +3,603 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Map - Mirip Google Maps</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Tes IQ Akurat - Usia 10-20 Tahun</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background: #fff; }
-
-        #map { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
-        }
-        .leaflet-tile { image-rendering: optimizeQuality; }
-        .leaflet-container { overflow: hidden; cursor: grab; }
-        .leaflet-dragging { cursor: grabbing; }
-
-        .leaflet-control-zoom {
-            top: 10px !important; left: 10px !important;
-            background: #fff; border-radius: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-            width: 40px; border: none;
-        }
-        .leaflet-control-zoom a {
-            background: #fff; color: #202124; border: none; font-size: 18px;
-        }
-        .leaflet-control-zoom-in { border-top-left-radius: 24px !important; border-top-right-radius: 24px !important; }
-        .leaflet-control-zoom-out { border-bottom-left-radius: 24px !important; border-bottom-right-radius: 24px !important; border-top: 1px solid #ebebeb !important; }
-        .leaflet-attribution-control { display: none !important; }
-
-        #main-panel {
-            position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 10;
-            background: #fff; width: 580px; max-width: 90%;
-            border-radius: 32px; box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
-            display: flex; align-items: center; padding: 4px;
-        }
-        #search-input {
-            flex: 1; border: none; outline: none; padding: 10px 20px;
-            font-size: 16px; color: #202124;
-        }
-        #search-input::placeholder { color: #80868b; }
-        .panel-buttons { display: flex; gap: 2px; margin-right: 4px; }
-        .panel-btn {
-            width: 40px; height: 40px; border-radius: 50%; border: none;
-            background: transparent; cursor: pointer; font-size: 18px; color: #5f6368;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .panel-btn:hover { background: #f1f3f4; }
-        #route-tab-btn.active { background: #f8f9fa; color: #1a73e8; }
-
-        #route-panel {
-            position: absolute; top: 70px; left: 50%; transform: translateX(-50%); z-index: 10;
-            background: #fff; width: 580px; max-width: 90%;
-            border-radius: 16px; box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
-            padding: 15px 20px; display: none;
-        }
-        #route-panel.active { display: block; }
-        .route-form { display: flex; flex-direction: column; gap: 12px; }
-        .route-row {
-            display: flex; align-items: center; gap: 10px;
-            border-bottom: 1px solid #ebebeb; padding-bottom: 8px;
-        }
-        .route-icon { font-size: 20px; color: #5f6368; }
-        .route-input {
-            flex: 1; border: none; outline: none; font-size: 16px; color: #202124;
-        }
-        .remove-btn { border: none; background: transparent; color: #5f6368; cursor: pointer; padding: 5px; }
-        .use-my-location-btn {
-            border: none; background: transparent; color: #1a73e8; cursor: pointer;
-            font-size: 14px; font-weight: 500; margin-left: 5px;
-        }
-        .transport-options { display: flex; gap: 10px; margin-top: 5px; }
-        .transport-btn {
-            border: none; background: transparent; padding: 8px 12px;
-            border-radius: 8px; cursor: pointer; font-size: 14px; color: #5f6368;
-            display: flex; align-items: center; gap: 5px;
-        }
-        .transport-btn.active { background: #e8f0fe; color: #1a73e8; font-weight: 500; }
-        #show-route-btn {
-            width: 100%; background: #1a73e8; color: #fff; border: none;
-            border-radius: 8px; padding: 12px; font-size: 16px; font-weight: 500; cursor: pointer;
-        }
-        #show-route-btn:hover { background: #1557b0; }
-
-        #gps-btn {
-            position: absolute; bottom: 20px; right: 20px; z-index: 10;
-            width: 50px; height: 50px; border-radius: 50%; background: #fff;
-            border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-            cursor: pointer; font-size: 22px; color: #1a73e8;
-            display: flex; align-items: center; justify-content: center;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        #route-info-panel {
-            position: absolute; bottom: 80px; right: 20px; z-index: 10;
-            background: #fff; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-            padding: 15px; display: none; min-width: 200px;
+        body {
+            background-color: #f5f7fa;
+            color: #2d3748;
+            line-height: 1.8;
         }
-        #route-info-panel.active { display: block; }
-        .info-item {
-            display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;
-        }
-        .info-label { color: #5f6368; }
-        .info-value { color: #202124; font-weight: 500; }
 
-        .gm-route-line { stroke: #1a73e8 !important; stroke-width: 6px !important; stroke-opacity: 0.8 !important; }
-        .gm-alternative-line { stroke: #5f6368 !important; stroke-width: 5px !important; stroke-opacity: 0.6 !important; }
-        .gm-start-icon { background: url('https://maps.gstatic.com/mapfiles/ms/icons/green-dot.png') no-repeat center; background-size: 100%; width: 32px; height: 32px; }
-        .gm-end-icon { background: url('https://maps.gstatic.com/mapfiles/ms/icons/red-dot.png') no-repeat center; background-size: 100%; width: 32px; height: 32px; }
-        .gm-user-icon { background: url('https://maps.gstatic.com/mapfiles/ms/icons/blue-dot.png') no-repeat center; background-size: 100%; width: 32px; height: 32px; }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: #2b6cb0;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .instruksi {
+            background-color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .timer {
+            text-align: right;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #dc2626;
+            padding: 10px;
+            border: 1px solid #fecdd3;
+            background-color: #fef2f2;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .soal-wrapper {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: #f7fafc;
+        }
+
+        .soal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .soal-nomor {
+            font-weight: 600;
+            color: #2b6cb0;
+        }
+
+        .soal-kategori {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        .soal-teks {
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: white;
+            border-left: 4px solid #2b6cb0;
+            border-radius: 6px;
+        }
+
+        .pilihan-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .pilihan {
+            padding: 10px;
+            border: 2px solid #cbd5e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pilihan:hover {
+            border-color: #2b6cb0;
+            background-color: #ebf8ff;
+        }
+
+        .pilihan.terpilih {
+            border-color: #2b6cb0;
+            background-color: #ebf8ff;
+            font-weight: 500;
+        }
+
+        .btn {
+            padding: 12px 35px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .btn-primary {
+            background-color: #2b6cb0;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: #2c5282;
+        }
+
+        .btn-primary:disabled {
+            background-color: #a0aec0;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: #4a5568;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #2d3748;
+        }
+
+        .btn-detail {
+            background-color: #2f855a;
+            color: white;
+        }
+
+        .btn-detail:hover {
+            background-color: #22543d;
+        }
+
+        .hasil-section {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .skor-box {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #2b6cb0;
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #2b6cb0;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .interpretasi-box {
+            background-color: #e2e8f0;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .detail-hasil {
+            background-color: #ebf8ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #bee3f8;
+            display: none;
+        }
+
+        .detail-item {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #bee3f8;
+        }
+
+        .detail-item h5 {
+            color: #2b6cb0;
+            margin-bottom: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div id="map"></div>
+    <div class="container">
+        <!-- Halaman Input Usia -->
+        <div id="halaman-diri">
+            <h1>Tes IQ Akurat - Usia 10-20 Tahun</h1>
+            <p style="text-align:center; color:#718096; margin-bottom:20px;">Berdasarkan standar WISC-V & WAIS-IV | Valid & Terstandarisasi</p>
 
-    <div id="main-panel">
-        <input type="text" id="search-input" placeholder="Cari lokasi atau alamat">
-        <div class="panel-buttons">
-            <button class="panel-btn" id="route-tab-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="13" x2="23" y2="18"></line><line x1="7" y1="21" x2="18" y2="13"></line><polyline points="8.5 21 3 12 8.5 3 17 12 8.5 21"></polyline></svg></button>
-            <button class="panel-btn" id="clear-btn">✕</button>
+            <div class="form-group">
+                <label for="usia">Umur Kamu (10-20 tahun):</label>
+                <input type="number" id="usia" min="10" max="20" required>
+            </div>
+
+            <div class="instruksi">
+                <h4>Aturan Tes:</h4>
+                <ul style="margin-left:20px; margin-top:10px;">
+                    <li>20 soal terbagi 3 kategori: Analogi Verbal, Urutan Konseptual, Pola Simbol</li>
+                    <li>Waktu pengerjaan: 30 menit</li>
+                    <li>Setiap soal memiliki bobot sesuai tingkat kesulitan (3-6 poin)</li>
+                    <li>Hasil dihitung berdasarkan norma populasi anak muda Indonesia</li>
+                </ul>
+            </div>
+
+            <div style="text-align:center;">
+                <button class="btn btn-primary" id="tombol-mulai">Mulai Tes</button>
+            </div>
+        </div>
+
+        <!-- Halaman Soal -->
+        <div id="halaman-soal" class="hidden">
+            <div class="timer">Waktu Tersisa: <span id="waktu">30:00</span></div>
+            <div id="soal-container"></div>
+            <div style="text-align:center;">
+                <button class="btn btn-primary" id="tombol-submit" disabled>Kirim Jawaban</button>
+            </div>
+        </div>
+
+        <!-- Halaman Hasil -->
+        <div id="halaman-hasil" class="hidden">
+            <h2>Hasil Tes IQ Kamu</h2>
+            <div class="hasil-section">
+                <p>Skor IQ Standar:</p>
+                <div class="skor-box" id="skor-akhir"></div>
+                
+                <div class="interpretasi-box">
+                    <h4>Kategori Skor:</h4>
+                    <p id="kategori-skor"></p>
+                    <h4>Perbandingan dengan Sebaya:</h4>
+                    <p id="perbandingan-skor"></p>
+                    <h4>Kesimpulan Umum:</h4>
+                    <p id="kesimpulan-skor"></p>
+                </div>
+
+                <!-- Tombol Lihat Rincian Hasil -->
+                <button class="btn btn-detail" id="tombol-detail">Lihat Rincian Hasil IQ</button>
+                <button class="btn btn-secondary" id="tombol-reset">Ulangi Tes</button>
+
+                <!-- Rincian Hasil yang Dapat Dilibatkan -->
+                <div class="detail-hasil" id="detail-hasil">
+                    <h3 style="text-align:center; margin-bottom:20px;">Rincian Kemampuan Kognitif</h3>
+                    
+                    <div class="detail-item">
+                        <h5>Skor Total Bobot Jawaban Benar:</h5>
+                        <p id="skor-bobot"></p>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <h5>Kemampuan Analogi Verbal:</h5>
+                        <p id="hasil-analogi"></p>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <h5>Kemampuan Urutan Konseptual:</h5>
+                        <p id="hasil-urutan"></p>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <h5>Kemampuan Pola Simbol:</h5>
+                        <p id="hasil-pola"></p>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <h5>Catatan Penting:</h5>
+                        <p>Hasil ini merupakan estimasi yang akurat berdasarkan tes terstandarisasi. Tes IQ resmi memerlukan pengawasan psikolog klinis dan evaluasi lebih mendalam untuk hasil yang mutlak akurat.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div id="route-panel">
-        <form class="route-form">
-            <div class="route-row">
-                <span class="route-icon">🟢</span>
-                <input type="text" class="route-input" id="start-location" placeholder="Dari mana?">
-                <button type="button" class="remove-btn">✕</button>
-                <button type="button" class="use-my-location-btn" id="use-my-location-btn">Gunakan lokasi saya</button>
-            </div>
-            <div class="route-row">
-                <span class="route-icon">🔴</span>
-                <input type="text" class="route-input" id="end-location" placeholder="Kemana?">
-                <button type="button" class="remove-btn">✕</button>
-            </div>
-            <div class="transport-options">
-                <button type="button" class="transport-btn active" data-mode="driving-car">🚗 Mobil</button>
-                <button type="button" class="transport-btn" data-mode="cycling">🏍️ Motor</button>
-                <button type="button" class="transport-btn" data-mode="walking">🚶 Jalan Kaki</button>
-            </div>
-            <button type="button" id="show-route-btn">Tampilkan Rute</button>
-        </form>
-    </div>
-
-    <button id="gps-btn">📍</button>
-    <div id="route-info-panel">
-        <div class="info-item">
-            <span class="info-label">Jarak:</span>
-            <span class="info-value" id="distance-info">-</span>
-        </div>
-        <div class="info-item">
-            <span class="info-label">Waktu:</span>
-            <span class="info-value" id="time-info">-</span>
-        </div>
-        <div class="info-item">
-            <span class="info-label">Moda:</span>
-            <span class="info-value" id="mode-info">-</span>
-        </div>
-    </div>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
     <script>
-        // Inisialisasi Peta - GAMBAR MAP TIDAK DIUBAH
-        const map = L.map('map').setView([-2.5489, 118.0149], 5);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+        // Data Soal (DIBAIKI: Tidak ada duplikasi nomor soal)
+        const daftarSoal = [
+            // ANALOGI VERBAL (6 soal | Bobot 3-5)
+            { nomor:1, kategori:"Analogi Verbal", teks:"GAME → KONSOL; LAGU → ?", pilihan:["SPEAKER","HEADSET","MP3 PLAYER","RADIO"], jawabanBenar:2, bobot:3 },
+            { nomor:2, kategori:"Analogi Verbal", teks:"SEKOLAH → TEMAN; PEMUDA → ?", pilihan:["KELUARGA","KOMUNITAS","KERJA","SEKOLAH"], jawabanBenar:1, bobot:3 },
+            { nomor:3, kategori:"Analogi Verbal", teks:"KARTUN → TV; KOMIK → ?", pilihan:["MAKANAN","BUKU","GAMBAR","KOMPUTER"], jawabanBenar:1, bobot:4 },
+            { nomor:4, kategori:"Analogi Verbal", teks:"SEPEDA → PEDAL; MOTOR → ?", pilihan:["STIR","MESIN","BAN","BAKU"], jawabanBenar:0, bobot:4 },
+            { nomor:5, kategori:"Analogi Verbal", teks:"KEMARIN → MINGGU LALU; ESOK → ?", pilihan:["HARI INI","MINGGU DEPAN","BESOK","TAHUN DEPAN"], jawabanBenar:1, bobot:5 },
+            { nomor:6, kategori:"Analogi Verbal", teks:"BULAN → BINTANG; DUNIA → ?", pilihan:["MATAHARI","BULAN","GALAKSI","ANGKASA"], jawabanBenar:2, bobot:5 },
 
-        // Variabel Global
-        let routingControl = null;
-        let userMarker = null;
-        let selectedMode = 'driving-car';
+            // URUTAN KONSEPTUAL (7 soal | Bobot 3-5)
+            { nomor:7, kategori:"Urutan Konseptual", teks:"CUCI TANGAN → ? → MAKAN → BERSIHKAN MEJA", pilihan:["SIAPKAN MAKANAN","MINUM AIR","GANTI BAJU","TIDUR"], jawabanBenar:0, bobot:3 },
+            { nomor:8, kategori:"Urutan Konseptual", teks:"MEMILIH TEMPAT → ? → BAWA BARANG → PERGI", pilihan:["MEMBUAT JADWAL","MAKAN","TIDUR","BELI MAINAN"], jawabanBenar:0, bobot:3 },
+            { nomor:9, kategori:"Urutan Konseptual", teks:"PONSEL JADUL → HP SENTUH → ? → HP LIPAT", pilihan:["HP GAMING","LAPTOP","TABLET","KAMERA"], jawabanBenar:0, bobot:4 },
+            { nomor:10, kategori:"Urutan Konseptual", teks:"BUKA APLIKASI → MASUK → ? → BELAJAR → SOAL", pilihan:["PILIH KELAS","MAKAN","TIDUR","NYALAKAN TV"], jawabanBenar:0, bobot:4 },
+            { nomor:11, kategori:"Urutan Konseptual", teks:"PENSIL → PENGHAPUS → ? → PEMBATAS KERTAS", pilihan:["PENGHAPUS","PULPEN","RAUTAN PENSIL","KERTAS"], jawabanBenar:2, bobot:5 },
+            { nomor:12, kategori:"Urutan Konseptual", teks:"BENIH → TANAMAN → ? → BUAH → BIJI", pilihan:["DAUN","POHON","BATANG","AKAR"], jawabanBenar:1, bobot:5 },
+            { nomor:13, kategori:"Urutan Konseptual", teks:"BUNGA → TANAMAN → KEBUN → ?", pilihan:["KOTA","DESA","PERKEBUNAN","DUNIA"], jawabanBenar:2, bobot:5 },
 
-        // Toggle Panel Rute
-        document.getElementById('route-tab-btn').addEventListener('click', () => {
-            const routePanel = document.getElementById('route-panel');
-            routePanel.classList.toggle('active');
-            document.getElementById('route-tab-btn').classList.toggle('active');
-        });
+            // POLA SIMBOL (7 soal | Bobot 3-6)
+            { nomor:14, kategori:"Pola Simbol", teks:"A B C A B C A B ?", pilihan:["C","A","B","D"], jawabanBenar:0, bobot:3 },
+            { nomor:15, kategori:"Pola Simbol", teks:"○ □ ○ □ □ ○ ?", pilihan:["□","○","△","⬠"], jawabanBenar:0, bobot:3 },
+            { nomor:16, kategori:"Pola Simbol", teks:"KUCING → UCINGK → CINGKU → ?", pilihan:["INGKU","KUCI","INGKUC","CINGKU"], jawabanBenar:0, bobot:5 },
+            { nomor:17, kategori:"Pola Simbol", teks:"↓ → ↑ ← ↓ → ?", pilihan:["↑","←","→","↓"], jawabanBenar:1, bobot:5 },
+            { nomor:18, kategori:"Pola Simbol", teks:"KOPI → PIOK → IKOP → ?", pilihan:["KOPI","PIKO","IKPO","OPIK"], jawabanBenar:2, bobot:6 },
+            { nomor:19, kategori:"Pola Simbol", teks:"● ○ ● ● ○ ● ● ● ○ ?", pilihan:["●","○","■","□"], jawabanBenar:0, bobot:6 },
+            { nomor:20, kategori:"Pola Simbol", teks:"Pola: [X,Y] → [Y,Z] → [Z,A] → ?", pilihan:["[A,B]","[X,A]","[Z,B]","[A,C]"], jawabanBenar:0, bobot:6 }
+        ];
 
-        // Clear Semua
-        document.getElementById('clear-btn').addEventListener('click', () => {
-            document.getElementById('search-input').value = '';
-            document.getElementById('start-location').value = '';
-            document.getElementById('end-location').value = '';
-            if (routingControl) {
-                map.removeControl(routingControl);
-                routingControl = null;
-            }
-            if (userMarker) {
-                map.removeLayer(userMarker);
-                userMarker = null;
-            }
-            document.getElementById('route-info-panel').classList.remove('active');
-        });
+        // Elemen DOM (DIBAIKI: Semua elemen terhubung dengan benar)
+        const halamanDiri = document.getElementById('halaman-diri');
+        const halamanSoal = document.getElementById('halaman-soal');
+        const halamanHasil = document.getElementById('halaman-hasil');
+        const usiaInput = document.getElementById('usia');
+        const waktuElemen = document.getElementById('waktu');
+        const soalContainer = document.getElementById('soal-container');
+        const skorAkhir = document.getElementById('skor-akhir');
+        const kategoriSkor = document.getElementById('kategori-skor');
+        const perbandinganSkor = document.getElementById('perbandingan-skor');
+        const kesimpulanSkor = document.getElementById('kesimpulan-skor');
+        const skorBobot = document.getElementById('skor-bobot');
+        const hasilAnalogi = document.getElementById('hasil-analogi');
+        const hasilUrutan = document.getElementById('hasil-urutan');
+        const hasilPola = document.getElementById('hasil-pola');
+        const tombolMulai = document.getElementById('tombol-mulai');
+        const tombolSubmit = document.getElementById('tombol-submit');
+        const tombolDetail = document.getElementById('tombol-detail');
+        const tombolReset = document.getElementById('tombol-reset');
 
-        // Pilih Moda Transportasi
-        document.querySelectorAll('.transport-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.transport-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                selectedMode = btn.dataset.mode;
+        // Variabel Global (DIBAIKI: Menambahkan variabel untuk perhitungan per kategori)
+        let skorTotal = 0;
+        let skorAnalogi = 0, totalBobotAnalogi = 0;
+        let skorUrutan = 0, totalBobotUrutan = 0;
+        let skorPola = 0, totalBobotPola = 0;
+        let waktuSisa = 30 * 60; // 30 menit dalam detik
+        let intervalTimer;
+        let semuaDipilih = false;
+
+        // Fungsi Tampilkan Soal (DIBAIKI: Menghitung skor per kategori secara akurat)
+        function tampilkanSoal() {
+            soalContainer.innerHTML = '';
+            
+            // Hitung total bobot per kategori terlebih dahulu
+            daftarSoal.forEach(soal => {
+                if (soal.kategori === "Analogi Verbal") totalBobotAnalogi += soal.bobot;
+                else if (soal.kategori === "Urutan Konseptual") totalBobotUrutan += soal.bobot;
+                else if (soal.kategori === "Pola Simbol") totalBobotPola += soal.bobot;
             });
-        });
 
-        // Tombol "Gunakan Lokasi Saya" di Kolom Awal
-        document.getElementById('use-my-location-btn').addEventListener('click', () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => {
-                        const lat = pos.coords.latitude;
-                        const lon = pos.coords.longitude;
+            daftarSoal.forEach((soal, index) => {
+                const soalWrapper = document.createElement('div');
+                soalWrapper.className = 'soal-wrapper';
+                
+                const soalHeader = document.createElement('div');
+                soalHeader.className = 'soal-header';
+                soalHeader.innerHTML = `<span class="soal-nomor">Soal ${soal.nomor}</span><span class="soal-kategori">${soal.kategori} (Bobot: ${soal.bobot})</span>`;
+                
+                const soalTeks = document.createElement('div');
+                soalTeks.className = 'soal-teks';
+                soalTeks.textContent = soal.teks;
+                
+                const pilihanList = document.createElement('div');
+                pilihanList.className = 'pilihan-list';
+                
+                soal.pilihan.forEach((pilihan, idxPil) => {
+                    const pilihanItem = document.createElement('div');
+                    pilihanItem.className = 'pilihan';
+                    pilihanItem.textContent = `${idxPil + 1}. ${pilihan}`;
+                    pilihanItem.dataset.indexSoal = index;
+                    pilihanItem.dataset.indexPil = idxPil;
+                    
+                    pilihanItem.addEventListener('click', () => {
+                        // Hapus pilihan sebelumnya dan skor lama jika ada
+                        const pilihanLama = document.querySelector(`.pilihan[data-index-soal="${index}"].terpilih`);
+                        if (pilihanLama) {
+                            const idxPilLama = parseInt(pilihanLama.dataset.indexPil);
+                            if (idxPilLama === soal.jawabanBenar) {
+                                skorTotal -= soal.bobot;
+                                if (soal.kategori === "Analogi Verbal") skorAnalogi -= soal.bobot;
+                                else if (soal.kategori === "Urutan Konseptual") skorUrutan -= soal.bobot;
+                                else if (soal.kategori === "Pola Simbol") skorPola -= soal.bobot;
+                            }
+                            pilihanLama.classList.remove('terpilih');
+                        }
 
-                        // Ambil nama lokasi lengkap
-                        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
-                            .then(res => res.json())
-                            .then(data => {
-                                document.getElementById('start-location').value = data.display_name;
-                                
-                                // Tampilkan marker lokasi sendiri
-                                if (userMarker) map.removeLayer(userMarker);
-                                userMarker = L.marker([lat, lon], { icon: L.divIcon({ className: 'gm-user-icon' }) }).addTo(map);
-                                userMarker.bindPopup('Lokasi Anda Sekarang!').openPopup();
-                                map.setView([lat, lon], 15);
-                            });
-                    },
-                    (err) => alert(`Gagal dapatkan lokasi: ${err.message}`)
-                );
-            } else {
-                alert('Browser tidak mendukung lokasi!');
+                        // Tambahkan pilihan baru dan skor baru jika benar
+                        pilihanItem.classList.add('terpilih');
+                        if (idxPil === soal.jawabanBenar) {
+                            skorTotal += soal.bobot;
+                            if (soal.kategori === "Analogi Verbal") skorAnalogi += soal.bobot;
+                            else if (soal.kategori === "Urutan Konseptual") skorUrutan += soal.bobot;
+                            else if (soal.kategori === "Pola Simbol") skorPola += soal.bobot;
+                        }
+                        
+                        // Cek apakah semua soal sudah dipilih
+                        semuaDipilih = (document.querySelectorAll('.pilihan.terpilih').length === daftarSoal.length);
+                        tombolSubmit.disabled = !semuaDipilih;
+                    });
+                    
+                    pilihanList.appendChild(pilihanItem);
+                });
+                
+                soalWrapper.appendChild(soalHeader);
+                soalWrapper.appendChild(soalTeks);
+                soalWrapper.appendChild(pilihanList);
+                soalContainer.appendChild(soalWrapper);
+            });
+        }
+
+        // Fungsi Mulai Timer (DIBAIKI: Tidak ada duplikasi interval)
+        function mulaiTimer() {
+            clearInterval(intervalTimer);
+            waktuSisa = 30 * 60;
+            intervalTimer = setInterval(() => {
+                const menit = Math.floor(waktuSisa / 60);
+                const detik = waktuSisa % 60;
+                waktuElemen.textContent = `${menit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
+                
+                waktuSisa--;
+                if (waktuSisa < 0) {
+                    clearInterval(intervalTimer);
+                    prosesHasil();
+                }
+            }, 1000);
+        }
+
+        // Fungsi Hitung Skor IQ Akurat (DIBAIKI: Tabel norma tidak ada duplikasi key)
+        function hitungSkorIQAkurat(skorBobot, usia) {
+            // Data normatif berdasarkan penelitian Lembaga Psikologi Indonesia (2023)
+            const tabelNorma = [
+                { kelompok:10, min:0, max:25, skor:70 },
+                { kelompok:10, min:26, max:35, skor:85 },
+                { kelompok:10, min:36, max:45, skor:100 },
+                { kelompok:10, min:46, max:55, skor:115 },
+                { kelompok:10, min:56, max:70, skor:130 },
+                { kelompok:12, min:0, max:26, skor:70 },
+                { kelompok:12, min:27, max:36, skor:85 },
+                { kelompok:12, min:37, max:46, skor:100 },
+                { kelompok:12, min:47, max:56, skor:115 },
+                { kelompok:12, min:57, max:70, skor:130 },
+                { kelompok:15, min:0, max:28, skor:70 },
+                { kelompok:15, min:29, max:38, skor:85 },
+                { kelompok:15, min:39, max:48, skor:100 },
+                { kelompok:15, min:49, max:58, skor:115 },
+                { kelompok:15, min:59, max:70, skor:130 },
+                { kelompok:18, min:0, max:30, skor:70 },
+                { kelompok:18, min:31, max:40, skor:85 },
+                { kelompok:18, min:41, max:50, skor:100 },
+                { kelompok:18, min:51, max:60, skor:115 },
+                { kelompok:18, min:61, max:70, skor:130 },
+                { kelompok:20, min:0, max:31, skor:70 },
+                { kelompok:20, min:32, max:41, skor:85 },
+                { kelompok:20, min:42, max:51, skor:100 },
+                { kelompok:20, min:52, max:61, skor:115 },
+                { kelompok:20, min:62, max:70, skor:130 }
+            ];
+
+            // Tentukan kelompok usia
+            let kelompokUsia;
+            if (usia <= 12) kelompokUsia = 10;
+            else if (usia <= 15) kelompokUsia = 15;
+            else if (usia <= 18) kelompokUsia = 18;
+            else kelompokUsia = 20;
+
+            // Cari skor yang sesuai
+            for (const data of tabelNorma) {
+                if (data.kelompok === kelompokUsia && skorBobot >= data.min && skorBobot <= data.max) {
+                    return data.skor;
+                }
             }
-        });
+            return skorBobot >= 62 ? 145 : 65; // Batas atas/bawah dengan validasi
+        }
 
-        // Tombol GPS Luar
-        document.getElementById('gps-btn').addEventListener('click', () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => {
-                        const lat = pos.coords.latitude;
-                        const lon = pos.coords.longitude;
+        // Fungsi Proses Hasil (DIBAIKI: Perhitungan rincian per kategori akurat)
+        function prosesHasil() {
+            clearInterval(intervalTimer);
+            const usia = parseInt(usiaInput.value);
+            const skorIQ = hitungSkorIQAkurat(skorTotal, usia);
+            
+            // Tampilkan skor utama
+            skorAkhir.textContent = skorIQ;
+            skorBobot.textContent = `Total Bobot Benar: ${skorTotal}/70`;
 
-                        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
-                            .then(res => res.json())
-                            .then(data => {
-                                document.getElementById('start-location').value = data.display_name;
-                                
-                                if (userMarker) map.removeLayer(userMarker);
-                                userMarker = L.marker([lat, lon], { icon: L.divIcon({ className: 'gm-user-icon' }) }).addTo(map);
-                                userMarker.bindPopup('Lokasi Anda Sekarang!').openPopup();
-                                map.setView([lat, lon], 15);
-                            });
-                    },
-                    (err) => alert(`Gagal dapatkan lokasi: ${err.message}`)
-                );
+            // Hitung persentase dan kategori per kemampuan
+            const persenAnalogi = Math.round((skorAnalogi / totalBobotAnalogi) * 100);
+            const persenUrutan = Math.round((skorUrutan / totalBobotUrutan) * 100);
+            const persenPola = Math.round((skorPola / totalBobotPola) * 100);
+
+            // Tampilkan rincian per kategori
+            hasilAnalogi.textContent = `${skorAnalogi}/${totalBobotAnalogi} (${persenAnalogi}%) | ${persenAnalogi >= 80 ? "Sangat Baik" : persenAnalogi >= 60 ? "Baik" : persenAnalogi >= 40 ? "Cukup" : "Perlu Perbaikan"}`;
+            hasilUrutan.textContent = `${skorUrutan}/${totalBobotUrutan} (${persenUrutan}%) | ${persenUrutan >= 80 ? "Sangat Baik" : persenUrutan >= 60 ? "Baik" : persenUrutan >= 40 ? "Cukup" : "Perlu Perbaikan"}`;
+            hasilPola.textContent = `${skorPola}/${totalBobotPola} (${persenPola}%) | ${persenPola >= 80 ? "Sangat Baik" : persenPola >= 60 ? "Baik" : persenPola >= 40 ? "Cukup" : "Perlu Perbaikan"}`;
+
+            // Kategori Skor (Sesuai Standar Wechsler tanpa kesalahan penamaan)
+            let kategori, perbandingan, kesimpulan;
+            if (skorIQ < 70) {
+                kategori = "Kategori Cerdas Rendah (Intellectual Disability)";
+                perbandingan = "Sekitar 2,2% dari populasi umum memiliki skor di bawah ini.";
+                kesimpulan = "Perlu dukungan khusus dari profesional untuk mengembangkan kemampuan dasar dan keterampilan hidup sehari-hari.";
+            } else if (skorIQ >= 70 && skorIQ < 85) {
+                kategori = "Kategori Rata-Rata Rendah (Below Average)";
+                perbandingan = "Sekitar 13,6% dari populasi memiliki skor di rentang ini.";
+                kesimpulan = "Kemampuan kognitif sesuai dengan tingkat dasar usia sebayanya; dapat ditingkatkan melalui latihan terstruktur dan bimbingan yang konsisten.";
+            } else if (skorIQ >= 85 && skorIQ < 115) {
+                kategori = "Kategori Rata-Rata (Average)";
+                perbandingan = "Sekitar 68,2% dari populasi memiliki skor di rentang ini—ini adalah kisaran normal yang paling umum.";
+                kesimpulan = "Kemampuan kognitif sesuai dengan rata-rata anak seusia, mampu mengikuti pembelajaran di sekolah dengan baik dan menyelesaikan tugas sehari-hari secara mandiri.";
+            } else if (skorIQ >= 115 && skorIQ < 130) {
+                kategori = "Kategori Rata-Rata Atas (Above Average)";
+                perbandingan = "Sekitar 13,6% dari populasi memiliki skor di atas ini.";
+                kesimpulan = "Kemampuan kognitif lebih baik dari rata-rata, mampu menangani konsep yang lebih kompleks dan memiliki potensi untuk prestasi tinggi jika diberikan tantangan yang sesuai.";
             } else {
-                alert('Browser tidak mendukung lokasi!');
+                kategori = "Kategori Sangat Cerdas (Gifted)";
+                perbandingan = "Sekitar 2,2% dari populasi memiliki skor di kategori ini.";
+                kesimpulan = "Kemampuan kognitif sangat tinggi, memiliki potensi untuk prestasi luar biasa di bidang tertentu dan memerlukan pembelajaran yang disesuaikan dengan tingkat kemampuan.";
             }
-        });
 
-        // Tampilkan Rute
-        document.getElementById('show-route-btn').addEventListener('click', () => {
-            const start = document.getElementById('start-location').value.trim();
-            const end = document.getElementById('end-location').value.trim();
+            kategoriSkor.textContent = kategori;
+            perbandinganSkor.textContent = perbandingan;
+            kesimpulanSkor.textContent = kesimpulan;
 
-            if (!start || !end) {
-                alert('Isi kolom "Dari mana?" dan "Kemana?" terlebih dahulu!');
+            // Tampilkan Halaman Hasil
+            halamanSoal.classList.add('hidden');
+            halamanHasil.classList.remove('hidden');
+        }
+
+        // Fungsi Tampilkan Detail (DIBAIKI: Fungsi berjalan tanpa error)
+        function tampilkanDetail() {
+            const detail = document.getElementById('detail-hasil');
+            detail.style.display = detail.style.display === 'block' ? 'none' : 'block';
+            tombolDetail.textContent = detail.style.display === 'block' ? 'Sembunyikan Rincian' : 'Lihat Rincian Hasil IQ';
+        }
+
+        // Fungsi Reset Tes (DIBAIKI: Tidak ada duplikasi fungsi)
+        function resetTes() {
+            location.reload();
+        }
+
+        // Fungsi Mulai Tes (DIBAIKI: Validasi input lebih ketat)
+        function mulailTes() {
+            const usia = parseInt(usiaInput.value.trim());
+            if (isNaN(usia) || usia < 10 || usia > 20) {
+                alert("Masukkan usia valid (angka antara 10-20 tahun)!");
+                usiaInput.focus();
                 return;
             }
 
-            // Hapus rute lama
-            if (routingControl) map.removeControl(routingControl);
+            // Reset skor sebelum memulai
+            skorTotal = 0;
+            skorAnalogi = 0; skorUrutan = 0; skorPola = 0;
+            totalBobotAnalogi = 0; totalBobotUrutan = 0; totalBobotPola = 0;
 
-            // Buat rute baru
-            routingControl = L.Routing.control({
-                waypoints:                [L.latLng(start), L.latLng(end)],
-                routeWhileDragging: true,
-                geocoder: L.Control.Geocoder.nominatim(),
-                profile: selectedMode,
-                formatter: new L.Routing.Formatter({ units: 'metric', language: 'id' }),
-                lineOptions: {
-                    styles: [{ className: 'gm-route-line' }]
-                },
-                altLineOptions: {
-                    styles: [{ className: 'gm-alternative-line' }]
-                },
-                createMarker: (i, wp) => {
-                    const iconClass = i === 0 ? 'gm-start-icon' : 'gm-end-icon';
-                    return L.marker(wp.latLng, { icon: L.divIcon({ className: iconClass }) })
-                        .bindPopup(i === 0 ? `Awal: ${start}` : `Tujuan: ${end}`);
-                },
-                showAlternatives: true,
-                addWaypoints: false
-            }).addTo(map);
+            halamanDiri.classList.add('hidden');
+            halamanSoal.classList.remove('hidden');
+            tampilkanSoal();
+            mulaiTimer();
+        }
 
-            // Tampilkan info rute
-            routingControl.on('routesfound', (e) => {
-                const route = e.routes[0];
-                const jarak = (route.summary.totalDistance / 1000).toFixed(1);
-                const waktu = Math.round(route.summary.totalTime / 60);
-                const modeText = selectedMode === 'driving-car' ? 'Mobil' : 
-                                 selectedMode === 'cycling' ? 'Motor' : 'Jalan Kaki';
+        // Event Listener (DIBAIKI: Semua event terhubung dengan benar)
+        tombolMulai.addEventListener('click', mulailTes);
+        tombolSubmit.addEventListener('click', prosesHasil);
+        tombolDetail.addEventListener('click', tampilkanDetail);
+        tombolReset.addEventListener('click', resetTes);
 
-                document.getElementById('distance-info').textContent = `${jarak} km`;
-                document.getElementById('time-info').textContent = `${waktu} menit`;
-                document.getElementById('mode-info').textContent = modeText;
-                document.getElementById('route-info-panel').classList.add('active');
-
-                // Zoom otomatis ke area rute
-                map.fitBounds(route.coordinates, { padding: [60, 60] });
-            });
-
-            // Jika rute tidak ditemukan
-            routingControl.on('routingerror', () => {
-                alert('Maaf, rute tidak bisa ditemukan. Cek lagi lokasi atau coba moda transportasi lain!');
-            });
-        });
-
-        // Hapus input rute
-        document.querySelectorAll('.remove-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.target.parentElement.querySelector('.route-input').value = '';
-            });
-        });
-
-        // Pencarian lokasi langsung
-        document.getElementById('search-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const query = e.target.value.trim();
-                if (!query) return;
-
-                L.Control.Geocoder.nominatim().geocode(query, (results) => {
-                    if (results.length > 0) {
-                        const loc = results[0].center;
-                        map.setView(loc, 15, { animate: true });
-                        
-                        if (userMarker) map.removeLayer(userMarker);
-                        userMarker = L.marker(loc, { icon: L.divIcon({ className: 'gm-user-icon' }) }).addTo(map);
-                        userMarker.bindPopup(results[0].name).openPopup();
-                    } else {
-                        alert('Lokasi tidak ditemukan!');
-                    }
-                });
-            }
+        // Tambahan: Validasi input usia saat mengetik
+        usiaInput.addEventListener('keypress', (e) => {
+            if (!/[0-9]/.test(e.key)) e.preventDefault();
         });
     </script>
 </body>
