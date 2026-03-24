@@ -124,7 +124,7 @@
 
         .secret-item {
             border-left: 4px solid #1a73e8;
-            padding: 1.2rem;
+            padding: 1rem;
             margin-bottom: 1rem;
             background-color: #f8f9fa;
             border-radius: 0 6px 6px 0;
@@ -167,7 +167,7 @@
     <!-- Bagian Form Kirim Rahasia -->
     <div class="send-section" id="sendSection">
         <h2>Tempat Rahasia</h2>
-        <p>Semua rahasia yang kamu tulis hanya akan dilihat oleh pembuat website</p>
+        <p>tulis rahasia yang dijamin aman 100%!</p>
         
         <div class="form-group">
             <label for="senderName">Nama Kamu</label>
@@ -183,7 +183,7 @@
         <div class="success-msg" id="successMsg">Rahasia berhasil dikirim!</div>
     </div>
 
-    <!-- Bagian Daftar Rahasia Setelah Login -->
+    <!-- Bagian Daftar Rahasia -->
     <div class="secrets-section" id="secretsSection">
         <h2>Daftar Semua Rahasia</h2>
         <div id="secretsContainer"></div>
@@ -196,7 +196,7 @@
         const VALID_OWNER_PASS = "o_dola";
         const STORAGE_KEY = "secret_storage";
 
-        // Buka Verifikasi Ketika Tombol Profil Ditekan
+        // Buka Modal Verifikasi
         document.getElementById('profileBtn').addEventListener('click', function() {
             const name = prompt("Masukkan nama pembuat:");
             const pass = prompt("Masukkan password:");
@@ -204,7 +204,7 @@
             if (name === VALID_OWNER_NAME && pass === VALID_OWNER_PASS) {
                 document.getElementById('sendSection').style.display = 'none';
                 document.getElementById('secretsSection').style.display = 'block';
-                loadAllSecrets();
+                loadSecrets();
             } else {
                 alert("Nama atau password salah!");
             }
@@ -239,8 +239,8 @@
             }, 3000);
         }
 
-        // Tampilkan Semua Rahasia
-        function loadAllSecrets() {
+        // Tampilkan Rahasia
+        function loadSecrets() {
             const container = document.getElementById('secretsContainer');
             let secrets = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
@@ -254,7 +254,7 @@
                 html += `
                     <div class="secret-item">
                         <h4>Dari: ${secret.sender}</h4>
-                        <div class="date">Dikirim pada: ${secret.date}</div>
+                        <div class="date">Dikirim: ${secret.date}</div>
                         <p>${secret.content}</p>
                     </div>
                 `;
@@ -262,7 +262,7 @@
             container.innerHTML = html;
         }
 
-        // Keluar dari Mode Pembuat
+        // Keluar
         function logout() {
             document.getElementById('secretsSection').style.display = 'none';
             document.getElementById('sendSection').style.display = 'block';
