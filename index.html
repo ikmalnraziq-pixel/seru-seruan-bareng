@@ -3,682 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tes IQ Akurat - Versi Terbaru</title>
+    <title>Tempat Kirim Rahasia - Hanya Pembuat Bisa Lihat</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', sans-serif; 
         }
 
         body {
-            background-color: #f5f7fa;
-            color: #2d3748;
-            line-height: 1.8;
+            background-color: #f0f2f5;
+            padding: 1rem;
         }
 
-        .container {
-            max-width: 950px;
-            margin: 20px auto;
-            padding: 25px;
+        /* Tombol Profil di Pojok Kiri Atas */
+        .profile-btn {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            width: 50px;
+            height: 50px;
+            background-color: #1a73e8;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+
+        /* Bagian Form Kirim Rahasia */
+        .send-section {
+            max-width: 600px;
+            margin: 8rem auto 2rem;
             background: white;
+            padding: 2rem;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
         }
 
-        h1, h2, h3 {
+        .send-section h2 {
+            color: #202124;
             text-align: center;
-            color: #2b6cb0;
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
+        }
+
+        .send-section p {
+            color: #5f6368;
+            text-align: center;
+            margin-bottom: 2rem;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 1.2rem;
         }
 
-        label {
+        .form-group label {
             display: block;
-            font-weight: 500;
-            margin-bottom: 5px;
+            color: #5f6368;
+            margin-bottom: 0.5rem;
         }
 
-        input[type="number"] {
+        .form-group input,
+        .form-group textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #cbd5e0;
+            padding: 0.9rem;
+            border: 1px solid #dadce0;
             border-radius: 6px;
             font-size: 1rem;
         }
 
-        .instruksi {
-            background-color: #e2e8f0;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
         }
 
-        .timer {
-            text-align: right;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #dc2626;
-            padding: 10px;
-            border: 1px solid #fecdd3;
-            background-color: #fef2f2;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        .soal-wrapper {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            background-color: #f7fafc;
-        }
-
-        .soal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .soal-nomor {
-            font-weight: 600;
-            color: #2b6cb0;
-        }
-
-        .soal-kategori {
-            font-size: 0.9rem;
-            color: #718096;
-        }
-
-        .soal-teks {
-            font-size: 1.05rem;
-            margin-bottom: 15px;
-            padding: 10px;
-            background-color: white;
-            border-left: 4px solid #2b6cb0;
-            border-radius: 6px;
-        }
-
-        .pilihan-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .pilihan {
-            padding: 10px;
-            border: 2px solid #cbd5e0;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .pilihan:hover {
-            border-color: #2b6cb0;
-            background-color: #ebf8ff;
-        }
-
-        .pilihan.terpilih {
-            border-color: #2b6cb0;
-            background-color: #ebf8ff;
-            font-weight: 500;
-        }
-
-        .btn {
-            padding: 12px 35px;
+        .send-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: #1a73e8;
+            color: white;
             border: none;
             border-radius: 6px;
             font-size: 1rem;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin: 0 10px;
         }
 
-        .btn-primary {
-            background-color: #2b6cb0;
-            color: white;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background-color: #2c5282;
-        }
-
-        .btn-primary:disabled {
-            background-color: #a0aec0;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background-color: #4a5568;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #2d3748;
-        }
-
-        .btn-detail {
-            background-color: #2f855a;
-            color: white;
-        }
-
-        .btn-detail:hover {
-            background-color: #22543d;
-        }
-
-        .hasil-section {
+        .success-msg {
+            display: none;
+            background-color: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
             text-align: center;
-            padding: 30px;
         }
 
-        .skor-box {
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: #2b6cb0;
-            margin: 20px 0;
-            padding: 20px;
-            border: 2px solid #2b6cb0;
+        /* Bagian Daftar Rahasia Setelah Login */
+        .secrets-section {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
             border-radius: 10px;
-            display: inline-block;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            display: none;
         }
 
-        .interpretasi-box {
-            background-color: #e2e8f0;
-            padding: 25px;
-            border-radius: 8px;
-            text-align: left;
-            margin: 20px 0;
-        }
-
-        .negara-box {
-            background-color: #f6e58d;
-            padding: 20px;
-            border-radius: 8px;
+        .secrets-section h2 {
+            color: #202124;
+            margin-bottom: 1.5rem;
             text-align: center;
-            margin: 20px 0;
-            border: 1px solid #f9ca24;
         }
 
-        .detail-hasil {
-            background-color: #ebf8ff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border: 1px solid #bee3f8;
-            display: none;
+        .secret-item {
+            border-left: 4px solid #1a73e8;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 0 6px 6px 0;
         }
 
-        .detail-item {
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #bee3f8;
+        .secret-item h4 {
+            color: #1a73e8;
+            margin-bottom: 0.5rem;
         }
 
-        .detail-item h5 {
-            color: #2b6cb0;
-            margin-bottom: 5px;
+        .secret-item .date {
+            font-size: 0.9rem;
+            color: #5f6368;
+            margin-bottom: 0.5rem;
         }
 
-        .hidden {
-            display: none;
+        .logout-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1.5rem;
+        }
+
+        .no-secrets {
+            color: #5f6368;
+            text-align: center;
+            padding: 1rem;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Halaman Input Usia -->
-        <div id="halaman-diri">
-            <h1>Tes IQ Akurat - Versi Khusus Usia</h1>
-            <p style="text-align:center; color:#718096; margin-bottom:20px;">Soal & Kesulitan Khusus Setiap Kelompok Usia | Perbandingan dengan Negara</p>
+    <!-- Tombol Profil di Pojok Kiri Atas -->
+    <div class="profile-btn" id="profileBtn">R</div>
 
-            <div class="form-group">
-                <label for="usia">Umur Kamu (10-20 tahun):</label>
-                <input type="number" id="usia" min="10" max="20" required>
-            </div>
-
-            <div class="instruksi">
-                <h4>Aturan Tes:</h4>
-                <ul style="margin-left:20px; margin-top:10px;">
-                    <li>Soal berbeda untuk setiap kelompok usia (10-12, 13-15, 16-18, 19-20)</li>
-                    <li>Waktu pengerjaan disesuaikan kesulitan soal (25-35 menit)</li>
-                    <li>Setiap soal memiliki bobot sesuai tingkat kesulitan</li>
-                    <li>Hasil akan menunjukkan perbandingan IQ dengan rata-rata negara di dunia</li>
-                </ul>
-            </div>
-
-            <div style="text-align:center;">
-                <button class="btn btn-primary" id="tombol-mulai">Mulai Tes</button>
-            </div>
+    <!-- Bagian Form Kirim Rahasia -->
+    <div class="send-section" id="sendSection">
+        <h2>Kirim Rahasia ke Pembuat</h2>
+        <p>Semua rahasia yang kamu kirim hanya akan dilihat oleh pembuat website</p>
+        
+        <div class="form-group">
+            <label for="senderName">Nama Kamu</label>
+            <input type="text" id="senderName" placeholder="Masukkan nama kamu">
         </div>
-
-        <!-- Halaman Soal -->
-        <div id="halaman-soal" class="hidden">
-            <div class="timer">Waktu Tersisa: <span id="waktu">00:00</span></div>
-            <h3 id="judul-soal"></h3>
-            <div id="soal-container"></div>
-            <div style="text-align:center;">
-                <button class="btn btn-primary" id="tombol-submit" disabled>Kirim Jawaban</button>
-            </div>
+        
+        <div class="form-group">
+            <label for="secretContent">Isi Rahasia</label>
+            <textarea id="secretContent" placeholder="Tuliskan rahasiamu di sini..."></textarea>
         </div>
+        
+        <button class="send-btn" onclick="saveSecret()">Kirim Rahasia</button>
+        <div class="success-msg" id="successMsg">Rahasia berhasil dikirim!</div>
+    </div>
 
-        <!-- Halaman Hasil -->
-        <div id="halaman-hasil" class="hidden">
-            <h2>Hasil Tes IQ Kamu</h2>
-            <div class="hasil-section">
-                <p>Skor IQ Standar:</p>
-                <div class="skor-box" id="skor-akhir"></div>
-                
-                <!-- Fitur Perbandingan dengan Negara -->
-                <div class="negara-box">
-                    <h4>📊 Perbandingan Rata-Rata IQ dengan Negara</h4>
-                    <p id="perbandingan-negara"></p>
-                </div>
-
-                <div class="interpretasi-box">
-                    <h4>Kategori Skor:</h4>
-                    <p id="kategori-skor"></p>
-                    <h4>Perbandingan dengan Sebaya:</h4>
-                    <p id="perbandingan-skor"></p>
-                    <h4>Kesimpulan Umum:</h4>
-                    <p id="kesimpulan-skor"></p>
-                </div>
-
-                <button class="btn btn-detail" id="tombol-detail">Lihat Rincian Hasil IQ</button>
-                <button class="btn btn-secondary" id="tombol-reset">Ulangi Tes</button>
-
-                <div class="detail-hasil" id="detail-hasil">
-                    <h3 style="text-align:center; margin-bottom:20px;">Rincian Kemampuan Kognitif</h3>
-                    
-                    <div class="detail-item">
-                        <h5>Skor Total Bobot Jawaban Benar:</h5>
-                        <p id="skor-bobot"></p>
-                    </div>
-                    
-                    <div class="detail-item">
-                        <h5>Kemampuan Utama yang Diuji:</h5>
-                        <p id="kemampuan-utama"></p>
-                    </div>
-                    
-                    <div class="detail-item">
-                        <h5>Tingkat Kesulitan Soal:</h5>
-                        <p id="tingkat-kesulitan"></p>
-                    </div>
-                    
-                    <div class="detail-item">
-                        <h5>Catatan Penting:</h5>
-                        <p>Hasil ini merupakan estimasi yang akurat berdasarkan tes terstandarisasi. Tes IQ resmi memerlukan pengawasan psikolog klinis dan evaluasi lebih mendalam untuk hasil yang mutlak akurat.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Bagian Daftar Rahasia Setelah Login -->
+    <div class="secrets-section" id="secretsSection">
+        <h2>Daftar Rahasia yang Diterima</h2>
+        <div id="secretsContainer"></div>
+        <button class="logout-btn" onclick="logout()">Keluar</button>
     </div>
 
     <script>
-        // DATA SOAL KHUSUS PER KELOMPOK USIA
-        const dataSoalPerUsia = {
-            // KELOMPOK 1: USIA 10-12 TAHUN (SOAL LEBIH MENGGUNAKAN KONSEP SEHARI-HARI)
-            "10-12": {
-                waktu: 25 * 60, // 25 menit
-                tingkatKesulitan: "Dasar-Sedang",
-                kemampuanDiujikan: "Analogi Benda, Urutan Aktivitas Sehari-Hari, Pola Sederhana",
-                soal: [
-                    { nomor:1, kategori:"Analogi Benda", teks:"PENSIL → MENULIS; SENDOK → ?", pilihan:["MEMAKAN","MINUM","MEMOTONG","MENGUKUR"], jawabanBenar:0, bobot:3 },
-                    { nomor:2, kategori:"Analogi Benda", teks:"SEPEDA → JALAN; PERAHU → ?", pilihan:["DARAT","AIR","UDARA","KERETA"], jawabanBenar:1, bobot:3 },
-                    { nomor:3, kategori:"Urutan Aktivitas", teks:"BANGUN → ? → SARAPAN → KE SEKOLAH", pilihan:["TIDUR LAGI","CUCI MUKA","MAIN GAME","TIDUR"], jawabanBenar:1, bobot:3 },
-                    { nomor:4, kategori:"Urutan Aktivitas", teks:"BELI BAHAN → ? → MASAK → MAKAN", pilihan:["CUCI TANGAN","SIAPKAN PERALATAN","MAIN","TIDUR"], jawabanBenar:1, bobot:3 },
-                    { nomor:5, kategori:"Pola Simbol Sederhana", teks:"1 2 3 1 2 3 1 2 ?", pilihan:["3","1","2","4"], jawabanBenar:0, bobot:3 },
-                    { nomor:6, kategori:"Pola Simbol Sederhana", teks:"□ △ □ △ □ △ ?", pilihan:["□","△","○","⬠"], jawabanBenar:0, bobot:3 },
-                    { nomor:7, kategori:"Analogi Benda", teks:"TV → MENONTON; RADIO → ?", pilihan:["MENDENGAR","MEMBACA","MENULIS","MAIN"], jawabanBenar:0, bobot:4 },
-                    { nomor:8, kategori:"Urutan Aktivitas", teks:"CUCI BAJU → ? → JEMUR → LIPAT", pilihan:["BELI BAJU","KERINGKAN","MAKAN","TIDUR"], jawabanBenar:1, bobot:4 },
-                    { nomor:9, kategori:"Pola Kata", teks:"AYAM → YAMA → AMAY → ?", pilihan:["MAYA","YAMA","AMAY","AYAM"], jawabanBenar:0, bobot:4 },
-                    { nomor:10, kategori:"Analogi Benda", teks:"TOPI → KEPALA; SEPATU → ?", pilihan:["TANGAN","KAKI","BADAN","KEPALA"], jawabanBenar:1, bobot:4 },
-                    { nomor:11, kategori:"Urutan Konseptual", teks:"BENIH → TUMBUH → ? → BERBUAH", pilihan:["TANAM","DAUN","POHON","MAKAN"], jawabanBenar:2, bobot:5 },
-                    { nomor:12, kategori:"Pola Simbol", teks:"↗ ↘ ↙ ↖ ↗ ↘ ?", pilihan:["↙","↖","↗","↘"], jawabanBenar:0, bobot:5 },
-                    { nomor:13, kategori:"Analogi Konseptual", teks:"MATA → MELIHAT; TELINGA → ?", pilihan:["MERASAKAN","MENDENGAR","MEMBAKU","MENCAPAI"], jawabanBenar:1, bobot:5 },
-                    { nomor:14, kategori:"Urutan Konseptual", teks:"BUNGA → KUNING → ? → MATI", pilihan:["MEKAR","TUMBUH","LAYU","BENIH"], jawabanBenar:2, bobot:5 },
-                    { nomor:15, kategori:"Pola Kata", teks:"KUCING → UCING → CING → ?", pilihan:["ING","KUCI","UCING","KUCING"], jawabanBenar:0, bobot:5 }
-                ]
-            },
+        // Konfigurasi Pembuat Website
+        const VALID_OWNER_NAME = "r_ruto";
+        const VALID_OWNER_PASS = "o_dola";
+        const STORAGE_KEY = "secret_database";
 
-            // KELOMPOK 2: USIA 13-15 TAHUN (SOAL LEBIH KOMPLEKS, MENGGUNAKAN KONSEP SEKOLAH)
-            "13-15": {
-                waktu: 30 * 60, // 30 menit
-                tingkatKesulitan: "Sedang",
-                kemampuanDiujikan: "Analogi Konseptual, Urutan Proses, Pola Sedang",
-                soal: [
-                    { nomor:1, kategori:"Analogi Konseptual", teks:"MATEMATIKA → ANGKA; BAHASA → ?", pilihan:["KATA","ANGKA","GAMBAR","SUARA"], jawabanBenar:0, bobot:3 },
-                    { nomor:2, kategori:"Analogi Konseptual", teks:"FISIKA → GERAK; KIMIA → ?", pilihan:["REAKSI","ATOM","MOLEKUL","ZAT"], jawabanBenar:0, bobot:3 },
-                    { nomor:3, kategori:"Urutan Proses", teks:"MEMILIKI IDE → ? → MERANCANG → MELAKSANAKAN", pilihan:["MENCARI REFERENSI","MEMBAHAS","MENULIS","MEMILIH ALAT"], jawabanBenar:0, bobot:3 },
-                    { nomor:4, kategori:"Urutan Proses", teks:"TANAM → ? → MEMELIHARA → MEMANEN", pilihan:["PERTANAMAN","PERAWATAN","PEMUPUKAN","PEMBERSIHAN"], jawabanBenar:0, bobot:3 },
-                    { nomor:5, kategori:"Pola Simbol", teks:"○ ● ○ ● ● ○ ● ● ● ?", pilihan:["○","●","■","□"], jawabanBenar:1, bobot:4 },
-                    { nomor:6, kategori:"Pola Simbol", teks:"A B C B C D C D E ?", pilihan:["D","E","F","C"], jawabanBenar:0, bobot:4 },
-                    { nomor:7, kategori:"Analogi Konseptual", teks:"SEPEDA → STIR; MOBIL → ?", pilihan:["MESIN","STIR","BAN","BAKU"], jawabanBenar:1, bobot:4 },
-                    { nomor:8, kategori:"Analogi Konseptual", teks:"KONSER → MUSISI; PERTANDINGAN → ?", pilihan:["ATLET","TIM","PENONTON","ARENA"], jawabanBenar:0, bobot:4 },
-                    { nomor:9, kategori:"Urutan Proses", teks:"DESAIN → ? → PROTOTIPE → PRODUKSI", pilihan:["PERENCANAAN","PEMBUATAN","TESTING","MODIFIKASI"], jawabanBenar:0, bobot:5 },
-                    { nomor:10, kategori:"Urutan Proses", teks:"MASUK KELAS → ? → BELAJAR → SOAL", pilihan:["MEMBUKA BUKU","SALAM","PILIH KURSI","NYALAKAN LAMPU"], jawabanBenar:2, bobot:5 },
-                    { nomor:11, kategori:"Pola Angka", teks:"2 4 8 16 ?", pilihan:["24","32","30","28"], jawabanBenar:1, bobot:5 },
-                    { nomor:12, kategori:"Pola Angka", teks:"3 5 8 12 ?", pilihan:["17","15","18","16"], jawabanBenar:0, bobot:5 },
-                    { nomor:13, kategori:"Analogi Ilmiah", teks:"DNA → WARISAN; GEN → ?", pilihan:["CIRI","MOLEKUL","SEL","KROMOSOM"], jawabanBenar:0, bobot:5 },
-                    { nomor:14, kategori:"Analogi Ilmiah", teks:"GERAK → GAYA; SUHU → ?", pilihan:["PANAS","ENERGI","KALOR","TERMOMETER"], jawabanBenar:2, bobot:5 },
-                    { nomor:15, kategori:"Pola Kombinasi", teks:"[A,2] [B,3] [C,4] ?", pilihan:["[D,5]","[D,4]","[E,5]","[D,6]"], jawabanBenar:0, bobot:6 }
-                ]
-            },
+        // Tombol Profile Buka Modal Verifikasi
+        document.getElementById('profileBtn').addEventListener('click', function() {
+            const name = prompt("Masukkan nama pembuat:");
+            const pass = prompt("Masukkan password pembuat:");
 
-            // KELOMPOK 3: USIA 16-18 TAHUN (SOAL LEBIH KOMPLEKS, BERBASIS KONSEP SEKOLAH MENENGAH ATAS & KARIR AWAL)
-            "16-18": {
-                waktu: 35 * 60, // 35 menit
-                tingkatKesulitan: "Sedang-Tinggi",
-                kemampuanDiujikan: "Analogi Abstrak, Urutan Proses Kompleks, Pola Kombinasi",
-                soal: [
-                    { nomor:1, kategori:"Analogi Abstrak", teks:"KEBEBASAN → TANGGUNG JAWAB; REVOLUSI → ?", pilihan:["PERUBAHAN","KEDAULATAN","PERJUANGAN","MASAL"], jawabanBenar:1, bobot:4 },
-                    { nomor:2, kategori:"Analogi Abstrak", teks:"FILSAFAT → PEMIKIRAN; SENI → ?", pilihan:["EKSPRESI","KARYA","PENONTON","KREATIVITAS"], jawabanBenar:0, bobot:4 },
-                    { nomor:3, kategori:"Urutan Proses Kompleks", teks:"RISet → ANALISIS → ? → PUBLIKASI", pilihan:["KESIMPULAN","MODIFIKASI","UJI COBA","REVISI"], jawabanBenar:2, bobot:4 },
-                    { nomor:4, kategori:"Urutan Proses Kompleks", teks:"PERENCANAAN KARIR → ? → PELATIHAN → LAMARAN", pilihan:["PENILAIAN DIRI","PILIH BIDANG","MENYUSUN CV","PERTEMUAN"], jawabanBenar:0, bobot:4 },
-                    { nomor:5, kategori:"Pola Kombinasi", teks:"● ○ ■ □ ● ○ ■ ?", pilihan:["□","●","○","■"], jawabanBenar:0, bobot:5 },
-                    { nomor:6, kategori:"Pola Kombinasi", teks:"A1 B2 C3 D4 ?", pilihan:["E5","D5","E4","F5"], jawabanBenar:0, bobot:5 },
-                    { nomor:7, kategori:"Analogi Ilmiah", teks:"KOSMOS → GALAKSI; ATOM → ?", pilihan:["MOLEKUL","ELEKTRON","NUKLEUS","PARTIKEL"], jawabanBenar:0, bobot:5 },
-                    { nomor:8, kategori:"Analogi Ilmiah", teks:"IKLIM → PERUBAHAN; EKOLOGI → ?", pilihan:["KESEIMBANGAN","KERUSAKAN","PEMELIHARAAN","EKOSISTEM"], jawabanBenar:0, bobot:5 },
-                    { nomor:9, kategori:"Urutan Sistem", teks:"SEL → JARINGAN → ? → ORGANISME", pilihan:["ORGAN","SISTEM","BADAN","KOMUNI"], jawabanBenar:0, bobot:5 },
-                    { nomor:10, kategori:"Urutan Sistem", teks:"KECAMATAN → KABUPATEN → ? → NEGARA", pilihan:["PROVINSI","WILAYAH","KOTA","PULAU"], jawabanBenar:0, bobot:5 },
-                    { nomor:11, kategori:"Pola Matematis", teks:"3 6 10 15 ?", pilihan:["21","20","22","18"], jawabanBenar:0, bobot:6 },
-                    { nomor:12, kategori:"Pola Matematis", teks:"2 6 12 20 ?", pilihan:["30","28","32","36"], jawabanBenar:0, bobot:6 },
-                    { nomor:13, kategori:"Analogi Sosial", teks:"DEMOKRASI → PILIHAN; TOTALITER → ?", pilihan:["KONTROL","OTORITAS","PERATURAN","PEMIMPIN"], jawabanBenar:1, bobot:6 },
-                    { nomor:14, kategori:"Analogi Sosial", teks:"PERDAGANGAN → PASAR; PERJANJIAN → ?", pilihan:["MITRA","LEGAL","KONTRAK","KERJASAMA"], jawabanBenar:2, bobot:6 },
-                    { nomor:15, kategori:"Pola Multi", teks:"[1,3] [2,6] [3,9] [4,?]", pilihan:["12","10","14","8"], jawabanBenar:0, bobot:6 }
-                ]
-            },
-
-            // KELOMPOK 4: USIA 19-20 TAHUN (SOAL BERBASIS KARIR & KEMANDIRIAN)
-            "19-20": {
-                waktu: 35 * 60, // 35 menit
-                tingkatKesulitan: "Tinggi",
-                kemampuanDiujikan: "Analogi Strategis, Urutan Proses Manajemen, Pola Sistem",
-                soal: [
-                    { nomor:1, kategori:"Analogi Strategis", teks:"USAHA → MODAL; PENGEMBANGAN → ?", pilihan:["SUMBER DAYA","KAPITAL","TIM","PEMASARAN"], jawabanBenar:0, bobot:4 },
-                    { nomor:2, kategori:"Analogi Strategis", teks:"PROYEK → TIM; PERUSAHAAN → ?", pilihan:["DIVISI","DIREKSI","KARYAWAN","PEMILIK"], jawabanBenar:0, bobot:4 },
-                    { nomor:3, kategori:"Urutan Manajemen", teks:"PERENCANAAN → ? → PENGORGANISASIAN → KONTROL", pilihan:["PERENCANAAN ULANG","PEMILIHAN SUMBER DAYA","PENILAIAN","EKSEKUSI"], jawabanBenar:1, bobot:5 },
-                    { nomor:4, kategori:"Urutan Manajemen", teks:"IDE → SKETS → ? → PRODUK", pilihan:["PROTOTIPE","MODIFIKASI","TESTING","PERBAIKAN"], jawabanBenar:0, bobot:5 },
-                    { nomor:5, kategori:"Pola Sistem", teks:"● ■ ○ □ ● ■ ? □", pilihan:["○","●","■","□"], jawabanBenar:0, bobot:5 },
-                    { nomor:6, kategori:"Pola Sistem", teks:"X2 Y3 Z4 A5 ?", pilihan:["B6","A6","B5","C6"], jawabanBenar:0, bobot:5 },
-                    { nomor:7, kategori:"Analogi Ekonomi", teks:"SUPLY → HARGA; PERMINTAAN → ?", pilihan:["KUALITAS","HARGA","KEPUASAN","PRODUKSI"], jawabanBenar:1, bobot:5 },
-                    { nomor:8, kategori:"Analogi Ekonomi", teks:"INVESTASI → HASIL; PENDIDIKAN → ?", pilihan:["KEMAMPUAN","KERJA","GAJI","PRESTASI"], jawabanBenar:0, bobot:5 },
-                    { nomor:9, kategori:"Urutan Bisnis", teks:"PENELITIAN PASAR → ? → PERENCANAAN → PRODUKSI", pilihan:["ANALISIS DATA","IDE PRODUK","MODIFIKASI","PEMASARAN"], jawabanBenar:1, bobot:6 },
-                    { nomor:10, kategori:"Urutan Bisnis", teks:"MENDETEKSI MASALAH → ? → SOLUSI → IMPLEMENTASI", pilihan:["ANALISIS PENYEBAB","PENCARIAN REFERENSI","KONSULTASI","UJI COBA"], jawabanBenar:0, bobot:6 },
-                    { nomor:11, kategori:"Pola Matematis", teks:"1 4 9 16 ?", pilihan:["25","20","24","30"], jawabanBenar:0, bobot:6 },
-                    { nomor:12, kategori:"Pola Matematis", teks:"2 3 5 7 11 ?", pilihan:["13","12","14","15"], jawabanBenar:0, bobot:6 },
-                    { nomor:13, kategori:"Analogi Hukum", teks:"UNDANG-UNDANG → KEDAULATAN; PERATURAN → ?", pilihan:["OTORITAS","KEADILAN","MASYARAKAT","PEMERINTAH"], jawabanBenar:0, bobot:6 },
-                    { nomor:14, kategori:"Analogi Hukum", teks:"SAKSI → KESEJARHATAN; AHLI → ?", pilihan:["KEAKURATAN","KREDIBILITAS","PENGETAHUAN","PENGALAMAN"], jawabanBenar:1, bobot:6 },
-                    { nomor:15, kategori:"Pola Sistem", teks:"[A,1] [B,3] [C,5] [D,?]", pilihan:["7","6","8","9"], jawabanBenar:0, bobot:6 }
-                ]
-            }
-        };
-
-        // DATA RATA-RATA IQ NEGARA (BERDASARKAN RISSET INTERNASIONAL 2023)
-        const dataRataRataIQNegara = [
-            { negara: "Singapura", skor: 108 },
-            { negara: "Hong Kong", skor: 108 },
-            { negara: "Tiongkok", skor: 106 },
-            { negara: "Korea Selatan", skor: 106 },
-            { negara: "Jepang", skor: 105 },
-            { negara: "Finlandia", skor: 101 },
-            { negara: "Jerman", skor: 100 },
-            { negara: "Amerika Serikat", skor: 98 },
-            { negara: "Indonesia", skor: 90 },
-            { negara: "India", skor: 82 },
-            { negara: "Nigeria", skor: 76 },
-            { negara: "Yaman", skor: 74 }
-        ];
-
-        // Fungsi Cari Perbandingan Negara
-        function cariPerbandinganNegara(skorIQ) {
-            let negaraSerupa = [];
-            for (let negara of dataRataRataIQNegara) {
-                if (Math.abs(negara.skor - skorIQ) <= 2) {
-                    negaraSerupa.push(negara.negara);
-                }
-            }
-
-            if (negaraSerupa.length === 0) {
-                let negaraTerdekat = dataRataRataIQNegara[0];
-                for (let negara of dataRataRataIQNegara) {
-                    if (Math.abs(negara.skor - skorIQ) < Math.abs(negaraTerdekat.skor - skorIQ)) {
-                        negaraTerdekat = negara;
-                    }
-                }
-                return `Tidak ada negara dengan skor persis sama. Skor paling dekat adalah ${negaraTerdekat.negara} dengan rata-rata ${negaraTerdekat.skor}.`;
+            if (name === VALID_OWNER_NAME && pass === VALID_OWNER_PASS) {
+                document.getElementById('sendSection').style.display = 'none';
+                document.getElementById('secretsSection').style.display = 'block';
+                loadAllSecrets();
             } else {
-                return `Skor IQ kamu sama dengan rata-rata negara ${negaraSerupa.join(", ")}.`;
+                alert("Nama atau password salah, kamu tidak bisa lihat rahasia!");
             }
-        }
+        });
 
-        // Variabel Global
-        let kelompokUsiaTerpilih = "";
-        let dataSoalTerpilih = {};
-        let skorTotal = 0;
-        let waktuSisa = 0;
-        let intervalWaktu;
+        // Simpan Rahasia yang Dikirim
+        function saveSecret() {
+            const sender = document.getElementById('senderName').value.trim() || "Anonim";
+            const content = document.getElementById('secretContent').value.trim();
 
-        // Fungsi Inisialisasi Soal Berdasarkan Usia
-        function initSoal() {
-            const usia = parseInt(document.getElementById('usia').value);
-            if (isNaN(usia) || usia < 10 || usia > 20) {
-                alert("Usia harus antara 10-20 tahun!");
+            if (!content) {
+                alert("Isi rahasia dulu ya!");
                 return;
             }
 
-            // Tentukan Kelompok Usia
-            if (usia >= 10 && usia <= 12) kelompokUsiaTerpilih = "10-12";
-            else if (usia >= 13 && usia <= 15) kelompokUsiaTerpilih = "13-15";
-            else if (usia >= 16 && usia <= 18) kelompokUsiaTerpilih = "16-18";
-            else kelompokUsiaTerpilih = "19-20";
+            const secret = {
+                sender: sender,
+                content: content,
+                date: new Date().toLocaleString('id-ID')
+            };
 
-            // Ambil Data Soal yang Sesuai
-            dataSoalTerpilih = dataSoalPerUsia[kelompokUsiaTerpilih];
-            waktuSisa = dataSoalTerpilih.waktu;
-            document.getElementById('waktu').textContent = `${Math.floor(waktuSisa/60)}:${(waktuSisa%60).toString().padStart(2, '0')}`;
+            let secrets = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            secrets.push(secret);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(secrets));
 
-            // Tampilkan Judul Soal Khusus Kelompok Usia
-            document.getElementById('judul-soal').textContent = `Tes IQ Khusus Kelompok Usia ${kelompokUsiaTerpilih} Tahun`;
-            
-            // Render Soal ke Halaman
-            const soalContainer = document.getElementById('soal-container');
-            soalContainer.innerHTML = '';
-            
-            dataSoalTerpilih.soal.forEach((soal, idx) => {
-                const soalWrapper = document.createElement('div');
-                soalWrapper.className = 'soal-wrapper';
-                
-                const soalHeader = document.createElement('div');
-                soalHeader.className = 'soal-header';
-                soalHeader.innerHTML = `
-                    <span class="soal-nomor">Soal ${soal.nomor}</span>
-                    <span class="soal-kategori">${soal.kategori} (Bobot: ${soal.bobot})</span>
+            document.getElementById('successMsg').style.display = 'block';
+            document.getElementById('senderName').value = "";
+            document.getElementById('secretContent').value = "";
+
+            setTimeout(() => {
+                document.getElementById('successMsg').style.display = 'none';
+            }, 3000);
+        }
+
+        // Tampilkan Semua Rahasia
+        function loadAllSecrets() {
+            const container = document.getElementById('secretsContainer');
+            let secrets = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+            if (secrets.length === 0) {
+                container.innerHTML = '<div class="no-secrets">Belum ada rahasia yang diterima</div>';
+                return;
+            }
+
+            let html = "";
+            secrets.forEach(secret => {
+                html += `
+                    <div class="secret-item">
+                        <h4>Nama Pengirim: ${secret.sender}</h4>
+                        <div class="date">Dikirim pada: ${secret.date}</div>
+                        <p>${secret.content}</p>
+                    </div>
                 `;
-                
-                const soalTeks = document.createElement('div');
-                soalTeks.className = 'soal-teks';
-                soalTeks.textContent = soal.teks;
-                
-                const pilihanList = document.createElement('div');
-                pilihanList.className = 'pilihan-list';
-                
-                soal.pilihan.forEach((pil, idxPil) => {
-                    const pilihanItem = document.createElement('div');
-                    pilihanItem.className = 'pilihan';
-                    pilihanItem.textContent = `${idxPil + 1}. ${pil}`;
-                    pilihanItem.dataset.idxSoal = idx;
-                    pilihanItem.dataset.idxPil = idxPil;
-                    
-                    pilihanItem.addEventListener('click', function() {
-                        // Hapus pilihan terpilih sebelumnya
-                        document.querySelectorAll(`.pilihan[data-idx-soal="${idx}"]`).forEach(p => p.classList.remove('terpilih'));
-                        this.classList.add('terpilih');
-                        
-                        // Hitung skor
-                        if (parseInt(this.dataset.idxPil) === soal.jawabanBenar) {
-                            skorTotal += soal.bobot;
-                        } else {
-                            // Cek jika ada pilihan lama yang benar
-                            const pilihanLama = document.querySelector(`.pilihan[data-idx-soal="${idx}"][data-idx-pil="${soal.jawabanBenar}"]`);
-                            if (pilihanLama && pilihanLama.classList.contains('terpilih')) {
-                                skorTotal -= soal.bobot;
-                            }
-                        }
-                        
-                        // Cek apakah semua soal sudah dipilih
-                        const totalTerpilih = document.querySelectorAll('.pilihan.terpilih').length;
-                        document.getElementById('tombol-submit').disabled = (totalTerpilih !== dataSoalTerpilih.soal.length);
-                    });
-                    
-                    pilihanList.appendChild(pilihanItem);
-                });
-                
-                soalWrapper.appendChild(soalHeader);
-                soalWrapper.appendChild(soalTeks);
-                soalWrapper.appendChild(pilihanList);
-                soalContainer.appendChild(soalWrapper);
-            });
-        }
-
-        // Fungsi Mulai Timer
-        function mulaiTimer() {
-            clearInterval(intervalWaktu);
-            intervalWaktu = setInterval(() => {
-                waktuSisa--;
-                const menit = Math.floor(waktuSisa / 60);
-                const detik = waktuSisa % 60;
-                document.getElementById('waktu').textContent = `${menit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
-                
-                if (waktuSisa <= 0) {
-                    clearInterval(intervalWaktu);
-                    prosesHasil();
-                }
-            }, 1000);
-        }
-
-        // Fungsi Proses Hasil Lengkap
-        function prosesHasil() {
-            clearInterval(intervalWaktu);
-            
-            // Hitung Skor IQ Berdasarkan Kelompok Usia
-            let skorIQ;
-            const totalBobotMaks = dataSoalTerpilih.soal.reduce((total, s) => total + s.bobot, 0);
-            const persentaseBenar = Math.round((skorTotal / totalBobotMaks) * 100);
-
-            switch(kelompokUsiaTerpilih) {
-                case "10-12":
-                    skorIQ = persentaseBenar >= 80 ? 130 : persentaseBenar >= 60 ? 115 : persentaseBenar >= 40 ? 100 : persentaseBenar >= 20 ? 85 : 70;
-                    break;
-                case "13-15":
-                    skorIQ = persentaseBenar >= 80 ? 132 : persentaseBenar >= 60 ? 118 : persentaseBenar >= 40 ? 102 : persentaseBenar >= 20 ? 88 : 72;
-                    break;
-                case "16-18":
-                    skorIQ = persentaseBenar >= 80 ? 135 : persentaseBenar >= 60 ? 118 : persentaseBenar >= 40 ? 103 : persentaseBenar >= 20 ? 90 : 75;
-                    break;
-                case "19-20":
-                    skorIQ = persentaseBenar >= 80 ? 140 : persentaseBenar >= 60 ? 120 : persentaseBenar >= 40 ? 105 : persentaseBenar >= 20 ? 92 : 78;
-                    break;
-            }
-
-            // Tampilkan Hasil Utama
-            document.getElementById('skor-akhir').textContent = skorIQ;
-            document.getElementById('skor-bobot').textContent = `Skor Bobot Benar: ${skorTotal}/${totalBobotMaks} | Persentase Benar: ${persentaseBenar}%`;
-            document.getElementById('tingkat-kesulitan').textContent = `Tingkat Kesulitan Soal: ${dataSoalTerpilih.tingkatKesulitan}`;
-            document.getElementById('kemampuan-utama').textContent = `Kemampuan Diujikan: ${dataSoalTerpilih.kemampuanDiujikan}`;
-            
-            // Tampilkan Perbandingan Negara
-            document.getElementById('perbandingan-negara').textContent = cariPerbandinganNegara(skorIQ);
-            
-            // Kategori Skor
-            let kategoriSkor, perbandinganSkor, kesimpulanSkor;
-            if (skorIQ >= 130) {
-                kategoriSkor = "Kategori Sangat Cerdas (Gifted)";
-                perbandinganSkor = "Sekitar 2-3% populasi dunia memiliki skor IQ di atas 130.";
-                kesimpulanSkor = "Kamu memiliki kemampuan kognitif yang luar biasa, potensi untuk unggul di bidang akademis atau profesional tertentu.";
-            } else if (skorIQ >= 110 && skorIQ < 130) {
-                kategoriSkor = "Kategori Cerdas (Above Average)";
-                perbandinganSkor = "Sekitar 16% populasi dunia berada di kategori ini.";
-                kesimpulanSkor = "Kemampuanmu lebih baik dari rata-rata, mampu menangani konsep kompleks dengan mudah.";
-            } else if (skorIQ >= 90 && skorIQ < 110) {
-                kategoriSkor = "Kategori Rata-Rata (Average)";
-                perbandinganSkor = "Sekitar 68% populasi dunia memiliki skor di rentang ini.";
-                kesimpulanSkor = "Kemampuanmu sesuai dengan rata-rata populasi, dapat berkembang dengan baik melalui pembelajaran yang konsisten.";
-            } else if (skorIQ >= 70 && skorIQ < 90) {
-                kategoriSkor = "Kategori Rata-Rata Rendah (Below Average)";
-                perbandinganSkor = "Sekitar 13% populasi berada di kategori ini.";
-                kesimpulanSkor = "Dapat ditingkatkan dengan latihan kognitif terstruktur dan bimbingan yang tepat.";
-            } else {
-                kategoriSkor = "Kategori Butuh Perhatian Khusus";
-                perbandinganSkor = "Sekitar 2-3% populasi memiliki skor di bawah ini.";
-                kesimpulanSkor = "Perlu evaluasi lebih lanjut oleh psikolog untuk mendapatkan dukungan yang sesuai.";
-            }
-
-            document.getElementById('kategori-skor').textContent = kategoriSkor;
-            document.getElementById('perbandingan-skor').textContent = perbandinganSkor;
-            document.getElementById('kesimpulan-skor').textContent = kesimpulanSkor;
-            
-            // Tampilkan Halaman Hasil
-            document.getElementById('halaman-soal').classList.add('hidden');
-            document.getElementById('halaman-hasil').classList.remove('hidden');
-        }
-
-        // Fungsi Cari Perbandingan Negara
-        function cariPerbandinganNegara(skorIQ) {
-            let negaraSerupa = [];
-            dataRataRataIQNegara.forEach(item => {
-                if (Math.abs(item.skor - skorIQ) <= 2) {
-                    negaraSerupa.push(item.negara);
-                }
             });
 
-            if (negaraSerupa.length > 0) {
-                return `Skor IQ kamu sama dengan rata-rata penduduk negara ${negaraSerupa.join(", ")}.`;
-            } else {
-                let negaraTerdekat = dataRataRataIQNegara[0];
-                dataRataRataIQNegara.forEach(item => {
-                    if (Math.abs(item.skor - skorIQ) < Math.abs(negaraTerdekat.skor - skorIQ)) {
-                        negaraTerdekat = item;
-                    }
-                });
-                return `Skor IQ kamu paling dekat dengan rata-rata penduduk ${negaraTerdekat.negara} (skor rata-rata ${negaraTerdekat.skor}).`;
-            }
+            container.innerHTML = html;
         }
 
-        // Event Listener Tombol Utama
-        document.getElementById('tombol-mulai').addEventListener('click', function() {
-            const usia = parseInt(document.getElementById('usia').value);
-            if (isNaN(usia) || usia < 10 || usia > 20) {
-                alert("Masukkan usia antara 10-20 tahun!");
-                return;
-            }
-            
-            document.getElementById('halaman-diri').classList.add('hidden');
-            document.getElementById('halaman-soal').classList.remove('hidden');
-            
-            initSoal();
-            mulaiTimer();
-        });
-
-        document.getElementById('tombol-submit').addEventListener('click', prosesHasil);
-        document.getElementById('tombol-reset').addEventListener('click', function() {
-            window.location.reload();
-        });
-
-        document.getElementById('tombol-detail').addEventListener('click', function() {
-            const detail = document.getElementById('detail-hasil');
-            detail.style.display = detail.style.display === 'block' ? 'none' : 'block';
-            this.textContent = detail.style.display === 'block' ? 'Sembunyikan Rincian' : 'Lihat Rincian Hasil IQ';
-        });
+        // Keluar dari Mode Pembuat
+        function logout() {
+            document.getElementById('secretsSection').style.display = 'none';
+            document.getElementById('sendSection').style.display = 'block';
+        }
     </script>
 </body>
 </html>
-
-
