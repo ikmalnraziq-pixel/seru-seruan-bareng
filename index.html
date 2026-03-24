@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tempat Kirim Rahasia - Hanya Pembuat Bisa Lihat</title>
+    <title>Tempat Rahasia</title>
     <style>
         * { 
             margin: 0; 
@@ -14,7 +14,6 @@
 
         body {
             background-color: #f0f2f5;
-            padding: 1rem;
         }
 
         /* Tombol Profil di Pojok Kiri Atas */
@@ -37,7 +36,7 @@
             z-index: 100;
         }
 
-        /* Bagian Form Kirim Rahasia */
+        /* Bagian Form Pengirim */
         .send-section {
             max-width: 600px;
             margin: 8rem auto 2rem;
@@ -125,7 +124,7 @@
 
         .secret-item {
             border-left: 4px solid #1a73e8;
-            padding: 1rem;
+            padding: 1.2rem;
             margin-bottom: 1rem;
             background-color: #f8f9fa;
             border-radius: 0 6px 6px 0;
@@ -163,11 +162,11 @@
 </head>
 <body>
     <!-- Tombol Profil di Pojok Kiri Atas -->
-    <div class="profile-btn" id="profileBtn">R</div>
+    <div class="profile-btn" id="profileBtn">T</div>
 
     <!-- Bagian Form Kirim Rahasia -->
     <div class="send-section" id="sendSection">
-        <h2>Isi Rahasia nya!</h2>
+        <h2>Tempat Rahasia</h2>
         <p>Semua rahasia yang kamu tulis hanya akan dilihat oleh pembuat website</p>
         
         <div class="form-group">
@@ -186,7 +185,7 @@
 
     <!-- Bagian Daftar Rahasia Setelah Login -->
     <div class="secrets-section" id="secretsSection">
-        <h2>Daftar Semua Rahasia yang Diterima</h2>
+        <h2>Daftar Semua Rahasia</h2>
         <div id="secretsContainer"></div>
         <button class="logout-btn" onclick="logout()">Keluar</button>
     </div>
@@ -195,23 +194,23 @@
         // Konfigurasi Pembuat
         const VALID_OWNER_NAME = "r_ruto";
         const VALID_OWNER_PASS = "o_dola";
-        const STORAGE_KEY = "secret_database";
+        const STORAGE_KEY = "secret_storage";
 
-        // Tombol Profile Buka Verifikasi
+        // Buka Verifikasi Ketika Tombol Profil Ditekan
         document.getElementById('profileBtn').addEventListener('click', function() {
             const name = prompt("Masukkan nama pembuat:");
-            const pass = prompt("Masukkan password pembuat:");
+            const pass = prompt("Masukkan password:");
 
             if (name === VALID_OWNER_NAME && pass === VALID_OWNER_PASS) {
                 document.getElementById('sendSection').style.display = 'none';
                 document.getElementById('secretsSection').style.display = 'block';
-                loadSecrets();
+                loadAllSecrets();
             } else {
                 alert("Nama atau password salah!");
             }
         });
 
-        // Simpan Rahasia yang Dikirim
+        // Simpan Rahasia
         function saveSecret() {
             const sender = document.getElementById('senderName').value.trim() || "Anonim";
             const content = document.getElementById('secretContent').value.trim();
@@ -241,7 +240,7 @@
         }
 
         // Tampilkan Semua Rahasia
-        function loadSecrets() {
+        function loadAllSecrets() {
             const container = document.getElementById('secretsContainer');
             let secrets = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
@@ -271,4 +270,3 @@
     </script>
 </body>
 </html>
- 
