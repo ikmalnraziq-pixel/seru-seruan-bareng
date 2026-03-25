@@ -16,7 +16,6 @@
             background-color: #f0f2f5;
         }
 
-        /* Tombol Profil di Pojok Kiri Atas */
         .profile-btn {
             position: fixed;
             top: 1.5rem;
@@ -36,7 +35,6 @@
             z-index: 100;
         }
 
-        /* Bagian Form Pengirim */
         .send-section {
             max-width: 600px;
             margin: 8rem auto 2rem;
@@ -104,7 +102,6 @@
             text-align: center;
         }
 
-        /* Bagian Daftar Rahasia Setelah Login */
         .secrets-section {
             max-width: 800px;
             margin: 2rem auto;
@@ -161,10 +158,8 @@
     </style>
 </head>
 <body>
-    <!-- Tombol Profil di Pojok Kiri Atas -->
     <div class="profile-btn" id="profileBtn">T</div>
 
-    <!-- Bagian Form Kirim Rahasia -->
     <div class="send-section" id="sendSection">
         <h2>Tempat Rahasia</h2>
         <p>tulis rahasia yang dijamin aman 100%!</p>
@@ -183,7 +178,6 @@
         <div class="success-msg" id="successMsg">Rahasia berhasil dikirim!</div>
     </div>
 
-    <!-- Bagian Daftar Rahasia -->
     <div class="secrets-section" id="secretsSection">
         <h2>Daftar Semua Rahasia</h2>
         <div id="secretsContainer"></div>
@@ -191,10 +185,10 @@
     </div>
 
     <script>
-        // Konfigurasi Pembuat
+        // Konfigurasi yang sudah diatur
         const VALID_OWNER_NAME = "r_ruto";
         const VALID_OWNER_PASS = "o_dola";
-        const STORAGE_KEY = "secret_storage";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz3T8Xt2Zp7Qa9X5Y7L0R2K8P1M9N3B7V6C2X8Z9A1Q5W3E4R6T8Y0/exec";
 
         // Buka Modal Verifikasi
         document.getElementById('profileBtn').addEventListener('click', function() {
@@ -211,7 +205,7 @@
         });
 
         // Simpan Rahasia
-        function saveSecret() {
+        async function saveSecret() {
             const sender = document.getElementById('senderName').value.trim() || "Anonim";
             const content = document.getElementById('secretContent').value.trim();
 
@@ -226,40 +220,55 @@
                 date: new Date().toLocaleString('id-ID')
             };
 
-            let secrets = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-            secrets.push(secret);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(secrets));
+            try {
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(secret),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await response.json();
+                
+                if (result.status === "success") {
+                    document.getElementById('successMsg').style.display = 'block';
+                    document.getElementById('senderName').value = "";
+                    document.getElementById('secretContent').value = "";
 
-            document.getElementById('successMsg').style.display = 'block';
-            document.getElementById('senderName').value = "";
-            document.getElementById('secretContent').value = "";
-
-            setTimeout(() => {
-                document.getElementById('successMsg').style.display = 'none';
-            }, 3000);
+                    setTimeout(() => {
+                        document.getElementById('successMsg').style.display = 'none';
+                    }, 3000);
+                }
+            } catch (error) {
+                alert("Gagal mengirim rahasia, coba lagi nanti!");
+            }
         }
 
         // Tampilkan Rahasia
-        function loadSecrets() {
+        async function loadSecrets() {
             const container = document.getElementById('secretsContainer');
-            let secrets = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            
+            try {
+                const response = await fetch(WEB_APP_URL);
+                const secrets = await response.json();
 
-            if (secrets.length === 0) {
-                container.innerHTML = '<div class="no-secrets">Belum ada rahasia yang diterima</div>';
-                return;
+                if (secrets.length === 0) {
+                    container.innerHTML = '<div class="no-secrets">Belum ada rahasia yang diterima</div>';
+                    return;
+                }
+
+                let html = "";
+                secrets.forEach(secret => {
+                    html += `
+                        <div class="secret-item">
+                            <h4>Dari: ${secret.sender}</h4>
+                            <div class="date">Dikirim: ${secret.date}</div>
+                            <p>${secret.content}</p>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = '<div class="no-secrets">Gagal memuat rahasia, coba lagi nanti!</div>';
             }
-
-            let html = "";
-            secrets.forEach(secret => {
-                html += `
-                    <div class="secret-item">
-                        <h4>Dari: ${secret.sender}</h4>
-                        <div class="date">Dikirim: ${secret.date}</div>
-                        <p>${secret.content}</p>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
         }
 
         // Keluar
