@@ -20,12 +20,12 @@
                 linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
             background-size: 20px 20px;
         }
-        /* STYLE TOMBOL YANG KELIHATAN TAPI GAK CURIGA */
+        /* STYLE TOMBOL RAHASIA */
         #secret-button {
             position: fixed;
             bottom: 10px;
             right: 15px;
-            color: #333; /* Warna abu-abu gelap, samar kayak watermark */
+            color: #333;
             font-size: 11px;
             font-family: monospace;
             background: none;
@@ -36,10 +36,10 @@
             transition: all 0.3s;
         }
         #secret-button:hover {
-            color: #0f0; /* Pas disentuh baru berubah hijau */
+            color: #0f0;
             text-shadow: 0 0 5px #0f0;
         }
-        /* STYLE TIMER */
+        /* STYLE TIMER BERKEDIP */
         #timer-box {
             animation: blink 1s infinite;
         }
@@ -55,7 +55,7 @@
     <!-- TOMBOL RAHASIA -->
     <button id="secret-button" onclick="openSecretCode()">v.350P</button>
 
-    <!-- MODAL INPUT KODE RAHASIA -->
+    <!-- MODAL INPUT KODE -->
     <div id="secret-modal" class="hidden fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
         <div class="bg-gray-900 border-2 border-red-600 p-8 rounded-lg max-w-md w-full">
             <h2 class="text-2xl text-red-500 font-bold text-center mb-4">>>> AKSES TERBATAS <<<</h2>
@@ -67,7 +67,7 @@
         </div>
     </div>
 
-    <!-- LAYAR IDENTITAS AKHIR -->
+    <!-- LAYAR IDENTITAS -->
     <div id="identity-screen" class="hidden fixed inset-0 bg-black z-50 flex flex-col items-center justify-center">
         <h1 class="text-gray-700 text-6xl font-bold tracking-widest mb-4">IDENTIFIED</h1>
         <div class="border-4 border-green-500 p-8 rotate-2">
@@ -78,42 +78,36 @@
 
     <div id="game-container" class="bg-gray-900 rounded-lg shadow-2xl p-6 sm:p-8 max-w-lg w-full border-2 border-green-600">
         
-        <!-- Header -->
         <div class="text-center mb-6">
             <h1 class="text-4xl font-bold text-green-500 mb-2">[SYSTEM ONLINE]</h1>
             <p class="text-sm text-gray-400">// LEVEL: QUANTUM DETECTIVE //</p>
             <div class="w-full bg-gray-800 rounded-full h-2 mt-2 overflow-hidden">
                 <div id="progress-bar" class="bg-gradient-to-r from-green-600 to-green-400 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
             </div>
-            <!-- TEMPAT TIMER -->
+            <!-- TIMER -->
             <div id="timer-container" class="hidden mt-2">
-                <p class="text-xs text-red-600">WAKTU TERSEDIA:</p>
+                <p class="text-xs text-red-600">DEADLINE:</p>
                 <h2 id="timer-text" class="text-3xl font-bold text-red-600 timer-box">10</h2>
             </div>
         </div>
 
-        <!-- Stage Indicator -->
         <div id="stage-indicator" class="text-center font-bold text-sm text-green-400 mb-4 uppercase tracking-widest">
             Analisis Data 01
         </div>
 
-        <!-- Puzzle Area -->
         <div id="puzzle-box" class="bg-black rounded p-5 mb-6 border border-green-700">
             <h3 class="font-semibold text-green-600 mb-3 text-sm">> Query_Data:</h3>
             <div id="question-text" class="text-lg font-bold text-left text-green-300 my-3 p-4 bg-gray-900 rounded leading-relaxed">
-                <!-- Soal muncul di sini -->
             </div>
             <input type="text" id="answer-input" placeholder="> Enter_Answer:" 
                 class="w-full text-center text-xl p-3 border-2 border-gray-700 rounded-lg focus:border-green-500 outline-none bg-black text-green-400 font-mono">
         </div>
 
-        <!-- Clue -->
         <div id="clue-box" class="bg-gray-800 border border-dashed border-gray-600 rounded p-4 mb-6">
             <h3 class="font-bold text-yellow-400 text-sm mb-1">// LOG_FILE.TXT</h3>
             <p id="clue-text" class="text-gray-300 text-xs">Analisis pola, urutan, dan hubungan logika.</p>
         </div>
 
-        <!-- Buttons -->
         <div class="flex gap-4">
             <button onclick="checkAnswer()" 
                 class="flex-1 bg-green-800 hover:bg-green-700 text-black font-bold py-3 px-6 rounded shadow-lg transition-colors uppercase text-sm tracking-wider">
@@ -125,17 +119,13 @@
             </button>
         </div>
 
-        <!-- Feedback -->
         <div id="feedback" class="mt-6 text-center text-sm font-bold hidden rounded p-3 uppercase tracking-wider"></div>
 
-        <!-- Hint Box -->
         <div id="hint-box" class="hidden mt-4 bg-black p-4 rounded text-left text-xs border border-green-900 text-green-200">
-            <!-- Petunjuk rahasia -->
         </div>
     </div>
 
     <script>
-        // DAFTAR SOAL LEVEL KULIAH
         const levels = [
             {
                 stage: "Analisis Data 01: Pola Angka",
@@ -185,9 +175,9 @@
         let timeLeft = 10;
         let timerInterval;
 
-        // FUNGSI TOMBOL RAHASIA
+        // >>> INI PENTING: WAKTU BERHENTI KALO KLIK TOMBOL <<<
         function openSecretCode() {
-            clearInterval(timerInterval); // Hentikan timer kalau diklik
+            clearInterval(timerInterval); // MATIKAN TIMER SEKARANG
             document.getElementById('timer-container').classList.add('hidden');
             document.getElementById('secret-modal').classList.remove('hidden');
             document.getElementById('secret-input').value = '';
@@ -233,7 +223,7 @@
             }, 1500);
         }
 
-        // FUNGSI GAME UTAMA
+        // FUNGSI GAME
         function loadLevel() {
             const level = levels[currentLevel];
             document.getElementById('stage-indicator').innerText = level.stage;
@@ -244,6 +234,7 @@
             document.getElementById('feedback').classList.add('hidden');
             document.getElementById('hint-box').classList.add('hidden');
             document.getElementById('timer-container').classList.add('hidden');
+            document.getElementById('answer-input').style.display = 'block'; // Balikin input kalau reset
             
             const progress = ((currentLevel + 1) / levels.length) * 100;
             document.getElementById('progress-bar').style.width = progress + '%';
@@ -264,13 +255,12 @@
                         loadLevel();
                     }, 1500);
                 } else {
-                    // TAHAP AKHIR: START TIMER!
+                    // TAHAP AKHIR: JALANKAN TIMER!
                     feedbackBox.innerHTML = `> KODE: <span class="text-3xl glow">K350P</span> <br> CARI AKSES SEKARANG!`;
-                    document.getElementById('question-text').innerHTML = "<span class='text-red-500 text-xl'>// WAKTU TERBATAS //</span>";
+                    document.getElementById('question-text').innerHTML = "<span class='text-red-500 text-xl'>// HITUNG MUNDUR DIMULAI //</span>";
                     document.getElementById('answer-input').style.display = 'none';
                     
-                    // JALANKAN TIMER 10 DETIK
-                    startTimer();
+                    startTimer(); // START 10 DETIK
                 }
             } else {
                 feedbackBox.className = "mt-6 text-center text-sm font-bold rounded p-3 uppercase tracking-wider bg-red-900 text-red-300 border border-red-600";
