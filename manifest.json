@@ -1,0 +1,238 @@
+{
+  "id": "/Raziq/",
+  "name": "Pelajarin.ai – Belajar Lebih Cepat dengan AI",
+  "short_name": "Pelajarin.ai",
+  "description": "Belajar lebih cepat dengan AI – ringkasan otomatis, kuis interaktif, flashcard, peta konsep, dan chat AI tutor dalam satu aplikasi.",
+  "start_url": "/Raziq/?source=pwa",
+  "scope": "/Raziq/",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ],
+  "orientation": "any",
+  "background_color": "#fafafa",
+  "theme_color": "#f76703",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": [
+    "education",
+    "productivity"
+  ],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/Raziq/icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Raziq/icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Raziq/icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Raziq/icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Raziq/icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Raziq/icons/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Raziq/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Raziq/icons/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/Raziq/icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Raziq/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Raziq/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/Raziq/screenshots/screenshot-mobile-1.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Halaman utama Pelajarin.ai"
+    },
+    {
+      "src": "/Raziq/screenshots/screenshot-mobile-2.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Fitur Ringkasan AI"
+    },
+    {
+      "src": "/Raziq/screenshots/screenshot-mobile-3.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Fitur Kuis Interaktif"
+    },
+    {
+      "src": "/Raziq/screenshots/screenshot-mobile-4.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Fitur Flashcard"
+    },
+    {
+      "src": "/Raziq/screenshots/screenshot-desktop-1.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Tampilan desktop Pelajarin.ai"
+    },
+    {
+      "src": "/Raziq/screenshots/screenshot-desktop-2.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Chat AI Tutor – Tampilan Desktop"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ringkasan AI",
+      "short_name": "Ringkasan",
+      "description": "Buat ringkasan otomatis dari materi belajar",
+      "url": "/Raziq/?shortcut=ringkasan&source=shortcut",
+      "icons": [
+        {
+          "src": "/Raziq/icons/shortcut-ringkasan.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Kuis Interaktif",
+      "short_name": "Kuis",
+      "description": "Latihan soal kuis dari materi pelajaran",
+      "url": "/Raziq/?shortcut=kuis&source=shortcut",
+      "icons": [
+        {
+          "src": "/Raziq/icons/shortcut-kuis.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Flashcard",
+      "short_name": "Flashcard",
+      "description": "Hafal materi dengan flashcard interaktif",
+      "url": "/Raziq/?shortcut=flashcard&source=shortcut",
+      "icons": [
+        {
+          "src": "/Raziq/icons/shortcut-flashcard.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Chat AI Tutor",
+      "short_name": "Chat AI",
+      "description": "Tanya apa saja ke AI tutor pintar",
+      "url": "/Raziq/?shortcut=chat&source=shortcut",
+      "icons": [
+        {
+          "src": "/Raziq/icons/shortcut-chat.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+pelajarin",
+      "url": "/Raziq/?protocol=%s"
+    }
+  ],
+  "share_target": {
+    "action": "/Raziq/share-target/",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "file",
+          "accept": [
+            "application/pdf",
+            "text/plain",
+            "image/*"
+          ]
+        }
+      ]
+    }
+  },
+  "file_handlers": [
+    {
+      "action": "/Raziq/open-file/",
+      "accept": {
+        "application/pdf": [".pdf"],
+        "text/plain": [".txt"]
+      }
+    }
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": [
+      "navigate-existing",
+      "auto"
+    ]
+  },
+  "related_applications": [],
+  "capture_links": "existing-client-navigate"
+}
